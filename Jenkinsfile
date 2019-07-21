@@ -12,7 +12,7 @@ node {
             sh ". v-env/bin/activate"
             sh "pip install -r requirements.txt"
             dir('v-env/lib/python3.6/site-packages/'){
-                sh "zip -r9 ../../../function.zip ."
+                sh "zip -r9 ../../../../../function.zip ."
             }
             sh "zip -g function.zip *"
         }
@@ -22,7 +22,7 @@ node {
         echo "# UPLOADING TO AWS #"
         echo "####################"
         dir('src') {
-            sh "aws lambda update-function-code --function-name HC_data_service --zip-file fileb://function.zip"
+            sh "aws lambda update-function-code --function-name HC_data_service --region=us-east-1 --zip-file fileb://function.zip"
         }
     }
 }
