@@ -13,9 +13,8 @@ node {
                 sh "zip -r9 ../../../../function.zip ."
             }
             sh "zip -g function.zip *"
-
-            sh "deactivate"
         }
+        sh "deactivate"
     }
     stage('Deploy') {
         echo "Uploading to AWS" 
