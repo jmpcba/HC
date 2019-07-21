@@ -6,7 +6,7 @@ node {
     stage('Build') { 
         echo "Building Dependencies"
         dir('src') {
-            sh "virtualenv v-env"
+            sh "python3 -m virtualenv v-env"
             sh "source v-env/bin/activate"
             sh "pip install -r requirements.txt --target ./lib"
             sh "zip -r9 function.zip"
