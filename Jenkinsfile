@@ -12,7 +12,7 @@ node {
             sh ". v-env/bin/activate"
             sh "pip install -r requirements.txt"
             dir('v-env/lib/python3.6/site-packages/'){
-                sh "zip -r9 ../../../../function.zip ."
+                sh "zip -r9 ../../../function.zip ."
             }
             sh "zip -g function.zip *"
         }
