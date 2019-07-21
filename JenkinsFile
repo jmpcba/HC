@@ -1,6 +1,6 @@
 node {
     stage('Clone'){
-        git credentialsId: 'GIT', url: 'https://github.com/jmpcba/HC_dataBroker.git'
+        git credentialsId: 'GIT', url: 'https://github.com/jmpcba/HC.git'
     }
 
     stage('Build') { 
