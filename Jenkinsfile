@@ -4,7 +4,9 @@ node {
     }
 
     stage('Build') { 
-        echo "Building Dependencies"
+        echo "#########################"
+        echo "# BUILDING DEPENDENCIES #"
+        echo "#########################"
         dir('src') {
             sh "virtualenv v-env"
             sh ". v-env/bin/activate"
@@ -14,13 +16,13 @@ node {
             }
             sh "zip -g function.zip *"
         }
-        sh "deactivate"
     }
     stage('Deploy') {
-        echo "Uploading to AWS" 
+        echo "####################"
+        echo "# UPLOADING TO AWS #"
+        echo "####################"
         dir('src') {
             sh "aws lambda update-function-code --function-name HC_data_service --zip-file fileb://function.zip"
         }
-        
     }
 }
