@@ -1,0 +1,19 @@
+node {
+    stage('Clone'){
+        git credentialsId: 'GIT', url: 'https://github.com/jmpcba/HC.git'
+    }
+
+    stage('Plan') {
+        echo "##################"
+        echo "# TERRAFORM PLAN #"
+        echo "##################"
+        
+        dir('src') {
+            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                def env.TF_VAR_AWS_ACCESS_KEY_ID = env.AWS_ACCESS_KEY_ID
+                def env.TF_VAR_AWS_SECRET_ACCESS_KEY = env.AWS_SECRET_ACCESS_KEY
+                sh "terraform plan"
+            }
+        }
+    }
+}
