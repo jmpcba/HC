@@ -22,7 +22,9 @@ node {
         echo "# UPLOADING TO AWS #"
         echo "####################"
         dir('src') {
-            sh "aws lambda update-function-code --function-name HC_data_service --region=us-east-1 --zip-file fileb://function.zip"
+            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                sh "aws lambda update-function-code --function-name HC_data_service --region=us-east-1 --zip-file fileb://function.zip"
+            }
         }
     }
 }
