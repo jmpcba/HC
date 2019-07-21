@@ -6,7 +6,7 @@ node {
     stage('Build') { 
         echo "Building Dependencies"
         dir('src') {
-            sh "pip3 install -r requirements.txt --target ./lib"
+            sh "python3 -m pip install -r requirements.txt --target ./lib"
             sh "zip -r9 function.zip"
         }
     }
