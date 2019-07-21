@@ -8,9 +8,13 @@ node {
         dir('src') {
             sh "virtualenv v-env"
             sh ". v-env/bin/activate"
-            sh "pip install -r requirements.txt --target ./lib"
+            sh "pip install -r requirements.txt"
+            dir('v-env/lib/python3.6/site-packages/'){
+                sh "zip -r9 ../../../../function.zip ."
+            }
+            sh "zip -g function.zip *"
+
             sh "deactivate"
-            sh "zip -r9 function.zip"
         }
     }
     stage('Deploy') {
