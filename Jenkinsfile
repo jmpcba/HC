@@ -7,8 +7,9 @@ node {
         echo "Building Dependencies"
         dir('src') {
             sh "virtualenv v-env"
-            sh "source v-env/bin/activate"
+            sh ". v-env/bin/activate"
             sh "pip install -r requirements.txt --target ./lib"
+            sh "deactivate"
             sh "zip -r9 function.zip"
         }
     }
