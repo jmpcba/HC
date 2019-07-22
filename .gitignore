@@ -3,3 +3,5 @@ src/lib/
 src/lib/pymysql/
 
 src/lib/PyMySQL-0\.9\.3\.dist-info/
+
+infra/\.terraform/

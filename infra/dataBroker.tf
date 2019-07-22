@@ -1,5 +1,6 @@
 resource "aws_lambda_function" "HC_data_service_lambda" {
   function_name = "HC_data_service"
+  s3_bucket     = "jmpcba-lambda"
   role          = "${aws_iam_role.HC_data_service_lambda_role.arn}"
   runtime       = "python3.6"
   handler       = "main.handler"
