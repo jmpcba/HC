@@ -10,12 +10,13 @@ class DataBrokerService:
         
         sql = ''
         rds = RDS()
-        logging.info("Fetching from DB")
         if object_id:
             sql= 'SELECT * FROM %s WHERE id=%s' % (table, object_id)
+            logging.info(f"EXECUTING SQL: {sql}")
             result = rds.select_one(sql)
         else:
             sql = 'SELECT * FROM %s' %(table,)
+            logging.info(f"EXECUTING SQL: {sql}")
             result = rds.select_many(sql)
         
         if result:
