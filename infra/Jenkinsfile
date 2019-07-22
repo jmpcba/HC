@@ -13,9 +13,11 @@ node {
                 withCredentials([string(credentialsId: 'TF_VAR_db_password', variable: 'TF_VAR_db_password')]) {
                     env.TF_VAR_AWS_ACCESS_KEY_ID = env.AWS_ACCESS_KEY_ID
                     env.TF_VAR_AWS_SECRET_ACCESS_KEY = env.AWS_SECRET_ACCESS_KEY
-                    sh "terraform init"
-                    sh "terraform version"
-                    sh "terraform plan"
+                    ansiColor('xterm') {
+                        sh "terraform init"
+                        sh "terraform version"
+                        sh "terraform plan"
+                    }
                 }
             }
         }

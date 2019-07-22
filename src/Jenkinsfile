@@ -1,4 +1,7 @@
 node {
+    stage('Clean Up'){
+        cleanWs()
+    }
     stage('Clone'){
         git credentialsId: 'GIT', url: 'https://github.com/jmpcba/HC.git'
     }
@@ -8,13 +11,8 @@ node {
         echo "# BUILDING DEPENDENCIES #"
         echo "#########################"
         dir('src') {
-            sh "virtualenv v-env"
-            sh ". v-env/bin/activate"
-            sh "pip install -r requirements.txt"
-            dir('v-env/lib/python3.6/site-packages/'){
-                sh "zip -r9 ../../../../../function.zip ."
-            }
-            sh "zip -g function.zip *"
+            sh "python3 -m pip install -r requirements.txt --target lib --system"
+            sh "zip -r9 function.zip ."
         }
     }
     stage('Deploy') {
