@@ -9,10 +9,8 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def handler(event, context): 
-    logger.info(f"{Chars.EOL}\nHandler started")
+    logger.info("HANDLER STARTING")
     logger.info(f"EVENT: {str(event)}")
-    logger.info(f"CONTEXT: {str(context)}")
-    logger.info(Chars.EOL)
 
     object_id = None
     if 'id' in event['queryStringParameters']:

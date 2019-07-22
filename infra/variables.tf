@@ -7,3 +7,8 @@ variable "region" {
 }
 
 variable "db_password" { }
+
+variable "prod_stage_name" {
+  default = "prod"
+}
+
