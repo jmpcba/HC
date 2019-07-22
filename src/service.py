@@ -1,6 +1,6 @@
 import json
 import errors
-import pymysql
+from lib import pymysql
 import logging
 from common import RDS, Tables
 

@@ -44,7 +44,7 @@ def handler(event, context):
 def process_response(response, status_code):
     return {
         'statusCode': status_code,
-        'body': json.dumps(response)
+        'body': json.dumps(response, default=str)
         }
 
 def validate_inputs(**kwargs):

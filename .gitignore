@@ -7,3 +7,7 @@ src/lib/PyMySQL-0\.9\.3\.dist-info/
 infra/\.terraform/
 
 *.zip
+
+\.vscode/
+
+infra/terraform\.tfvars

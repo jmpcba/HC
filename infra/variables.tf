@@ -1,9 +1,7 @@
-variable "access_key" {
-  default="AKIAICPEHXZ43SNHLFFA"
-}
-variable "secret_key" {
-  default="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"
-}
+variable "access_key" { }
+
+variable "secret_key" { }
+
 variable "region" {
   default = "us-east-1"
 }
