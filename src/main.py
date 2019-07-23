@@ -43,5 +43,5 @@ def process_response(response, status_code):
         }
 
 def validate_inputs(tables):
-    if not all(t in tables for t in Tables.ALL_TABLES):
+    if not all(t in Tables.ALL_TABLES for t in tables):
         raise errors.InvalidParameter(tables)
