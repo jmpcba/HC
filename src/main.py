@@ -12,17 +12,14 @@ def handler(event, context):
     logger.info("HANDLER STARTING")
     logger.info(f"EVENT: {str(event)}")
 
-    object_id = None
-    if 'id' in event['queryStringParameters']:
-        object_id = int(event['queryStringParameters']['id'])
-    
-    table = event['queryStringParameters']['table']
+    tables = event['queryStringParameters']['tables']
+    tables = tables.upper().split(',')
     ret = ''
     
     try:
-        validate_inputs(object_id=object_id, table=table)
+        validate_inputs(tables)
         f = DataBrokerService()
-        ret = process_response(f.fetch(table, object_id), 200)
+        ret = process_response(f.fetch(tables), 200)
 
     except errors.ObjectNotFoundError as e:
         logger.warning(f"ERROR: {str(e)}")
@@ -45,12 +42,6 @@ def process_response(response, status_code):
         'body': json.dumps(response, default=str)
         }
 
-def validate_inputs(**kwargs):
-    
-    # check if id is int
-    if kwargs['object_id']:
-        if not isinstance(kwargs['object_id'], int):
-            raise errors.InvalidParameter(kwargs)
-    
-    if kwargs['table'] not in Tables.ALL_TABLES:
-        raise errors.InvalidParameter(kwargs)
+def validate_inputs(tables):
+    if not all(t in tables for t in Tables.ALL_TABLES):
+        raise errors.InvalidParameter(tables)

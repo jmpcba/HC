@@ -1,7 +1,7 @@
 class ObjectNotFoundError(Exception):
-    def __init__(self, id):
+    def __init__(self):
         # Call the base class constructor with the parameters it needs
-        super().__init__(f"No Object with id: {id} was found")
+        super().__init__(f"No Objects were found in the database")
 
 
 class IllegalIDError(Exception):
@@ -11,4 +11,4 @@ class IllegalIDError(Exception):
 
 class InvalidParameter(Exception):
     def __init__(self, parameters):
-        super().__init__(f"the paramters: {str(parameters)} are not valid")
+        super().__init__(f"the parameters provided\n: {str(parameters)}\n are not valid")

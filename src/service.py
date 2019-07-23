@@ -1,25 +1,23 @@
 import json
 import errors
-from lib import pymysql
 import logging
+from lib import pymysql
 from common import RDS, Tables
 
 class DataBrokerService:
 
-    def fetch(self, table, object_id=None):
+    def fetch(self, tables):
         
         sql = ''
         rds = RDS()
-        if object_id:
-            sql= 'SELECT * FROM %s WHERE id=%s' % (table, object_id)
+        result = {}
+        
+        for t in tables:
+            sql = 'SELECT * FROM %s' %(t,)
             logging.info(f"EXECUTING SQL: {sql}")
-            result = rds.select_one(sql)
-        else:
-            sql = 'SELECT * FROM %s' %(table,)
-            logging.info(f"EXECUTING SQL: {sql}")
-            result = rds.select_many(sql)
+            result[t] = rds.select_many(sql)
         
         if result:
             return result
         else:
-            raise errors.ObjectNotFoundError(object_id)
+            raise errors.ObjectNotFoundError()
