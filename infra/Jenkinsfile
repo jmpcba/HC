@@ -14,8 +14,8 @@ node {
                     env.TF_VAR_AWS_ACCESS_KEY_ID = env.AWS_ACCESS_KEY_ID
                     env.TF_VAR_AWS_SECRET_ACCESS_KEY = env.AWS_SECRET_ACCESS_KEY
                     ansiColor('xterm') {
-                        sh "terraform init"
                         sh "terraform version"
+                        sh "terraform init"
                         sh "terraform plan"
                     }
                 }
