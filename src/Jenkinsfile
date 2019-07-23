@@ -20,10 +20,13 @@ node {
         echo "# UPLOADING TO AWS #"
         echo "####################"
         dir('src') {
+            echo "uploading to S3"
             withAWS(credentials: 'AWS', region: 'us-east-1') {
-                echo "uploading to S3"
                 sh "aws s3 cp function.zip s3://jmpcba-lambda/function.zip"
-                echo "updating function code"
+            }
+            
+            echo "updating function code"
+            withAWS(credentials: 'AWS', region: 'us-east-1') {
                 sh "aws lambda update-function-code --function-name HC_data_service --zip-file fileb://function.zip"
             }
         }
