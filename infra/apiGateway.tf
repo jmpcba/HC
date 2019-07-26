@@ -17,8 +17,7 @@ resource "aws_api_gateway_method" "databroker_get_method" {
     request_validator_id ="0oesex"
     
     request_parameters   = {
-            "method.request.querystring.id"    = false
-            "method.request.querystring.table" = true
+            "method.request.querystring.tables" = true
     }
 }
 
