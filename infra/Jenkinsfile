@@ -13,7 +13,6 @@ node {
                 dir('infra') {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS CREDENTIALS', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'], string(credentialsId: 'TF_VAR_db_password', variable: 'TF_VAR_db_password')]) {
                             sh '''
-                                set +x
                                 terraform version
                                 terraform init
                                 terraform plan
@@ -24,22 +23,25 @@ node {
         }
     }
 
-    if (params.APPLY){
-        stage('css') {
-            ansiColor('gnome-terminal') {
-                echo "###################"
-                echo "# TERRAFORM APPLY #"
-                echo "###################"
-                
-                dir('infra') {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS CREDENTIALS', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'], string(credentialsId: 'TF_VAR_db_password', variable: 'TF_VAR_db_password')]) {
-                            sh '''
-                                set +x
-                                terraform version
-                                terraform init
-                                terraform APPLY
-                                '''
-                    }
+    stage('Approval') {
+        steps {
+            script {
+            def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
+            }
+        }
+    }
+
+    stage('Apply') {
+        ansiColor('css') {
+            echo "###################"
+            echo "# TERRAFORM APPLY #"
+            echo "###################"
+            
+            dir('infra') {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS CREDENTIALS', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'], string(credentialsId: 'TF_VAR_db_password', variable: 'TF_VAR_db_password')]) {
+                        sh '''
+                            terraform apply -input=false
+                            '''
                 }
             }
         }
