@@ -5,7 +5,7 @@ node {
 
     if (params.PLAN){
         stage('Plan') {
-            ansiColor('CSS') {
+            ansiColor('gnome-terminal') {
                 echo "##################"
                 echo "# TERRAFORM PLAN #"
                 echo "##################"
@@ -37,7 +37,7 @@ node {
                                 set +x
                                 terraform version
                                 terraform init
-                                terraform apply -input=false
+                                terraform apply -auto-approve
                                 '''
                     }
                 }
