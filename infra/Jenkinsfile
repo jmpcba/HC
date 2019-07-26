@@ -5,7 +5,7 @@ node {
 
     if (params.PLAN){
         stage('Plan') {
-            ansiColor('gnome-terminal') {
+            ansiColor('css') {
                 echo "##################"
                 echo "# TERRAFORM PLAN #"
                 echo "##################"
@@ -25,7 +25,7 @@ node {
     }
 
     if (params.APPLY){
-        stage('Apply') {
+        stage('css') {
             ansiColor('gnome-terminal') {
                 echo "###################"
                 echo "# TERRAFORM APPLY #"
