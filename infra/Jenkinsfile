@@ -11,6 +11,8 @@ node {
         dir('infra') {
             withCredentials([string(credentialsId: 'TF_VAR_access_key', variable: 'AWS_ACCESS_KEY_ID'), string(credentialsId: 'TF_VAR_secret_key', variable: 'AWS_SECRET_ACCESS_KEY'), string(credentialsId: 'TF_VAR_db_password', variable: 'TF_VAR_db_password')]) {
                 ansiColor('xterm') {
+                        env.AWS_SECRET_ACCESS_KEY = AWS_SECRET_ACCESS_KEY
+                        env.AWS_ACCESS_KEY_ID = AWS_ACCESS_KEY_ID
                         sh "/usr/bin/terraform version"
                         //sh "/usr/bin/terraform init"
                         sh "/usr/bin/terraform plan"
