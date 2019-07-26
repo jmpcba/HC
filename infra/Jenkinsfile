@@ -11,8 +11,8 @@ node {
         dir('infra') {
             withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                 withCredentials([string(credentialsId: 'TF_VAR_db_password', variable: 'TF_VAR_db_password')]) {
-                    env.TF_VAR_AWS_ACCESS_KEY_ID = env.AWS_ACCESS_KEY_ID
-                    env.TF_VAR_AWS_SECRET_ACCESS_KEY = env.AWS_SECRET_ACCESS_KEY
+                    env.TF_VAR_secret_key = env.AWS_ACCESS_KEY_ID
+                    env.TF_VAR_access_key = env.AWS_SECRET_ACCESS_KEY
                     print TF_VAR_AWS_ACCESS_KEY_ID
                     print TF_VAR_AWS_SECRET_ACCESS_KEY
                     ansiColor('xterm') {
