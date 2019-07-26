@@ -4,17 +4,19 @@ node {
     }
 
     stage('Plan') {
-        echo "##################"
-        echo "# TERRAFORM PLAN #"
-        echo "##################"
-        
-        dir('infra') {
-            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS CREDENTIALS', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'], string(credentialsId: 'TF_VAR_db_password', variable: 'TF_VAR_db_password')]) {
-                    sh '''
-                        set +x
-                        terraform version
-                        terraform plan
-                        '''
+        ansiColor('gnome-terminal') {
+            echo "##################"
+            echo "# TERRAFORM PLAN #"
+            echo "##################"
+            
+            dir('infra') {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS CREDENTIALS', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'], string(credentialsId: 'TF_VAR_db_password', variable: 'TF_VAR_db_password')]) {
+                        sh '''
+                            set +x
+                            terraform version
+                            terraform plan
+                            '''
+                }
             }
         }
     }
