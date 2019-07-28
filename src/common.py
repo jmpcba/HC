@@ -1,4 +1,5 @@
 import os
+import logging
 from lib import pymysql
 
 class Chars:
@@ -51,6 +52,26 @@ class RDS:
             cur.execute(sql)
             result = cur.fetchall()
             return result
+    
+    def insert(self, sql):
+        cnn = self.open_connection()
+            
+        try:
+            
+            if not isinstance(sql, (list, tuple)):
+                raise ValueError("must provide a list or tuple of SQL statements")
+            
+            with cnn:
+                cur = cnn.cursor()
+                
+                for s in sql:
+                    cur.execute(s)
+                
+                cnn.commit
+        
+        except Exception as e:
+            cnn.rollback()
+            logging.warning(e)
 
 
 def convert_to_dict(obj):

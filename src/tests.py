@@ -1,9 +1,13 @@
+import os
 import main
+import common
 from service import DataBrokerService
 
-main.validate_inputs(['PACIENTES', 'PRESTADORES'])
+sql = []
+for n in range(5, 500):
+    sql.append (f'INSERT INTO DESARROLLO.PRESTADORES (CUIT, NOMBRE) VALUES ("CUIT-{n}", "nombre-{n}");')
 
-f = DataBrokerService()
-ret = main.process_response(f.fetch(['PACIENTES', 'PRESTADORES']), 200)
-print(ret)
+rds = common.RDS()
+rds.insert(sql)
+
 

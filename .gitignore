@@ -11,3 +11,5 @@ infra/\.terraform/
 \.vscode/
 
 infra/terraform\.tfvars
+
+src/__pycache__/
