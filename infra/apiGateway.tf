@@ -6,7 +6,7 @@ resource "aws_api_gateway_rest_api" "HC_REST_API" {
 resource "aws_api_gateway_resource" "databroker" {
     rest_api_id = "${aws_api_gateway_rest_api.HC_REST_API.id}"
     parent_id   = "${aws_api_gateway_rest_api.HC_REST_API.root_resource_id}"
-    path_part   = "databroker"
+    path_part   = "v1/databroker"
 }
 
 resource "aws_api_gateway_method" "databroker_get_method" {
@@ -14,8 +14,7 @@ resource "aws_api_gateway_method" "databroker_get_method" {
     resource_id          = "${aws_api_gateway_resource.databroker.id}"
     http_method          = "GET"
     authorization        = "NONE"
-    request_validator_id ="0oesex"
-    
+  
     request_parameters   = {
             "method.request.querystring.tables" = true
     }
