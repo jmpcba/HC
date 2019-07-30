@@ -56,9 +56,9 @@ class DataBrokerService(Service):
                 sql = 'SELECT * FROM %s' %(t,)
                 logging.info(f"EXECUTING SQL: {sql}")
                 result[t] = rds.select_many(sql)
+                logging.info(f'Query returned {len(result)} entries')
             
             if result:
-                logging.info(f'Returning {len(result)} entries')
                 self.response.body = result
                 self.response.code = 200
             else:
