@@ -58,6 +58,7 @@ class DataBrokerService(Service):
                 result[t] = rds.select_many(sql)
             
             if result:
+                logging.info(f'Returning {len(result)} entries')
                 self.response.body = result
                 self.response.code = 200
             else:
