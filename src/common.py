@@ -24,8 +24,7 @@ class Tables:
 class RDSConfig:
     RDS_HOST = "dev-database-1.c0rtb6x1vjcr.us-east-1.rds.amazonaws.com"
     NAME = 'admin'
-    PWD = "Newuser1!"
-    # PWD = os.environ['db_password']
+    PWD = os.environ['db_password']
     DB = 'DESARROLLO'
 
 
@@ -50,8 +49,10 @@ class RDS:
         cnn = self.open_connection() 
         with cnn:
             cur = cnn.cursor(pymysql.cursors.DictCursor)
+            logging.info(f"EXECUTING: {sql}")
             cur.execute(sql)
             result = cur.fetchall()
+            logging.info(f'Query returned {len(result)} entries')
             return result
     
     def statement(self, sql):
