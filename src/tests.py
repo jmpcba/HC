@@ -1,14 +1,9 @@
 import os
-import main
-import common
 import requests
-from service import DataBrokerService
-
-sql = []
-for n in range(5, 500):
-    sql.append (f'INSERT INTO DESARROLLO.PRESTADORES (CUIT, NOMBRE) VALUES ("CUIT-{n}", "nombre-{n}");')
-
-rds = common.RDS()
-rds.statement(sql)
 
 
+def test_databroker():
+    endpoint = 'https://2idw8jlsf6.execute-api.us-east-1.amazonaws.com/prod/v1/databroker?tables=prestadores,pacientes'
+    r = requests.get(endpoint)
+    if r.response_code != 200:
+        exit(1)
