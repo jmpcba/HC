@@ -15,7 +15,7 @@ resource "aws_lambda_function" "HC_data_service_lambda" {
   s3_key        = "function.zip"
   role          = "${aws_iam_role.HC_data_service_lambda_role.arn}"
   runtime       = "python3.6"
-  handler       = "main.handler"
+  handler       = "main.databroker_handler"
   environment {
         variables = {
             "db_password" = "${var.db_password}"

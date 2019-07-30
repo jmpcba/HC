@@ -53,11 +53,10 @@ class RDS:
             result = cur.fetchall()
             return result
     
-    def insert(self, sql):
+    def statement(self, sql):
         cnn = self.open_connection()
             
         try:
-            
             if not isinstance(sql, (list, tuple)):
                 raise ValueError("must provide a list or tuple of SQL statements")
             
