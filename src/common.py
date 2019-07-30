@@ -24,7 +24,8 @@ class Tables:
 class RDSConfig:
     RDS_HOST = "dev-database-1.c0rtb6x1vjcr.us-east-1.rds.amazonaws.com"
     NAME = 'admin'
-    PWD = os.environ['db_password']
+    PWD = "Newuser1!"
+    # PWD = os.environ['db_password']
     DB = 'DESARROLLO'
 
 

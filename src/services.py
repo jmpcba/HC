@@ -28,7 +28,7 @@ class Response:
     
     @property
     def service_response(self):
-        return self._parse_response
+        return self._parse_response()
     
     def _parse_response(self):
         return {
@@ -81,7 +81,7 @@ class DataBrokerService(Service):
         
         finally:
             if self.response.code != 200:
-                logging.warning(f"ERROR: {str(e)}")
+                logging.warning(f"ERROR: {str(self.response.body)}")
             
 
 
