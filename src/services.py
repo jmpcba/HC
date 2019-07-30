@@ -12,7 +12,7 @@ class Response:
     
     @property
     def code(self):
-        return self.code
+        return self._code
     
     @code.setter
     def code(self, c):
