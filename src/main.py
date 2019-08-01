@@ -16,7 +16,7 @@ def databroker_handler(event, context):
     tables = tables.upper().split(',')
     
     service = DataBrokerService()
-    service.fetch_tables(tables)
+    service.get_tables(tables)
     return service.response.service_response
 
     

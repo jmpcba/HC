@@ -3,6 +3,15 @@ import errors
 import logging
 from lib import pymysql
 from common import RDS, Tables
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+from common import RDSConfig
+from models import Base, Prestador
+
+engine = create_engine(RDSConfig.ENGINE)
+Base.metadata.bind = engine
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 
 class Response:
@@ -42,20 +51,15 @@ class Service:
 
 class DataBrokerService(Service):
     
-    def fetch_tables(self, tables):
+    def get_tables(self, in_tables):
         
-        sql = ''
-        rds = RDS()
         result = {}
         
         try:
-            if not all(t in Tables.ALL_TABLES for t in tables):
-                raise errors.InvalidParameter(tables)
             
-            for t in tables:
-                sql = 'SELECT * FROM %s' %(t,)
-                result[t] = rds.select_many(sql)
-            
+            for t in Tables.ALL_TABLES:
+                if t['table_name'] in in_tables:
+                    result[t['table_name']] = [vars(r) for r in session.query(t['model']).all()]
             if result:
                 self.response.body = result
                 self.response.code = 200

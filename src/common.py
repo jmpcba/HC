@@ -1,5 +1,6 @@
 import os
 import logging
+import models
 from lib import pymysql
 
 class Chars:
@@ -7,25 +8,28 @@ class Chars:
 
 
 class Tables:
-    PRESTADORES ='PRESTADORES'
-    PACIENTES = 'PACIENTES'
-    MODULOS = 'MODULOS'
-    SUB_MODULOS = 'SUBMODULOS'
-    LIQUIDACIONES = 'LIQUIDACIONES'
+    PRESTADORES ={'table_name': 'PRESTADORES', 'model': models.Prestador}
+    """PACIENTES = {'table_name': 'PACIENTES', 'model': models.Paciente}
+    MODULOS = {'table_name': 'MODULOS', 'model': models.Modulo}
+    SUB_MODULOS = {'table_name': 'SUB_MODULOS', 'model': models.SubModulo}
+    LIQUIDACIONES = {'table_name': 'LIQUIDACIONES', 'model': models.Liquidacion}"""
     ALL_TABLES = [
-                PRESTADORES,
-                PACIENTES,
-                MODULOS,
-                SUB_MODULOS,
-                LIQUIDACIONES,
-                ]
+                PRESTADORES,]
+    """PACIENTES,
+    MODULOS,
+    SUB_MODULOS,
+    LIQUIDACIONES,"""
+                
 
 
 class RDSConfig:
     RDS_HOST = "dev-database-1.c0rtb6x1vjcr.us-east-1.rds.amazonaws.com"
     NAME = 'admin'
-    PWD = os.environ['db_password']
+    #PWD = os.environ['db_password']
+    PWD = 'Newuser1!'
     DB = 'DESARROLLO'
+    DIALECT = 'mysql+pymysql'
+    ENGINE = f'{DIALECT}://{NAME}:{PWD}@{RDS_HOST}/{DB}'
 
 
 class RDS:
