@@ -1,8 +1,7 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from common import RDSConfig
-from models import Base, Prestador
-from services import DataBrokerService
+from models import Base, Prestador, RDSConfig
+from services import DataBrokerService, PrestadoresService
 import json
 
 engine = create_engine(RDSConfig.ENGINE)
@@ -26,4 +25,45 @@ def service_test():
     s.get_tables(['PRESTADORES'])
     print(s.response.service_response)
 
-service_test()
+def post_test():
+        payload = {'CUIT': '20-29-188989-2', 
+                'nombre': 'juan manuel',
+                'apellido': 'palacios',
+                'mail': 'jmpcba@gmail.com',
+                'especialidad': 'enfermeria',
+                'servicio': 'pami',
+                'localidad': 'cordoba',
+                'monto_feriado': 100,
+                'monto_semana': 150,
+                'monto_fijo': 50,
+                'zona': 1,
+                'comentario': 'un comentario',
+                'baja': 0}
+        s = PrestadoresService()
+        s.insert(payload)
+
+        print(s.response.service_response)
+
+def put_test():
+        payload = {'id': 1, 
+                'CUIT': '20-29-188989-2', 
+                'nombre': 'juan manuel',
+                'apellido': 'palacios',
+                'mail': 'jmpcba@gmail.com',
+                'especialidad': 'enfermeria',
+                'servicio': 'pami',
+                'localida': 'cba',
+                'monto_feriado': 100,
+                'monto_semana': 150,
+                'monto_fijo': 50,
+                'zona': 1,
+                'comentario': 'un comentario',
+                'baja': 0}
+        
+        s = PrestadoresService()
+        s.update(payload)
+
+        print(s.response.service_response)
+
+put_test()
+

@@ -2,11 +2,10 @@ import json
 import errors
 import logging
 from lib import pymysql
-from common import RDS, Tables
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy import create_engine
-from common import RDSConfig
-from models import Base, Prestador
+from models import Base, Prestador,Paciente, Modulo, SubModulo, Zona, RDSConfig
 
 engine = create_engine(RDSConfig.ENGINE)
 Base.metadata.bind = engine
@@ -15,6 +14,9 @@ session = DBSession()
 
 
 class Response:
+    """
+    Response class. all Service Classes have a response object with a response code and a message
+    """
     def __init__(self):
         self._code = 200
         self._body = 'EMPTY RESPONSE'
@@ -56,9 +58,9 @@ class DataBrokerService(Service):
         result = {}
         
         try:
-            
-            for t in Tables.ALL_TABLES:
+            for t in RDSConfig.TABLES:
                 if t['table_name'] in in_tables:
+                    logging.info(f"Fetching table {t['table_name']}")
                     result[t['table_name']] = [vars(r) for r in session.query(t['model']).all()]
             if result:
                 self.response.body = result
@@ -85,31 +87,82 @@ class DataBrokerService(Service):
         finally:
             if self.response.code != 200:
                 logging.warning(f"ERROR: {str(self.response.body)}")
-            
 
 
-class PrestadoresService:
+class PrestadoresService(Service):
     
-    def __init__(self, id):
-        self.id = id
+    def insert(self, new_prestador):
+        try:
+            prestador = Prestador(CUIT=new_prestador['CUIT'], 
+                                nombre=new_prestador['nombre'],
+                                apellido=new_prestador['apellido'],
+                                mail=new_prestador['mail'],
+                                especialidad=new_prestador['especialidad'],
+                                servicio=new_prestador['servicio'],
+                                localidad=new_prestador['localidad'],
+                                monto_feriado=new_prestador['monto_feriado'],
+                                monto_semana=new_prestador['monto_semana'],
+                                monto_fijo=new_prestador['monto_fijo'],
+                                zona=new_prestador['zona'],
+                                comentario=new_prestador['comentario'],
+                                baja=new_prestador['baja']
+                                )
 
-    def add_new(self, **kwargs):
-        required = ['CUIT', 'NOMBRE']
-        if not all(r in kwargs.keys() for r in required):
-            raise ValueError(f"Parameters are not valid. Required fields: {str(required)}")
-        else:
-            cuit = kwargs['CUIT']
-            if cuit[-2:-1] != '-' or cuit[2:3] != '-':
-                raise ValueError(f"CUIT Format is not valid")
+            session.add(prestador)
+            session.commit()
+            self.response.code = 200
+            self.response.body = f"New Prestador: {prestador.id} inserted"
         
-        sql = []
-        sql.append(f'INSERT INTO DESARROLLO.PRESTADORES (CUIT, NOMBRE) VALUES ("{kwargs["CUIT"]}", "{kwargs["NOMBRE"]}")')
-        logging.info(f"INSERTED NEW PRESTADOR: {kwargs}")
-        rds = RDS()
-        rds.statement(sql)
+        except KeyError as e:
+            self.response.code = 403
+            self.response.body = e
+        
+        except IntegrityError as e:
+            self.response.code = 403
+            self.response.body = e
+        
+        finally:
+            if self.response.code != 200:
+                logging.warning(f"ERROR: {str(self.response.body)}")
+
     
-    def update(self):
-        pass
+    def update(self, prest_mod):
+        try:
+            logging.info(f'Modifiying Prestador {1}')
+            id = prest_mod['id']
+            prestador = session.query(Prestador).filter(Prestador.id == id).first()
+
+            prestador.CUIT=prest_mod['CUIT']
+            prestador.nombre=prest_mod['nombre']
+            prestador.apellido=prest_mod['apellido']
+            prestador.mail=prest_mod['mail']
+            prestador.especialidad=prest_mod['especialidad']
+            prestador.servicio=prest_mod['servicio']
+            prestador.localidad=prest_mod['localidad']
+            prestador.monto_feriado=prest_mod['monto_feriado']
+            prestador.monto_semana=prest_mod['monto_semana']
+            prestador.monto_fijo=prest_mod['monto_fijo']
+            prestador.zona=prest_mod['zona']
+            prestador.comentario=prest_mod['comentario']
+            prestador.baja=prest_mod['baja']
+
+            session.commit()
+
+            self.response.code = 200
+            self.response.body = f"Prestador: {prestador.id} modified"
+        
+        except KeyError as e:
+            self.response.code = 403
+            self.response.body = f"Invalid Parameter: {e}"
+        
+        except IntegrityError as e:
+            self.response.code = 403
+            self.response.body = e
+        
+        finally:
+            if self.response.code != 200:
+                logging.warning(f"ERROR: {str(self.response.body)}")
+
     
     def delete(self):
         pass

@@ -89,5 +89,5 @@ resource "aws_api_gateway_integration" "prestadores_get_integration" {
     content_handling        = "CONVERT_TO_TEXT" 
     integration_http_method = "POST"
     type                    = "AWS_PROXY"
-    uri                     = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${aws_lambda_function.HC_data_service_lambda.arn}/invocations"
+    uri                     = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${aws_lambda_function.HC_prestadores_service_lambda.arn}/invocations"
 }
