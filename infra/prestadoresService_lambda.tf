@@ -30,7 +30,7 @@ resource "aws_iam_role" "HC_prestador_service_lambda_role" {
     description = "Allows Lambda functions to call AWS services on your behalf."
 
     tags = {
-          "name" = "lambda-vpc-role"
+          "name" = "HC_prestador_service_lambda_role"
         }
 
     assume_role_policy = <<POLICY
