@@ -26,11 +26,11 @@ resource "aws_lambda_function" "HC_prestador_service_lambda" {
 
 # IAM
 resource "aws_iam_role" "HC_prestador_service_lambda_role" {
-    name        = "HC_prestador_service_lambda_role"
+    name        = "prestador-lambda-vpc-role"
     description = "Allows Lambda functions to call AWS services on your behalf."
 
     tags = {
-          "name" = "HC_prestador_service_lambda_role"
+          "name" = "prestador-lambda-vpc-role"
         }
 
     assume_role_policy = <<POLICY
