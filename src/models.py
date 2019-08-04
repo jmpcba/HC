@@ -1,7 +1,7 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Float, Boolean, ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine
+from lib.sqlalchemy import Column, ForeignKey, Integer, String, Float, Boolean, ForeignKey
+from lib.sqlalchemy.orm import relationship
+from lib.sqlalchemy.ext.declarative import declarative_base
+from lib.sqlalchemy import create_engine
 import json
 
 Base = declarative_base()

@@ -2,9 +2,9 @@ import json
 import errors
 import logging
 from lib import pymysql
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy import create_engine
+from lib.sqlalchemy.orm import sessionmaker
+from lib.sqlalchemy.exc import IntegrityError
+from lib.sqlalchemy import create_engine
 from models import Base, Prestador,Paciente, Modulo, SubModulo, Zona, RDSConfig
 
 engine = create_engine(RDSConfig.ENGINE)
