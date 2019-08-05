@@ -14,8 +14,8 @@ node {
         echo "#########################"
         sh "python3 -m venv env"
         sh ". env/bin/activate"
-        sh "ll env/bin"
-        sh "ll"
+        sh "ls -l env/bin"
+        sh "ls -l"
         sh "${WORKSPACE}/env/bin/python3 -m pip install -r requirements.txt"
         sh "cp src/* ${sitePackageDir}"
         dir(sitePackageDir){
