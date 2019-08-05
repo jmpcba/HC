@@ -1,7 +1,6 @@
 import errors
 import logging
 import json
-from lib import pymysql
 from services import DataBrokerService, PrestadoresService
 
 logger = logging.getLogger()

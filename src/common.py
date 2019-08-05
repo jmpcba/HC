@@ -1,7 +1,7 @@
 import os
 import logging
 import models
-from lib import pymysql
+import pymysql
 
 class Chars:
     EOL = '#'
