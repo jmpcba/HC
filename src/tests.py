@@ -22,7 +22,7 @@ def query_test():
 
 def service_test():
     s = DataBrokerService()
-    s.get_tables(['PRESTADORES'])
+    s.get_tables(['PRESTADORES', 'PACIENTES'])
     print(s.response.service_response)
 
 def post_test():
@@ -65,5 +65,5 @@ def put_test():
 
         print(s.response.service_response)
 
-put_test()
+service_test()
 

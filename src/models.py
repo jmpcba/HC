@@ -86,18 +86,19 @@ class Zona(Base):
 class RDSConfig:
     RDS_HOST = "dev-database-1.c0rtb6x1vjcr.us-east-1.rds.amazonaws.com"
     NAME = 'admin'
-    PWD = os.environ['db_password']
+    #PWD = os.environ['db_password']
+    PWD = 'Newuser1!'
     DB = 'HC_ORM'
     DIALECT = 'mysql+pymysql'
     ENGINE = f'{DIALECT}://{NAME}:{PWD}@{RDS_HOST}/{DB}'
 
     TABLES = [
-    {'table_name': 'PRESTADORES', 'model': Paciente},
-    {'table_name': 'PACIENTES', 'model': Paciente},
-    {'table_name': 'MODULOS', 'model': Modulo},
-    {'table_name': 'SUB_MODULOS', 'model': SubModulo},
-    {'table_name': 'LIQUIDACIONES', 'model': Liquidacion},
-    {'table_name': 'ZONAS', 'model': Zona},
+        {'table_name': 'PRESTADORES', 'model': Prestador},
+        {'table_name': 'PACIENTES', 'model': Paciente},
+        {'table_name': 'MODULOS', 'model': Modulo},
+        {'table_name': 'SUB_MODULOS', 'model': SubModulo},
+        {'table_name': 'LIQUIDACIONES', 'model': Liquidacion},
+        {'table_name': 'ZONAS', 'model': Zona},
     ]
 
 
