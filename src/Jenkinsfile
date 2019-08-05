@@ -12,8 +12,7 @@ node {
         echo "#########################"
         sh "python3 -m virtualenv env"
         sh ". env/bin/activate"
-        sh "which pip"
-        sh "python3 -m pip install -r requirements.txt"
+        sh "${WORKSPACE}/python3 -m pip install -r requirements.txt"
         sh "cp src/* env/Lib/site-packages"
         sh "zip -r9 function.zip env/Lib/site-packages"
     }
