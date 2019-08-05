@@ -29,6 +29,7 @@ node {
         echo "# UPLOADING TO AWS #"
         echo "####################"  
             withAWS(credentials: 'AWS CREDENTIALS', region: 'us-east-1') {
+            sh "which aws"
             sh "aws s3 cp function.zip s3://jmpcba-lambda/function.zip"
             sh "aws lambda update-function-code --function-name HC_data_service --zip-file fileb://function.zip"
         }
