@@ -19,7 +19,7 @@ node {
         dir(sitePackageDir){
             sh "zip -r9 function.zip ."
         }
-        
+        sh ". env/bin/deactivate"
     }
 
     stage('Deploy') {
