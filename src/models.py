@@ -1,3 +1,4 @@
+import os
 from sqlalchemy import Column, ForeignKey, Integer, String, Float, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -85,7 +86,8 @@ class Zona(Base):
 class RDSConfig:
     RDS_HOST = "dev-database-1.c0rtb6x1vjcr.us-east-1.rds.amazonaws.com"
     NAME = 'admin'
-    PWD = os.environ['db_password']
+    #PWD = os.environ['db_password']
+    PWD = 'Newuser1!'
     DB = 'HC_ORM'
     DIALECT = 'mysql+pymysql'
     ENGINE = f'{DIALECT}://{NAME}:{PWD}@{RDS_HOST}/{DB}'

@@ -1,7 +1,7 @@
 import json
 import errors
 import logging
-from lib import pymysql
+import pymysql
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import create_engine
