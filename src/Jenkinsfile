@@ -31,8 +31,8 @@ node {
             withAWS(credentials: 'AWS CREDENTIALS', region: 'us-east-1') {
             sh """. env/bin/activate
             python3 -m pip install aws
-            which aws"
-            aws s3 cp function.zip s3://jmpcba-lambda/function.zip"
+            which aws
+            aws s3 cp function.zip s3://jmpcba-lambda/function.zip
             aws lambda update-function-code --function-name HC_data_service --zip-file fileb://function.zip
             deactivate"""
         }
