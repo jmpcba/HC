@@ -13,8 +13,8 @@ node {
         sh "python3 -m virtualenv env"
         sh ". env/bin/activate"
         sh "${WORKSPACE}/env/bin/python3 -m pip install -r requirements.txt"
-        sh "cp src/* env/Lib/site-packages"
-        sh "zip -r9 function.zip env/Lib/site-packages"
+        sh "cp src/* env/lib/python3.6/site-packages"
+        sh "zip -r9 function.zip env/lib/python3.6/site-packages/*"
     }
 
     stage('Deploy') {
