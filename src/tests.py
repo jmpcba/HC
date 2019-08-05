@@ -10,8 +10,8 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 def insert_test():
-    new_perstador = Prestador(nombre='manuel', apellido='palacios', CUIT='20-29188989-2')
-    session.add(new_perstador)
+    new_prestador = Prestador(nombre='manuel', apellido='palacios', CUIT='20-29188989-2')
+    session.add(new_prestador)
     session.commit()
 
 def query_test():
@@ -52,7 +52,7 @@ def put_test():
                 'mail': 'jmpcba@gmail.com',
                 'especialidad': 'enfermeria',
                 'servicio': 'pami',
-                'localida': 'cba',
+                'localidad': 'cordoba',
                 'monto_feriado': 100,
                 'monto_semana': 150,
                 'monto_fijo': 50,
