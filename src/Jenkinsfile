@@ -13,10 +13,10 @@ node {
         echo "# BUILDING DEPENDENCIES #"
         echo "#########################"
         sh "python3 -m venv env"
-        sh ". env/bin/activate"
-        sh "ls -l env/bin"
-        sh "ls -l"
-        sh "${WORKSPACE}/env/bin/python3 -m pip install -r requirements.txt"
+        sh """. env/bin/activate
+        ${WORKSPACE}/env/bin/python3 -m pip install -r requirements.txt
+        deactivate"""
+        
         sh "cp src/* ${sitePackageDir}"
         dir(sitePackageDir){
             sh "zip -r9 function.zip ."
