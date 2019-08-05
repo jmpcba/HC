@@ -1,3 +1,5 @@
+
+def sitePackageDir = "env/lib/python3.6/site-packages"
 node {
     stage('Clean Up'){
         cleanWs()
@@ -13,17 +15,22 @@ node {
         sh "python3 -m virtualenv env"
         sh ". env/bin/activate"
         sh "${WORKSPACE}/env/bin/python3 -m pip install -r requirements.txt"
-        sh "cp src/* env/lib/python3.6/site-packages"
-        sh "zip -r9 function.zip env/lib/python3.6/site-packages/*"
+        sh "cp src/* ${sitePackageDir}"
+        withDir(sitePackageDir){
+            sh "zip -r9 function.zip ."
+        }
+        
     }
 
     stage('Deploy') {
         echo "####################"
         echo "# UPLOADING TO AWS #"
-        echo "####################"            
-        withAWS(credentials: 'AWS CREDENTIALS', region: 'us-east-1') {
+        echo "####################"  
+        withDir(sitePackageDir){
+            withAWS(credentials: 'AWS CREDENTIALS', region: 'us-east-1') {
             sh "aws s3 cp function.zip s3://jmpcba-lambda/function.zip"
             sh "aws lambda update-function-code --function-name HC_data_service --zip-file fileb://function.zip"
-        }
+            }
+        }          
     }
 }
