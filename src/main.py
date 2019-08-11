@@ -31,7 +31,7 @@ def prestador_handler(event, contex):
     
     if event['httpMethod'] == 'PUT':
         body = event['body']
-        service.put(body)
+        service.put(json.loads(body))
     
     if event['httpMethod'] == 'GET':
         service.get()
