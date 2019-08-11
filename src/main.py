@@ -25,11 +25,11 @@ def prestador_handler(event, contex):
     if event['httpMethod'] == 'POST':
         
         body = event['body']
-        service.insert(body)
+        service.post(body)
     
     if event['httpMethod'] == 'PUT':
         body = event['body']
-        service.update(body)
+        service.put(body)
 
     return service.response.service_response
 

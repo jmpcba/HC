@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy import create_engine
 from common import to_dict
 from models import Base, Prestador,Paciente, Modulo, SubModulo, Zona, RDSConfig
+from errors import ObjectNotFoundError
 
 engine = create_engine(RDSConfig.ENGINE)
 Base.metadata.bind = engine
@@ -170,9 +171,27 @@ class PrestadoresService(Service):
         pass
     
     def get(self, id=None):
-        if id:
-            prestador = session.query(Prestador).filter(Prestador.id == id).first()
-            return vars(prestador)
-        else:
-            ds = DataBrokerService()
-            return ds.get(RDSConfig.PRESTADORES)
+        try:
+            if id:
+                prestador = session.query(Prestador).filter(Prestador.id == id).first()
+                if prestador:
+                    self.response.code = 200
+                    self.response.body = vars(prestador)
+                else:
+                    raise ObjectNotFoundError
+            else:
+                ds = DataBrokerService()
+                return ds.get(RDSConfig.PRESTADORES)
+        
+        except ObjectNotFoundError as e:
+            self.response.code = 404
+            self.response.body = e
+        
+        except IntegrityError as e:
+            self.response.code = 403
+            self.response.body = e
+        
+        finally:
+            if self.response.code != 200:
+                logging.warning(f"ERROR: {str(self.response.body)}")
+        
