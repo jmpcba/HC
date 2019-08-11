@@ -3,7 +3,7 @@ import errors
 import logging
 import pymysql
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, StatementError
 from sqlalchemy import create_engine
 from common import to_dict
 from models import Base, Prestador,Paciente, Modulo, SubModulo, Zona, RDSConfig
@@ -118,8 +118,10 @@ class PrestadoresService(Service):
         except KeyError as e:
             self.response.code = 403
             self.response.body = e
+            session.rollback()
         
-        except IntegrityError as e:
+        except IntegrityError, StatementError as e:
+            session.rollback()
             self.response.code = 403
             self.response.body = e
         
