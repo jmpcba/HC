@@ -115,3 +115,20 @@ resource "aws_api_gateway_integration" "prestadores_get_integration" {
     type                    = "AWS_PROXY"
     uri                     = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${aws_lambda_function.HC_prestador_service_lambda.arn}/invocations"
 }
+
+resource "aws_api_gateway_method" "prestadores_post_method" {
+    rest_api_id          = "${aws_api_gateway_rest_api.HC_REST_API.id}"
+    resource_id          = "${aws_api_gateway_resource.prestador.id}"
+    http_method          = "POST"
+    authorization        = "NONE"
+}
+
+resource "aws_api_gateway_integration" "prestadores_post_integration" {
+    rest_api_id             = "${aws_api_gateway_rest_api.HC_REST_API.id}"
+    resource_id             = "${aws_api_gateway_resource.prestador.id}"
+    http_method             = "${aws_api_gateway_method.prestadores_post_method.http_method}"
+    content_handling        = "CONVERT_TO_TEXT" 
+    integration_http_method = "POST"
+    type                    = "AWS_PROXY"
+    uri                     = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${aws_lambda_function.HC_prestador_service_lambda.arn}/invocations"
+}
