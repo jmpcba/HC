@@ -28,7 +28,7 @@ resource "aws_api_gateway_deployment" "databroker_prod_deployment" {
 resource "aws_api_gateway_stage" "dev_stage" {
   stage_name    = "DEV"
   rest_api_id   = "${aws_api_gateway_rest_api.HC_REST_API.id}"
-  deployment_id = "${aws_api_gateway_deployment.databroker_dev_deployment.id}"
+  deployment_id = "${aws_api_gateway_deployment.dev_deployment.id}"
 }
 
 
