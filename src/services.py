@@ -183,7 +183,7 @@ class PrestadoresService(Service):
                 ds = DataBrokerService()
                 ds.get(RDSConfig.PRESTADORES)
                 self.response.code = ds.response.code
-                self.response.body = ds.response.body
+                self.response.body = ds.response.body['PRESTADORES']
                 
         
         except ObjectNotFoundError as e:
