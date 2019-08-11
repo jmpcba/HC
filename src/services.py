@@ -120,7 +120,7 @@ class PrestadoresService(Service):
             self.response.body = e
             session.rollback()
         
-        except IntegrityError, StatementError as e:
+        except (IntegrityError, StatementError) as e:
             session.rollback()
             self.response.code = 403
             self.response.body = e
