@@ -19,7 +19,9 @@ def databroker_handler(event, context):
     return service.response.service_response
 
 def prestador_handler(event, contex):
-    logger.info(f"PRESTADORES SERVICE HANDLER STARTING. HTTPS: {event['httpMethod']}")    
+    
+    logger.info(f'REQUEST\n{event}')
+    
     service = PrestadoresService()
 
     if event['httpMethod'] == 'POST':
