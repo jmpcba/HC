@@ -25,6 +25,20 @@ resource "aws_api_gateway_deployment" "databroker_prod_deployment" {
   stage_name  = "prod"
 }
 
+resource "aws_api_gateway_stage" "dev_stage" {
+  stage_name    = "DEV"
+  rest_api_id   = "${aws_api_gateway_rest_api.HC_REST_API.id}"
+  deployment_id = "${aws_api_gateway_deployment.databroker_dev_deployment.id}"
+}
+
+
+resource "aws_api_gateway_deployment" "databroker_dev_deployment" {
+  depends_on = ["aws_api_gateway_integration.databroker_get_integration"]
+
+  rest_api_id = "${aws_api_gateway_rest_api.HC_REST_API.id}"
+  stage_name  = "DEV"
+}
+
 # DATABROKER RESOURCES
 resource "aws_api_gateway_resource" "databroker" {
     rest_api_id = "${aws_api_gateway_rest_api.HC_REST_API.id}"
