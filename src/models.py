@@ -39,7 +39,7 @@ class Paciente(Base):
     sub_modulo = Column(String(20), ForeignKey('SUB_MODULOS.codigo'))
     baja = Column(Boolean, default=False)
 
-
+    
 class Modulo(Base):
     __tablename__ = 'MODULOS'
     codigo = Column(String(20), primary_key=True)
@@ -49,7 +49,7 @@ class Modulo(Base):
     fonoaudiologia = Column(Float(2), nullable=False)
     cuidador = Column(Float(2), nullable=False)
     nutricion = Column(Float(2), nullable=False)
-    
+
 
 class SubModulo(Base):
     __tablename__ = 'SUB_MODULOS'
@@ -86,21 +86,27 @@ class Zona(Base):
 class RDSConfig:
     RDS_HOST = "dev-database-1.c0rtb6x1vjcr.us-east-1.rds.amazonaws.com"
     NAME = 'admin'
-    #PWD = os.environ['db_password']
-    PWD = 'Newuser1!'
+    PWD = os.environ['db_password']
     DB = 'HC_ORM'
     DIALECT = 'mysql+pymysql'
     ENGINE = f'{DIALECT}://{NAME}:{PWD}@{RDS_HOST}/{DB}'
 
-    TABLES = [
-        {'table_name': 'PRESTADORES', 'model': Prestador},
-        {'table_name': 'PACIENTES', 'model': Paciente},
-        {'table_name': 'MODULOS', 'model': Modulo},
-        {'table_name': 'SUB_MODULOS', 'model': SubModulo},
-        {'table_name': 'LIQUIDACIONES', 'model': Liquidacion},
-        {'table_name': 'ZONAS', 'model': Zona},
-    ]
+    PRESTADORES = 'PRESTADORES'
+    PACIENTES = 'PACIENTES'
+    MODULOS = 'MODULOS'
+    SUB_MODULOS = 'SUB_MODULOS'
+    LIQUIDACIONES = 'LIQUIDACIONES'
+    ZONAS = 'ZONAS'
 
+    TABLES = [
+        {'table_name': PRESTADORES, 'model': Prestador},
+        {'table_name': PACIENTES, 'model': Paciente},
+        {'table_name': MODULOS, 'model': Modulo},
+        {'table_name': SUB_MODULOS, 'model': SubModulo},
+        {'table_name': LIQUIDACIONES, 'model': Liquidacion},
+        {'table_name': ZONAS, 'model': Zona},
+    ]
+    
 
 def create_tables():
         engine = create_engine(RDSConfig.ENGINE, echo=True)

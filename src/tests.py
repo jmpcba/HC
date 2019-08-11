@@ -22,8 +22,12 @@ def query_test():
 
 def service_test():
     s = DataBrokerService()
-    s.get_tables(['PRESTADORES', 'PACIENTES'])
+    s.get(['PRESTADORES', 'PACIENTES'])
     print(s.response.service_response)
+
+def get_prestador():
+        s = PrestadoresService()
+        print(s.get(1))
 
 def post_test():
         payload = {'CUIT': '20-29-188989-2', 
@@ -40,7 +44,7 @@ def post_test():
                 'comentario': 'un comentario',
                 'baja': 0}
         s = PrestadoresService()
-        s.insert(payload)
+        s.post(payload)
 
         print(s.response.service_response)
 
@@ -61,9 +65,9 @@ def put_test():
                 'baja': 0}
         
         s = PrestadoresService()
-        s.update(payload)
+        s.put(payload)
 
         print(s.response.service_response)
 
-service_test()
+get_prestador()
 

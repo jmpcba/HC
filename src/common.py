@@ -6,7 +6,7 @@ import pymysql
 class Chars:
     EOL = '#'
 
-def convert_to_dict(obj):
+def to_dict(obj):
   """
   A function takes in a custom object and returns a dictionary representation of the object.
   This dict representation includes meta data such as the object's module and class names.
