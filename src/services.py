@@ -181,6 +181,7 @@ class PrestadoresService(Service):
                     raise ObjectNotFoundError
             else:
                 ds = DataBrokerService()
+                ds.get(RDSConfig.PRESTADORES)
                 self.response.code = ds.response.code
                 self.response.body = ds.response.body
                 
