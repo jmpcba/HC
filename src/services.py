@@ -5,6 +5,7 @@ import pymysql
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import create_engine
+from common import to_dict
 from models import Base, Prestador,Paciente, Modulo, SubModulo, Zona, RDSConfig
 
 engine = create_engine(RDSConfig.ENGINE)
@@ -53,7 +54,7 @@ class Service:
 
 class DataBrokerService(Service):
     
-    def get_tables(self, in_tables):
+    def get(self, in_tables):
         
         result = {}
         
@@ -90,8 +91,8 @@ class DataBrokerService(Service):
 
 
 class PrestadoresService(Service):
-    
-    def insert(self, new_prestador):
+    # INSERT
+    def post(self, new_prestador):
         try:
             prestador = Prestador(CUIT=new_prestador['CUIT'], 
                                 nombre=new_prestador['nombre'],
@@ -126,7 +127,8 @@ class PrestadoresService(Service):
                 logging.warning(f"ERROR: {str(self.response.body)}")
 
     
-    def update(self, prest_mod):
+    # UPDATE
+    def put(self, prest_mod):
         try:
             logging.info(f'Modifiying Prestador {1}')
             id = prest_mod['id']
@@ -167,5 +169,10 @@ class PrestadoresService(Service):
     def delete(self):
         pass
     
-    def get_liquidacion(self):
-        pass
+    def get(self, id=None):
+        if id:
+            prestador = session.query(Prestador).filter(Prestador.id == id).first()
+            return vars(prestador)
+        else:
+            ds = DataBrokerService()
+            return ds.get(RDSConfig.PRESTADORES)
