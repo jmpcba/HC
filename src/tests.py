@@ -3,6 +3,7 @@ from sqlalchemy import create_engine
 from models import Base, Prestador, RDSConfig
 from services import DataBrokerService, PrestadoresService
 import json
+import requests
 
 engine = create_engine(RDSConfig.ENGINE)
 Base.metadata.bind = engine
@@ -69,5 +70,14 @@ def put_test():
 
         print(s.response.service_response)
 
-get_prestador()
+def post_prestador_service():
+        url = 'https://2idw8jlsf6.execute-api.us-east-1.amazonaws.com/prod/v1/prestador'
+        payload = {"id":None,"cuit":"10--11223344-3-9","nombre":"alberto","apellido":"perez","especialidad":"ENFERMERIA","localidad":"la loma del culo","email":"jmpcba@gmail.com","obraSocial":"daspu","montoNormal":100.0,"montoFeriado":120.0,"montoFijo":200.0,"montoDiferencial":150.0,"fechaCese":"2019-08-11T00:00:00","observaciones":"ninguna","modifUser":29188989,"creoUser":29188989,"fechaCarga":"2019-08-11T00:00:00-03:00","fechaMod":"2019-08-11T00:00:00-03:00",
+"estado":0,"zona":1,"modificado":False}
+        r = requests.post(url, data=payload)
+        print(r)
+
+
+
+post_prestador_service()
 

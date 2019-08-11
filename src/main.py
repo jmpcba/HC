@@ -27,7 +27,7 @@ def prestador_handler(event, contex):
     if event['httpMethod'] == 'POST':
         
         body = event['body']
-        service.post(body)
+        service.post(json.loads(body))
     
     if event['httpMethod'] == 'PUT':
         body = event['body']
