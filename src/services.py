@@ -204,7 +204,7 @@ class PacientesService(Service):
     # INSERT
     def post(self, new_paciente):
         try:
-            paciente = Paciente(DNI=new_paciente['CUIT'], 
+            paciente = Paciente(DNI=new_paciente['DNI'], 
                                 nombre=new_paciente['nombre'],
                                 apellido=new_paciente['apellido'],
                                 localidad=new_paciente['localidad'],
