@@ -33,7 +33,8 @@ node {
             python3 -m pip install --upgrade awscli
             which aws
             aws s3 cp function.zip s3://jmpcba-lambda/function.zip
-            aws lambda update-function-code --function-name HC_prestador_service --zip-file fileb://function.zip
+            aws lambda update-function-code --function-name HC_prestador_service --zip-file fileb://function.
+            aws lambda update-function-code --function-name HC_paciente_service_lambda --zip-file fileb://function.
             deactivate"""
         }
     }
