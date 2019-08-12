@@ -184,10 +184,10 @@ resource "aws_api_gateway_method" "pacientes_post_method" {
 
 resource "aws_api_gateway_integration" "pacientes_post_integration" {
     rest_api_id             = "${aws_api_gateway_rest_api.HC_REST_API.id}"
-    resource_id             = "${aws_api_gateway_resource.pacientes.id}"
+    resource_id             = "${aws_api_gateway_resource.paciente.id}"
     http_method             = "${aws_api_gateway_method.pacientes_post_method.http_method}"
     content_handling        = "CONVERT_TO_TEXT" 
     integration_http_method = "POST"
     type                    = "AWS_PROXY"
-    uri                     = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${aws_lambda_function.HC_pacientes_service_lambda.arn}/invocations"
+    uri                     = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${aws_lambda_function.HC_paciente_service_lambda.arn}/invocations"
 }
