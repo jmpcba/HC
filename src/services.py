@@ -159,10 +159,12 @@ class PrestadoresService(Service):
         except KeyError as e:
             self.response.code = 403
             self.response.body = f"Invalid Parameter: {e}"
+            session.rollback()
         
         except IntegrityError as e:
             self.response.code = 403
             self.response.body = e
+            session.rollback()
         
         finally:
             if self.response.code != 200:
@@ -257,7 +259,7 @@ class PacientesService(Service):
             session.commit()
 
             self.response.code = 200
-            self.response.body = f"Paciente: {paciente.id} modified"
+            self.response.body = f"Paciente: {paciente.afiliado} modified"
         
         except KeyError as e:
             self.response.code = 403
