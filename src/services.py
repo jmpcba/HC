@@ -278,10 +278,10 @@ class PacientesService(Service):
     def get(self, id=None):
         try:
             if id:
-                prestador = session.query(Prestador).filter(Prestador.id == id).first()
-                if prestador:
+                paciente = session.query(Paciente).filter(Paciente.afiliado == id).first()
+                if paciente:
                     self.response.code = 200
-                    self.response.body = vars(prestador)
+                    self.response.body = vars(paciente)
                 else:
                     raise ObjectNotFoundError
             else:

@@ -1,7 +1,7 @@
 import errors
 import logging
 import json
-from services import DataBrokerService, PrestadoresService
+from services import DataBrokerService, PrestadoresService, PacientesService
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -44,7 +44,7 @@ def paciente_handler(event, contex):
     
     logger.info(f'REQUEST\n{event}')
     
-    service = PrestadoresService()
+    service = PacientesService()
 
     if event['httpMethod'] == 'POST':
         
