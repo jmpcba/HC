@@ -165,7 +165,7 @@ resource "aws_api_gateway_method" "pacientes_get_method" {
     authorization        = "NONE"
 }
 
-resource "aws_api_gateway_integration" "prestadores_get_integration" {
+resource "aws_api_gateway_integration" "pacientes_get_integration" {
     rest_api_id             = "${aws_api_gateway_rest_api.HC_REST_API.id}"
     resource_id             = "${aws_api_gateway_resource.paciente.id}"
     http_method             = "${aws_api_gateway_method.pacientes_get_method.http_method}"
