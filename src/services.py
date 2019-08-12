@@ -210,7 +210,6 @@ class PacientesService(Service):
                                 localidad=new_paciente['localidad'],
                                 obra_social=new_paciente['obra_social'],
                                 observacion=new_paciente['observacion'],
-                                monto_fijo=new_paciente['monto_fijo'],
                                 modulo=new_paciente['modulo'],
                                 sub_modulo=new_paciente['sub_modulo'],
                                 baja=new_paciente['baja']
@@ -219,7 +218,7 @@ class PacientesService(Service):
             session.add(paciente)
             session.commit()
             self.response.code = 200
-            self.response.body = f"New Paciente: {paciente.id} inserted"
+            self.response.body = f"New Paciente: {paciente.afiliado} inserted"
         
         except KeyError as e:
             self.response.code = 403
