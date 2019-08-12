@@ -36,6 +36,29 @@ def prestador_handler(event, contex):
     if event['httpMethod'] == 'GET':
         service.get()
 
+    logger.info(f'RESPONSE\n{service.response.service_response}')
+    return service.response.service_response
+
+
+def paciente_handler(event, contex):
+    
+    logger.info(f'REQUEST\n{event}')
+    
+    service = PrestadoresService()
+
+    if event['httpMethod'] == 'POST':
+        
+        body = event['body']
+        service.post(json.loads(body))
+    
+    if event['httpMethod'] == 'PUT':
+        body = event['body']
+        service.put(json.loads(body))
+    
+    if event['httpMethod'] == 'GET':
+        service.get()
+
+    logger.info(f'RESPONSE\n{service.response.service_response}')
     return service.response.service_response
 
 """

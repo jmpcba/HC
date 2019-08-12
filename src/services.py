@@ -185,7 +185,7 @@ class PrestadoresService(Service):
                 ds = DataBrokerService()
                 ds.get(RDSConfig.PRESTADORES)
                 self.response.code = ds.response.code
-                self.response.body = ds.response.body['PRESTADORES']
+                self.response.body = ds.response.body[RDSConfig.PRESTADORES]
                 
         
         except ObjectNotFoundError as e:
@@ -199,4 +199,108 @@ class PrestadoresService(Service):
         finally:
             if self.response.code != 200:
                 logging.warning(f"ERROR: {str(self.response.body)}")
+
+class PacientesService(Service):
+    # INSERT
+    def post(self, new_paciente):
+        try:
+            paciente = Paciente(DNI=new_paciente['CUIT'], 
+                                nombre=new_paciente['nombre'],
+                                apellido=new_paciente['apellido'],
+                                localidad=new_paciente['localidad'],
+                                obra_social=new_paciente['obra_social'],
+                                observacion=new_paciente['observacion'],
+                                monto_fijo=new_paciente['monto_fijo'],
+                                modulo=new_paciente['modulo'],
+                                sub_modulo=new_paciente['sub_modulo'],
+                                baja=new_paciente['baja']
+                                )
+
+            session.add(paciente)
+            session.commit()
+            self.response.code = 200
+            self.response.body = f"New Paciente: {paciente.id} inserted"
+        
+        except KeyError as e:
+            self.response.code = 403
+            self.response.body = e
+            session.rollback()
+        
+        except (IntegrityError, StatementError) as e:
+            session.rollback()
+            self.response.code = 403
+            self.response.body = e
+        
+        finally:
+            if self.response.code != 200:
+                logging.warning(f"ERROR: {str(self.response.body)}")
+
+    
+    # UPDATE
+    def put(self, pac_mod):
+        try:
+            
+            afiliado = pac_mod['afiliado']
+            logging.info(f'Modifiying Paciente {afiliado}')
+            paciente = session.query(Paciente).filter(Paciente.afiliado == afiliado).first()
+
+            paciente.DNI=pac_mod['DNI']
+            paciente.nombre=pac_mod['nombre']
+            paciente.apellido=pac_mod['apellido']
+            paciente.localidad=pac_mod['localidad']
+            paciente.obra_social=pac_mod['obra_social']
+            paciente.observacion=pac_mod['observacion']
+            paciente.modulo=pac_mod['modulo']
+            paciente.sub_modulo=pac_mod['sub_modulo']
+            paciente.baja=pac_mod['baja']
+
+            session.commit()
+
+            self.response.code = 200
+            self.response.body = f"Paciente: {paciente.id} modified"
+        
+        except KeyError as e:
+            self.response.code = 403
+            self.response.body = f"Invalid Parameter: {e}"
+        
+        except IntegrityError as e:
+            self.response.code = 403
+            self.response.body = e
+        
+        finally:
+            if self.response.code != 200:
+                logging.warning(f"ERROR: {str(self.response.body)}")
+
+    
+    def delete(self):
+        pass
+    
+    def get(self, id=None):
+        try:
+            if id:
+                prestador = session.query(Prestador).filter(Prestador.id == id).first()
+                if prestador:
+                    self.response.code = 200
+                    self.response.body = vars(prestador)
+                else:
+                    raise ObjectNotFoundError
+            else:
+                ds = DataBrokerService()
+                ds.get(RDSConfig.PACIENTES)
+                self.response.code = ds.response.code
+                self.response.body = ds.response.body[RDSConfig.PACIENTES]
+                
+        
+        except ObjectNotFoundError as e:
+            self.response.code = 404
+            self.response.body = e
+        
+        except IntegrityError as e:
+            self.response.code = 403
+            self.response.body = e
+        
+        finally:
+            if self.response.code != 200:
+                logging.warning(f"ERROR: {str(self.response.body)}")
+
         
