@@ -1,3 +1,4 @@
+def sitePackageDir = "env/lib/python3.6/site-packages"
 node {
     stage('Clean Up'){
         cleanWs()
