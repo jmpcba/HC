@@ -16,6 +16,7 @@ resource "aws_lambda_function" "HC_data_service_lambda" {
   role          = "${aws_iam_role.HC_data_service_lambda_role.arn}"
   runtime       = "python3.6"
   handler       = "main.databroker_handler"
+  layers        =  ["${aws_lambda_layer_version.dependencies_layer.arn}"]
   environment {
         variables = {
             "db_password" = "${var.db_password}"
@@ -49,3 +50,11 @@ resource "aws_iam_role" "HC_data_service_lambda_role" {
         }
         POLICY
     }
+
+resource "aws_lambda_layer_version" "dependencies_layer" {
+  s3_bucket  = "jmpcba-lambda"
+  s3_key     = "dependencies.zip"
+  layer_name = "dependencies_layer"
+
+  compatible_runtimes = ["python3.6"]
+}

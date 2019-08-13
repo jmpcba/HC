@@ -57,8 +57,8 @@ class SubModulo(Base):
     descripcion = Column(String(50), nullable=False)
 
 
-class Liquidacion(Base):
-    __tablename__ = 'LIQUIDACIONES'
+class Practica(Base):
+    __tablename__ = 'PRACTICAS'
     id = Column(Integer, primary_key=True)
     cuit = Column(String(50), nullable=False)
     localidad = Column(String(50), nullable=False)
@@ -104,7 +104,7 @@ class RDSConfig:
         {'table_name': PACIENTES, 'model': Paciente},
         {'table_name': MODULOS, 'model': Modulo},
         {'table_name': SUB_MODULOS, 'model': SubModulo},
-        {'table_name': LIQUIDACIONES, 'model': Liquidacion},
+        {'table_name': LIQUIDACIONES, 'model': Prestador},
         {'table_name': ZONAS, 'model': Zona},
     ]
     

@@ -9,18 +9,11 @@ node {
     }
 
     stage('Build') { 
-        echo "#########################"
-        echo "# BUILDING DEPENDENCIES #"
-        echo "#########################"
-        sh "python3 -m venv env"
-        sh """. env/bin/activate
-        python3 -m pip install -r requirements.txt
-        deactivate"""
-        
-        sh "cp src/* ${sitePackageDir}"
-        dir(sitePackageDir){
+        echo "############"
+        echo "# FUNCION #"
+        echo "###########"
+        dir("src"){
             sh "zip -qr9 function.zip ."
-            sh "mv function.zip ${WORKSPACE}"
         }
     }
 
