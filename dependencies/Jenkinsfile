@@ -17,15 +17,14 @@ node {
             python3 -m pip install -r dependencies/requirements.txt
             deactivate"""
             
+        withAWS(credentials: 'AWS CREDENTIALS', region: 'us-east-1') {
             dir(sitePackageDir){
-                withAWS(credentials: 'AWS CREDENTIALS', region: 'us-east-1') {
-                    sh """
-                    . env/bin/activate
-                    zip -qr9 dependencies.zip .
-                    python3 -m pip install --upgrade awscli
-                    aws s3 cp dependencies.zip s3://jmpcba-lambda/dependencies.zip
-                    """
-                }
+                sh """
+                zip -qr9 dependencies.zip .
+                python3 -m pip install --upgrade awscli
+                aws s3 cp dependencies.zip s3://jmpcba-lambda/dependencies.zip
+                """
             }
         }
     }
+}
