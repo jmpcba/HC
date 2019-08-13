@@ -11,15 +11,21 @@ node {
             echo "################"
             echo "# DEPENDENCIAS #"
             echo "################"
+            
             sh "python3 -m venv env"
             sh """. env/bin/activate
             python3 -m pip install -r dependencies/requirements.txt
             deactivate"""
             
             dir(sitePackageDir){
-                sh """zip -qr9 dependencies.zip .
-                aws s3 cp dependencies.zip s3://jmpcba-lambda/dependencies.zip
-                """
+                withAWS(credentials: 'AWS CREDENTIALS', region: 'us-east-1') {
+                    sh """
+                    . env/bin/activate
+                    zip -qr9 dependencies.zip .
+                    python3 -m pip install --upgrade awscli
+                    aws s3 cp dependencies.zip s3://jmpcba-lambda/dependencies.zip
+                    """
+                }
             }
+        }
     }
-}
