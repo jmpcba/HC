@@ -18,7 +18,7 @@ node {
             
             dir(sitePackageDir){
                 sh """zip -qr9 dependencies.zip .
-                aws s3 cp function.zip s3://jmpcba-lambda/dependencies.zip
+                aws s3 cp dependencies.zip s3://jmpcba-lambda/dependencies.zip
                 """
             }
     }
