@@ -19,15 +19,13 @@ node {
             deactivate"""
             
         withAWS(credentials: 'AWS CREDENTIALS', region: 'us-east-1') {
-            dir('dependencies'){
-                sh """
+            sh """
             mkdir -p ${runtimeDir}
             cp -r ${sitePackageDir} ${runtimeDir}
             zip -qr9 dependencies.zip ${runtimeDir}
             python3 -m pip install --upgrade awscli
             aws s3 cp dependencies.zip s3://jmpcba-lambda/dependencies.zip
             """
-            }
         }
     }
 }
