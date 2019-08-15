@@ -16,6 +16,7 @@ resource "aws_lambda_function" "HC_prestador_service_lambda" {
   role          = "${aws_iam_role.HC_data_service_lambda_role.arn}"
   runtime       = "python3.6"
   handler       = "main.prestador_handler"
+  layers        =  ["${aws_lambda_layer_version.dependencies_layer.arn}"]
   environment {
         variables = {
             "db_password" = "${var.db_password}"

@@ -1,4 +1,5 @@
 def sitePackageDir = "env/lib/python3.6/site-packages"
+def runtimeDir = "python/lib/python3.6/site-packages"
 node {
     stage('Clean Up'){
         cleanWs()
@@ -18,13 +19,13 @@ node {
             deactivate"""
             
         withAWS(credentials: 'AWS CREDENTIALS', region: 'us-east-1') {
-            dir(sitePackageDir){
-                sh """
-                zip -qr9 dependencies.zip .
-                python3 -m pip install --upgrade awscli
-                aws s3 cp dependencies.zip s3://jmpcba-lambda/dependencies.zip
-                """
-            }
+            sh """
+            mkdir ${runtimeDir}
+            cp ${sitePackageDir} ${runtimeDir}
+            zip -qr9 dependencies.zip ${runtimeDir}
+            python3 -m pip install --upgrade awscli
+            aws s3 cp dependencies.zip s3://jmpcba-lambda/dependencies.zip
+            """
         }
     }
 }
