@@ -25,6 +25,8 @@ node {
             zip -qr9 dependencies.zip ${runtimeDir}
             python3 -m pip install --upgrade awscli
             aws s3 cp dependencies.zip s3://jmpcba-lambda/dependencies.zip
+            aws lambda publish-layer-version --layer-name dependencies_layer --description "dependencies_layer"
+            --content S3Bucket=jmpcba-lambda,S3Key=dependencies.zip --compatible-runtimes python3.6
             """
         }
     }
