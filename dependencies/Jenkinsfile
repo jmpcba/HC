@@ -20,7 +20,7 @@ node {
             
         withAWS(credentials: 'AWS CREDENTIALS', region: 'us-east-1') {
             sh """
-            mkdir ${runtimeDir}
+            mkdir -p ${runtimeDir}
             cp ${sitePackageDir} ${runtimeDir}
             zip -qr9 dependencies.zip ${runtimeDir}
             python3 -m pip install --upgrade awscli
