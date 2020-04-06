@@ -7,7 +7,8 @@ infra/\.terraform/
 *.zip
 
 \.vscode/
-
+\.idea/
 infra/terraform\.tfvars
 
 src/__pycache__/
+

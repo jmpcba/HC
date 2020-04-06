@@ -18,6 +18,7 @@ def databroker_handler(event, context):
     service.get(tables)
     return service.response.service_response
 
+
 def prestador_handler(event, contex):
     
     logger.info(f'REQUEST\n{event}')
@@ -61,6 +62,7 @@ def paciente_handler(event, contex):
     logger.info(f'RESPONSE\n{service.response.service_response}')
     return service.response.service_response
 
+
 """
 {
     "resource": "Resource path",
@@ -77,5 +79,3 @@ def paciente_handler(event, contex):
     "isBase64Encoded": "A boolean flag to indicate if the applicable request payload is Base64-encode"
 }
 """
-
-    

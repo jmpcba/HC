@@ -12,5 +12,5 @@ if __name__ == '__main__':
     parser.add_argument('operation', help='what operation do you want to execute?', choices=['setup',])
     args = parser.parse_args()
 
-    if args.operation=='setup':
+    if args.operation == 'setup':
         models.create_tables()
