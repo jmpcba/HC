@@ -6,6 +6,6 @@ RUN wget https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linu
 RUN unzip terraform_0.11.11_linux_amd64.zip
 RUN mv terraform /usr/local/bin/
 RUN pip3 install --upgrade pip
-RUN pip install awscli --upgrade --user
+RUN pip3 install awscli --upgrade --user
 ENV PATH=~/.local/bin:$PATH
-RUN terraform --version 
+RUN terraform --version
