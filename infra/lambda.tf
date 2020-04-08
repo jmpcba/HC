@@ -6,7 +6,7 @@ resource "aws_lambda_permission" "HC_lambda_permission" {
 
   # The /*/*/* part allows invocation from any stage, method and resource path
   # within API Gateway REST API.
-  source_arn = "${module.homecare_api.execution_arn}/*/*/*"
+  source_arn = "${module.api.execution_arn}/*/*/*"
 }
 
 resource "aws_lambda_function" "HC_backend_lambda" {
