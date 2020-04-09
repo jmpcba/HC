@@ -1,4 +1,4 @@
-def image = 'jmpcba/hc_infra_build'
+def image = 'jmpcba/hc_infra_build:latest'
 def ansi = 'gnome-terminal'
 
 docker.image(image).inside{
@@ -16,7 +16,6 @@ docker.image(image).inside{
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                         sh '''
                                 set +x
-                                which git
                                 terraform version
                                 terraform init
                                 terraform plan
