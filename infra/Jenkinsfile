@@ -8,6 +8,7 @@ docker.image(image).inside{
         }
         stage('Plan') {
             ansiColor(ansi) {
+                echo env.PATH
                 echo "##################"
                 echo "# TERRAFORM PLAN #"
                 echo "##################"
