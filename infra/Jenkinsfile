@@ -16,7 +16,6 @@ docker.image(image).inside{
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                         sh '''
                                 set +x
-                                ls -la /usr/bin/
                                 terraform version
                                 terraform init
                                 terraform plan
