@@ -3,6 +3,9 @@ def ansi = 'gnome-terminal'
 
 docker.image(image).inside{
     if (env.BRANCH_NAME != 'master'){
+        stage('Clone'){
+           checkout scm
+        }
         stage('Plan') {
             ansiColor(ansi) {
                 echo "##################"
@@ -13,6 +16,7 @@ docker.image(image).inside{
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                         sh '''
                                 set +x
+                                which git
                                 terraform version
                                 terraform init
                                 terraform plan
