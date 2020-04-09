@@ -2,8 +2,7 @@ node {
     checkout scm
     dir('build'){
         def customImage = docker.build("jmpcba/hc_infra_build:${env.BUILD_ID}")
-
-        if(env.BRANC_NAME == 'master'){
+        if(env.BRANCH_NAME == 'master'){
             customImage.push('latest')
         } else{
             customImage.push()
