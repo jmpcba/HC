@@ -2,31 +2,30 @@ def image = 'jmpcba/hc_infra_build:latest'
 def ansi = 'gnome-terminal'
 
 docker.image(image).inside{
-    if (env.BRANCH_NAME != 'master'){
-        stage('Clone'){
-           checkout scm
-        }
-        stage('Plan') {
-            ansiColor(ansi) {
-                echo "##################"
-                echo "# TERRAFORM PLAN #"
-                echo "##################"
-                
-                dir('infra') {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                        sh '''
-                                set +x
-                                terraform version
-                                terraform init
-                                terraform plan
-                                '''
-                    }
+    stage('Clone'){
+        checkout scm
+    }
+    stage('Plan') {
+        ansiColor(ansi) {
+            echo "##################"
+            echo "# TERRAFORM PLAN #"
+            echo "##################"
+            
+            dir('infra') {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                    sh '''
+                        set +x
+                        terraform version
+                        terraform init
+                        terraform plan
+                        '''
                 }
             }
         }
     }
 
-    if (params.APPLY){
+
+    if (params.APPLY && env.BRANCH_NAME == 'master'){
         stage('Apply') {
             ansiColor(ansiColor) {
                 echo "###################"
@@ -35,12 +34,12 @@ docker.image(image).inside{
                 
                 dir('infra') {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS CREDENTIALS', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'], string(credentialsId: 'TF_VAR_db_password', variable: 'TF_VAR_db_password')]) {
-                            sh '''
-                                set +x
-                                terraform version
-                                terraform init
-                                terraform apply -auto-approve
-                                '''
+                        sh '''
+                            set +x
+                            terraform version
+                            terraform init
+                            terraform apply -auto-approve
+                            '''
                     }
                 }
             }

@@ -62,6 +62,8 @@ def paciente_handler(event, contex):
     logger.info(f'RESPONSE\n{service.response.service_response}')
     return service.response.service_response
 
+def resource_fabric(resource_name):
+    
 
 """
 {
