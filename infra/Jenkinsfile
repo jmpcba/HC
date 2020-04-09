@@ -2,10 +2,6 @@ def image = 'jmpcba/hc_infra_build'
 def ansi = 'gnome-terminal'
 
 docker.image(image).inside{
-    stage('Clone'){
-        git credentialsId: 'GIT', url: 'https://github.com/jmpcba/HC.git'
-    }
-
     if (env.BRANCH_NAME != 'master'){
         stage('Plan') {
             ansiColor(ansi) {
