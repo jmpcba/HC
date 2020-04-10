@@ -6,6 +6,10 @@ from services import DataBrokerService, PrestadoresService, PacientesService
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+# TODO notas: los recursos basicos como prestadores, zonas tienen que devolver
+# la tabla completa con GET, actualizar agregar y eliminar
+# practicas es el unico que va a filtrar.
+# liquidaciones TBD
 
 def databroker_handler(event, context): 
     logger.info("DATA SERVICE HANDLER STARTING")

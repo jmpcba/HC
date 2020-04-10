@@ -2,6 +2,10 @@ def image = 'jmpcba/hc_infra_build:latest'
 def ansi = 'gnome-terminal'
 
 docker.image(image).inside{
+    stage('Clean Up'){
+        cleanWs()
+    }
+    
     stage('Clone'){
         checkout scm
     }
