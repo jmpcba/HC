@@ -37,7 +37,7 @@ resource "aws_iam_role" "HC_lambda_role" {
 
 data "aws_iam_policy_document" "HC_lambda_role_policy_document" {
   version = "2012-10-17"
-  Statement {
+  statement {
     actions = ["sts:AssumeRole",]
     principals {
       type = "Service"
