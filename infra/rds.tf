@@ -1,6 +1,6 @@
 resource "aws_rds_cluster" "dev_db" {
   cluster_identifier      = "hc-rds-dev"
-  engine                  = "aurora-mysql"
+  engine                  = "aurora"
   engine_mode             = "serverless"
   database_name           = "hc_rds_db"
   master_username         = "hc_admin"
