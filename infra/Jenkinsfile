@@ -2,10 +2,6 @@ def image = 'jmpcba/hc_infra_build:latest'
 def ansi = 'gnome-terminal'
 
 docker.image(image).inside{
-    stage('Clean Up'){
-        cleanWs()
-    }
-    
     stage('Clone'){
         checkout scm
     }
@@ -21,6 +17,7 @@ docker.image(image).inside{
                         sh '''
                             set +x
                             terraform version
+                            terraform get
                             terraform init
                             terraform plan
                             '''
@@ -44,6 +41,7 @@ docker.image(image).inside{
                             sh '''
                             set +x
                             terraform version
+                            terraform get
                             terraform init
                             terraform apply -auto-approve
                             '''
