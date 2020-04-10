@@ -11,7 +11,7 @@ docker.image(image).inside{
             echo "# TERRAFORM PLAN #"
             echo "##################"
             echo "BRANCH: ${env.GIT_BRANCH}"
-            
+            echo "env: ${env}"
             dir('infra') {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     sh '''
