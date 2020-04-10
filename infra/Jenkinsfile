@@ -5,19 +5,22 @@ docker.image(image).inside{
     stage('Clone'){
         checkout scm
     }
-    stage('Plan') {
-        ansiColor(ansi) {
-            echo "##################"
-            echo "# TERRAFORM PLAN #"
-            echo "##################"
-            dir('infra') {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                    sh '''
-                        set +x
-                        terraform version
-                        terraform init
-                        terraform plan
-                        '''
+
+    if (!params.APPLY){
+        stage('Plan') {
+            ansiColor(ansi) {
+                echo "##################"
+                echo "# TERRAFORM PLAN #"
+                echo "##################"
+                dir('infra') {
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                        sh '''
+                            set +x
+                            terraform version
+                            terraform init
+                            terraform plan
+                            '''
+                    }
                 }
             }
         }
