@@ -32,19 +32,16 @@ resource "aws_iam_role" "HC_lambda_role" {
           "name" = "lambda-vpc-role"
         }
 
-    assume_role_policy = <<POLICY
-        {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-            "Action": "sts:AssumeRole",
-            "Principal": {
-                "Service": "lambda.amazonaws.com"
-            },
-            "Effect": "Allow",
-            "Sid": ""
-            }
-        ]
-        }
-        POLICY
+    assume_role_policy = data.aws_iam_policy_document.HC_lambda_role_policy_document.json
     }
+
+data "aws_iam_policy_document" "HC_lambda_role_policy_document" {
+  version = "2012-10-17"
+  Statement {
+    actions = ["sts:AssumeRole",]
+    principals {
+      type = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
