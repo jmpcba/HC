@@ -26,7 +26,7 @@ docker.image(image).inside{
 
     if (params.APPLY){
         stage('Apply') {
-            ansiColor(ansiColor) {
+            ansiColor(ansi) {
                 echo "###################"
                 echo "# TERRAFORM APPLY #"
                 echo "###################"
