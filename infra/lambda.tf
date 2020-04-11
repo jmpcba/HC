@@ -16,6 +16,7 @@ resource "aws_lambda_function" "HC_backend_lambda" {
   role          = aws_iam_role.HC_lambda_role.arn
   runtime       = "python3.6"
   handler       = "main.handler"
+  publish       = true
   environment {
     variables = {
        "db_password" = var.db_password

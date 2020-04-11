@@ -47,7 +47,8 @@ class Paciente(Base):
     
 class Modulo(Base):
     __tablename__ = 'MODULOS'
-    codigo = Column(String(20), primary_key=True)
+    id = Column(Integer, primary_key=True)
+    codigo = Column(String(20), unique=True)
     medico = Column(Float(2), nullable=False)
     enfermeria = Column(Float(2), nullable=False)
     kinesiologia = Column(Float(2), nullable=False)
@@ -60,6 +61,7 @@ class Modulo(Base):
 
 class SubModulo(Base):
     __tablename__ = 'SUB_MODULOS'
+    id = Column(Integer, primary_key=True)
     codigo = Column(String(20), unique=True)
     descripcion = Column(String(50), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
@@ -98,6 +100,7 @@ class Zona(Base):
 
 class Usuario(Base):
     __tablename__ = 'USUARIOS'
+    id = Column(Integer, primary_key=True)
     DNI = Column(String, unique=True)
     apellido = Column(String(50), nullable=False)
     nombre = Column(String(50), nullable=False)
@@ -128,6 +131,7 @@ class Liquidacion(Base):
 
 class Feriado(Base):
     __tablename__ = 'FERIADOS'
+    id = Column(Integer, primary_key=True)
     fecha = Column(Date, unique=True)
     descripcion = Column(String(50), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
