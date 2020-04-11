@@ -29,7 +29,7 @@ docker.image(image).inside {
         echo "####################"
         echo "# UPLOADING TO AWS #"
         echo "####################"  
-            withAWS(credentials: 'AWS CREDENTIALS', region: 'us-east-1') {
+        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
             sh """. env/bin/activate
             aws s3 cp function.zip s3://jmpcba-lambda/function.zip
             aws lambda update-function-code --function-name HC_backend_lambda --s3-bucket jmpcba-lambda --s3-key function.zip
