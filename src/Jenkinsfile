@@ -11,19 +11,17 @@ docker.image(image).inside {
         echo "# BUILDING DEPENDENCIES #"
         echo "#########################"
 
-        dir('src'){
-                    sh '''
+        sh """
             set +x
             python3 -m venv env
             . env/bin/activate
             python3 -m pip install -r requirements.txt
-            '''
+            cp src/*.py ${sitePackageDir}
+            """
         
-            sh "cp * ${sitePackageDir}"
-            dir(sitePackageDir){
-                sh "zip -qr9 function.zip ."
-                sh "mv function.zip ${WORKSPACE}"
-            }
+        dir(sitePackageDir){
+            sh "zip -qr9 function.zip ."
+            sh "mv function.zip ${WORKSPACE}"
         }
     }
 
