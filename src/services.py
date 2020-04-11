@@ -309,10 +309,11 @@ class PacientesService(Service):
         
 class AdminService(Service):
 
-    def post(self):
+    def post(self, body):
         try:
-            Base.metadata.create_all(engine)
-            self.response.body = 'db created'
+            if body['operation'] == 'create':
+                Base.metadata.create_all(engine)
+                self.response.body = 'db created'
 
         except Exception as e:
             self.response.code = 500

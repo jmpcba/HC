@@ -146,6 +146,7 @@ class Especialidad(Base):
 
 class RDSConfig:
     # TODO pasar endpoint base de datos a variable de entorno
+    # hacer un test, si no da 200 hacer un roll back
     RDS_HOST = "hc-rds-dev.cluster-c0rtb6x1vjcr.us-east-1.rds.amazonaws.com"
     NAME = 'admin'
     try:
