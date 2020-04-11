@@ -2,6 +2,7 @@ import json
 import errors
 import logging
 import pymysql
+from datetime import datetime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError, StatementError
 from sqlalchemy import create_engine
@@ -66,7 +67,6 @@ class DataBrokerService(Service):
                     result[t['table_name']] = [vars(r) for r in session.query(t['model']).all()]
             if result:
                 self.response.body = result
-                self.response.code = 200
             else:
                 raise errors.ObjectNotFoundError()
         
@@ -95,6 +95,8 @@ class PrestadoresService(Service):
     # INSERT
     def post(self, new_prestador):
         try:
+            logging.info("received request to insert new prestador")
+            logging.info(json.dumps(new_prestador))
             prestador = Prestador(CUIT=new_prestador['CUIT'], 
                                 nombre=new_prestador['nombre'],
                                 apellido=new_prestador['apellido'],
@@ -107,22 +109,24 @@ class PrestadoresService(Service):
                                 monto_fijo=new_prestador['monto_fijo'],
                                 zona=new_prestador['zona'],
                                 comentario=new_prestador['comentario'],
-                                baja=new_prestador['baja']
+                                baja=new_prestador['baja'],
+                                usuario_ultima_modificacion=new_prestador['usuario'],
+                                ultima_modificacion=datetime.now()
                                 )
 
             session.add(prestador)
             session.commit()
-            self.response.code = 200
+            logging.info("New prestador inserted into DB")
             self.response.body = f"New Prestador: {prestador.id} inserted"
         
         except KeyError as e:
-            self.response.code = 403
+            self.response.code = 500
             self.response.body = e
             session.rollback()
         
         except (IntegrityError, StatementError) as e:
             session.rollback()
-            self.response.code = 403
+            self.response.code = 500
             self.response.body = e
         
         finally:
@@ -149,20 +153,21 @@ class PrestadoresService(Service):
             prestador.monto_fijo=prest_mod['monto_fijo']
             prestador.zona=prest_mod['zona']
             prestador.comentario=prest_mod['comentario']
-            prestador.baja=prest_mod['baja']
+            prestador.baja=prest_mod['baja'],
+            prestador.usuario_ultima_modificacion=new_mod['usuario'],
+            prestador.ultima_modificacion=datetime.now()
 
             session.commit()
 
-            self.response.code = 200
             self.response.body = f"Prestador: {prestador.id} modified"
         
         except KeyError as e:
-            self.response.code = 403
+            self.response.code = 500
             self.response.body = f"Invalid Parameter: {e}"
             session.rollback()
         
         except IntegrityError as e:
-            self.response.code = 403
+            self.response.code = 500
             self.response.body = e
             session.rollback()
         
@@ -179,7 +184,6 @@ class PrestadoresService(Service):
             if id:
                 prestador = session.query(Prestador).filter(Prestador.id == id).first()
                 if prestador:
-                    self.response.code = 200
                     self.response.body = vars(prestador)
                 else:
                     raise ObjectNotFoundError
@@ -195,7 +199,7 @@ class PrestadoresService(Service):
             self.response.body = e
         
         except IntegrityError as e:
-            self.response.code = 403
+            self.response.code = 500
             self.response.body = e
         
         finally:
@@ -220,17 +224,16 @@ class PacientesService(Service):
 
             session.add(paciente)
             session.commit()
-            self.response.code = 200
             self.response.body = f"New Paciente: {paciente.afiliado} inserted"
         
         except KeyError as e:
-            self.response.code = 403
+            self.response.code = 500
             self.response.body = e
             session.rollback()
         
         except (IntegrityError, StatementError) as e:
             session.rollback()
-            self.response.code = 403
+            self.response.code = 500
             self.response.body = e
         
         finally:
@@ -258,15 +261,14 @@ class PacientesService(Service):
 
             session.commit()
 
-            self.response.code = 200
             self.response.body = f"Paciente: {paciente.afiliado} modified"
         
         except KeyError as e:
-            self.response.code = 403
+            self.response.code = 500
             self.response.body = f"Invalid Parameter: {e}"
         
         except IntegrityError as e:
-            self.response.code = 403
+            self.response.code = 500
             self.response.body = e
         
         finally:
@@ -282,7 +284,6 @@ class PacientesService(Service):
             if id:
                 paciente = session.query(Paciente).filter(Paciente.afiliado == id).first()
                 if paciente:
-                    self.response.code = 200
                     self.response.body = vars(paciente)
                 else:
                     raise ObjectNotFoundError
@@ -298,7 +299,7 @@ class PacientesService(Service):
             self.response.body = e
         
         except IntegrityError as e:
-            self.response.code = 403
+            self.response.code = 500
             self.response.body = e
         
         finally:
@@ -306,3 +307,13 @@ class PacientesService(Service):
                 logging.warning(f"ERROR: {str(self.response.body)}")
 
         
+class AdminService(Service):
+
+    def post(self):
+        try:
+            Base.metadata.create_all(engine)
+            self.response.body = 'db created'
+
+        except Exception as e:
+            self.response.code = 500
+            self.response.body = e

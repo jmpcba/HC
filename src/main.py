@@ -1,7 +1,7 @@
 import errors
 import logging
 import json
-from services import DataBrokerService, PrestadoresService, PacientesService
+from services import DataBrokerService, PrestadoresService, PacientesService, AdminService
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -10,64 +10,39 @@ logger.setLevel(logging.INFO)
 # la tabla completa con GET, actualizar agregar y eliminar
 # practicas es el unico que va a filtrar.
 # liquidaciones TBD
+# hay un solo main, tengo que averiguar recurso y metodo
 
-def databroker_handler(event, context): 
-    logger.info("DATA SERVICE HANDLER STARTING")
-    logger.info(f"EVENT: {str(event)}")
-
-    tables = event['queryStringParameters']['tables']
-    tables = tables.upper().split(',')
-    
-    service = DataBrokerService()
-    service.get(tables)
-    return service.response.service_response
-
-
-def prestador_handler(event, contex):
-    
+def handler(event, contex):
     logger.info(f'REQUEST\n{event}')
-    
-    service = PrestadoresService()
 
-    if event['httpMethod'] == 'POST':
-        
-        body = event['body']
-        service.post(json.loads(body))
+    method = event['httpMethod'].upper()
+    body = event['body'].upper()
+    body = json.loads(body)
+    resource = event['resource'].upper()
+    resource = resource[resource.rfind('/')+1:]
+
+    service = service_mapper(resource)
+
+    if method == 'POST':  
+        service.post(body)
     
-    if event['httpMethod'] == 'PUT':
-        body = event['body']
-        service.put(json.loads(body))
+    elif method == 'PUT':
+        service.put(body)
     
-    if event['httpMethod'] == 'GET':
+    elif method == 'GET':
         service.get()
-
+    
     logger.info(f'RESPONSE\n{service.response.service_response}')
     return service.response.service_response
 
 
-def paciente_handler(event, contex):
-    
-    logger.info(f'REQUEST\n{event}')
-    
-    service = PacientesService()
-
-    if event['httpMethod'] == 'POST':
-        
-        body = event['body']
-        service.post(json.loads(body))
-    
-    if event['httpMethod'] == 'PUT':
-        body = event['body']
-        service.put(json.loads(body))
-    
-    if event['httpMethod'] == 'GET':
-        service.get()
-
-    logger.info(f'RESPONSE\n{service.response.service_response}')
-    return service.response.service_response
-
-def resource_fabric(resource_name):
-    
+def service_mapper(resource):
+    resources = {
+        'PACIENTE' : PacientesService,
+        'PRESTADOR' : PrestadoresService,
+        'ADMIN': AdminService
+    }
+    return resources[resource]
 
 """
 {

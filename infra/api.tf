@@ -1,7 +1,7 @@
 locals {
     api_name = "HOMECARE_BACKEND_API"
     api_description = "backend de HomeCare"
-    resources = ["ESPECIALIDAD", "FERIADO", "LIQUIDACION", "MODULO", "PACIENTE", "PRACTICA", "PRESTADOR", "SUBMODULO", "USUARIO", "ZONA"]
+    resources = ["ESPECIALIDAD", "FERIADO", "LIQUIDACION", "MODULO", "PACIENTE", "PRACTICA", "PRESTADOR", "SUBMODULO", "USUARIO", "ZONA", "ADMIN"]
 }
 
 module "api" {
