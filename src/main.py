@@ -20,7 +20,7 @@ def handler(event, contex):
     
     try:
         body = json.loads(body)
-    except json.JSONDecodeError:
+    except json.JSONDecodeError, TypeError:
         pass
 
     resource = event['resource'].upper()
