@@ -148,7 +148,10 @@ class RDSConfig:
     # TODO pasar endpoint base de datos a variable de entorno
     RDS_HOST = "hc-rds-dev.cluster-c0rtb6x1vjcr.us-east-1.rds.amazonaws.com"
     NAME = 'admin'
-    PWD = os.environ['DB_PASSWORD']
+    try:
+        PWD = os.environ['DB_PASSWORD']
+    except KeyError:
+        PWD = ""
     DB = 'HC_DEV'
     DIALECT = 'mysql+pymysql'
     ENGINE = f'{DIALECT}://{NAME}:{PWD}@{RDS_HOST}/{DB}'

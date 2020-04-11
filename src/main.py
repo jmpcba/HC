@@ -16,7 +16,7 @@ def handler(event, contex):
     logger.info(f'REQUEST\n{event}')
 
     method = event['httpMethod'].upper()
-    body = event['body'].upper()
+    body = event['body']
     
     try:
         body = json.loads(body)
