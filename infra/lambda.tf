@@ -12,7 +12,7 @@ resource "aws_lambda_permission" "HC_lambda_permission" {
 resource "aws_lambda_function" "HC_backend_lambda" {
   function_name = "HC_backend_service"
   s3_bucket     = "jmpcba-lambda"
-  s3_key        = "function.zip"
+  s3_key        = "hc_backend.zip"
   role          = aws_iam_role.HC_lambda_role.arn
   runtime       = "python3.6"
   handler       = "main.handler"

@@ -20,8 +20,8 @@ docker.image(image).inside {
             """
         
         dir(sitePackageDir){
-            sh "zip -qr9 function.zip ."
-            sh "mv function.zip ${WORKSPACE}"
+            sh "zip -qr9 hc_backend.zip ."
+            sh "mv hc_backend.zip ${WORKSPACE}"
         }
     }
 
@@ -30,9 +30,9 @@ docker.image(image).inside {
         echo "# UPLOADING TO AWS #"
         echo "####################"  
         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-            sh """. env/bin/activate
-            aws s3 cp function.zip s3://jmpcba-lambda/function.zip
-            aws lambda update-function-code --function-name HC_backend_lambda --s3-bucket jmpcba-lambda --s3-key function.zip
+            sh """
+            aws s3 cp hc_backend.zip s3://jmpcba-lambda/hc_backend.zip
+            aws lambda update-function-code --function-name HC_backend_lambda --s3-bucket jmpcba-lambda --s3-key hc_backend.zip
             deactivate"""
         }
     }
