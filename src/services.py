@@ -319,4 +319,4 @@ class AdminService(Service):
             self.response.body = e
     
     def get(self):
-        Response.body = "Service is working"
+        self.response.body = "Service is working"
