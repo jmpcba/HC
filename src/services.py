@@ -317,3 +317,6 @@ class AdminService(Service):
         except Exception as e:
             self.response.code = 500
             self.response.body = e
+    
+    def get(self):
+        Response.body = "Service is working"
