@@ -2,9 +2,6 @@ def sitePackageDir = "env/lib/python3.6/site-packages"
 def image = 'jmpcba/hc_infra_build:latest'
 
 docker.image(image).inside {
-    stage('Clean Up'){
-        cleanWs()
-    }
     stage('Clone'){
         checkout scm
     }
