@@ -32,7 +32,7 @@ docker.image(image).inside {
         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
             sh """
             aws s3 cp hc_backend.zip s3://jmpcba-lambda/hc_backend.zip
-            aws lambda update-function-code --function-name HC_backend_lambda --s3-bucket jmpcba-lambda --s3-key hc_backend.zip --region us-east-1
+            aws lambda update-function-code --function-name HC_backend_service --s3-bucket jmpcba-lambda --s3-key hc_backend.zip --region us-east-1
             """
         }
     }
