@@ -1,13 +1,18 @@
 node {
-    checkout scm
-    dir('build'){
-        def customImage = docker.build("jmpcba/hc_infra_build:${env.BUILD_ID}")
+    stage('checkout'){
+        checkout scm
+    }
+    
+    stage('build'){
+        dir('build'){
+            def customImage = docker.build("jmpcba/hc_infra_build:${env.BUILD_ID}")
 
-        docker.withRegistry('', 'dockerhub'){
-            if(env.BRANCH_NAME == 'master'){
-            customImage.push('latest')
-            }else{
-                customImage.push()
+            docker.withRegistry('', 'dockerhub'){
+                if(env.BRANCH_NAME == 'master'){
+                customImage.push('latest')
+                }else{
+                    customImage.push()
+                }
             }
         }
     }
