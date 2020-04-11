@@ -19,7 +19,7 @@ resource "aws_lambda_function" "HC_backend_lambda" {
   publish       = true
   environment {
     variables = {
-       "db_password" = var.db_password
+       "DB_PASSWORD" = var.db_password
     }
   }
 }

@@ -17,7 +17,12 @@ def handler(event, contex):
 
     method = event['httpMethod'].upper()
     body = event['body'].upper()
-    body = json.loads(body)
+    
+    try:
+        body = json.loads(body)
+    except json.JSONDecodeError:
+        pass
+
     resource = event['resource'].upper()
     resource = resource[resource.rfind('/')+1:]
 
