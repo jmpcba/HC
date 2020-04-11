@@ -27,6 +27,7 @@ def handler(event, contex):
     resource = resource[resource.rfind('/')+1:]
 
     service = service_mapper(resource)
+    service = service()
 
     if method == 'POST':  
         service.post(body)
