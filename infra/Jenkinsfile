@@ -5,7 +5,7 @@ docker.image(image).inside{
     stage('Clone'){
         checkout scm
     }
-    withCredentials([string(credentialsId: 'DB_MASTER_PASSWORD', variable: 'TF_VAR_db_password')]) {
+    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
         withCredentials([string(credentialsId: 'DB_MASTER_PASSWORD', variable: 'TF_VAR_db_password')]) {
             if (!params.APPLY){
                 stage('Plan') {
