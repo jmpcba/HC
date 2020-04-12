@@ -100,7 +100,7 @@ class Zona(Base):
 class Usuario(Base):
     __tablename__ = 'USUARIOS'
     id = Column(Integer, primary_key=True)
-    DNI = Column(String, unique=True)
+    DNI = Column(String(50), unique=True)
     apellido = Column(String(50), nullable=False)
     nombre = Column(String(50), nullable=False)
     nivel = Column(String(50), nullable=False)
