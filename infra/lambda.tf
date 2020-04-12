@@ -17,6 +17,7 @@ resource "aws_lambda_function" "HC_backend_lambda" {
   runtime       = "python3.6"
   handler       = "main.handler"
   publish       = true
+  timeout       = 60
   environment {
     variables = {
       "DB_PASSWORD" = var.db_password
