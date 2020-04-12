@@ -67,6 +67,6 @@ data "aws_iam_policy_document" "HC_cloudwatch_policy_doc" {
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_logs_attachment" {
-  role       = "${aws_iam_role.HC_lambda_role.name}"
-  policy_arn = "${aws_iam_policy.lambda_logging_policy.arn}"
+  role       = aws_iam_role.HC_lambda_role.name
+  policy_arn = aws_iam_policy.lambda_logging_policy.arn
 }
