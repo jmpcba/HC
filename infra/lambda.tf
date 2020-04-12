@@ -51,7 +51,7 @@ data "aws_iam_policy_document" "HC_lambda_assume_role_policy_document" {
 resource "aws_iam_policy" "lambda_logging_policy" {
   name        = "lambda_logging"
   description = "IAM policy for logging from a lambda"
-  policy = data.aws_iam_policy.HC_cloudwatch_policy_doc.json
+  policy = data.aws_iam_policy_document.HC_cloudwatch_policy_doc.json
 }
 
 data "aws_iam_policy_document" "HC_cloudwatch_policy_doc" {
