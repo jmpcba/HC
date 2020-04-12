@@ -60,11 +60,11 @@ data "aws_iam_policy_document" "HC_lambda_assume_role_policy_document" {
   }
 }
 
-resource "aws_iam_policy" "lambda_logging_policy" {
-  name        = "lambda_logging"
-  description = "IAM policy for logging from a lambda"
-  policy = data.aws_iam_policy_document.HC_cloudwatch_policy_doc.json
-}
+#resource "aws_iam_policy" "lambda_logging_policy" {
+#  name        = "lambda_logging"
+#  description = "IAM policy for logging from a lambda"
+#  policy = data.aws_iam_policy_document.HC_cloudwatch_policy_doc.json
+#}
 
 # equivalent to managed policy AWSLambdaVPCAccessExecutionRole
 #data "aws_iam_policy_document" "HC_cloudwatch_policy_doc" {
