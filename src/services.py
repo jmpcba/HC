@@ -310,6 +310,7 @@ class PacientesService(Service):
 class AdminService(Service):
 
     def post(self, body):
+        logging.info(f'post method body: {body}')
         try:
             if body['operation'] == 'create':
                 logging.info('creating DB tables')
