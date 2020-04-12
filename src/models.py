@@ -1,8 +1,7 @@
 import os
-from sqlalchemy import Column, ForeignKey, Integer, String, Float, Boolean, ForeignKey, Date
+from sqlalchemy import create_engine, Column, ForeignKey, Integer, String, Float, Boolean, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine
 import json
 
 Base = declarative_base()
@@ -185,4 +184,7 @@ class RDSConfig:
 
 def create_tables():
     engine = create_engine(RDSConfig.ENGINE, echo=True)
+    if not database_exists(engine.url):
+        create_database(engine.url)
+
     Base.metadata.create_all(engine)

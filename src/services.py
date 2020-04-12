@@ -6,6 +6,7 @@ from datetime import datetime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError, StatementError
 from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
 from common import to_dict
 from models import Base, Prestador,Paciente, Modulo, SubModulo, Zona, RDSConfig
 from errors import ObjectNotFoundError
@@ -313,9 +314,15 @@ class AdminService(Service):
         logging.info(f'post method body: {body}')
         try:
             if body['operation'] == 'create':
-                logging.info('creating DB tables')
+                logging.info('Create tables operation')
+                if not database_exists(engine.url):
+                    logging.info('DB must be created')
+                    create_database(engine.url)
+                    logging.info('DB created')
+                
+                logging.info('creating tables')
                 Base.metadata.create_all(engine)
-                self.response.body = 'db created'
+                self.response.body = 'db create operation finished'
 
         except Exception as e:
             self.response.code = 500
