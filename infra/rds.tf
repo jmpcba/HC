@@ -3,8 +3,9 @@ resource "aws_rds_cluster" "dev_db" {
   engine                  = "aurora"
   engine_mode             = "serverless"
   database_name           = "hc_rds_db"
-  master_username         = "hc_admin"
+  master_username         = var.db_user
   master_password         = var.db_password
+  vpc_security_group_ids  = [aws_security_group.RDS.id,]
 
   scaling_configuration {
     auto_pause               = true
