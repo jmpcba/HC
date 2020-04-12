@@ -9,6 +9,6 @@ variable "vpc_id" {
 }
 
 variable "db_user" {
-  value = "hc_admin"
+  default = "hc_admin"
 }
 
