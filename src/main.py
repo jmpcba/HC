@@ -12,7 +12,7 @@ logger.setLevel(logging.INFO)
 # liquidaciones TBD
 # hay un solo main, tengo que averiguar recurso y metodo
 
-def handler(event, contex):
+def handler(event, context):
     logger.info(f'REQUEST\n{event}')
 
     method = event['httpMethod'].upper()
@@ -21,7 +21,7 @@ def handler(event, contex):
     try:
         body = json.loads(body)
     except (json.JSONDecodeError, TypeError) as e:
-        logging.error(f"ERROR: skiping json decodig: {e}")
+        logging.error(f"ERROR: skiping json decoding: {e}")
 
     resource = event['resource'].upper()
     resource = resource[resource.rfind('/')+1:]

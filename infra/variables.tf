@@ -4,3 +4,11 @@ variable "region" {
 
 variable "db_password" {}
 
+variable "vpc_id" {
+  default= "vpc-bc10bec6"
+}
+
+variable "db_user" {
+  value = "hc_admin"
+}
+

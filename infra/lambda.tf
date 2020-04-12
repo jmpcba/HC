@@ -19,8 +19,20 @@ resource "aws_lambda_function" "HC_backend_lambda" {
   publish       = true
   environment {
     variables = {
-       "DB_PASSWORD" = var.db_password
+      "DB_PASSWORD" = var.db_password
+      "DB_USER" = var.db_user
     }
+  }
+  vpc_config {
+    security_group_ids = [aws_security_group.RDS.id,]
+    subnet_ids = [
+                  "subnet-5d7fe773", 
+                  "subnet-605bc53c", 
+                  "subnet-8ff7dac5", 
+                  "subnet-8ff7dac5", 
+                  "subnet-e05ffede", 
+                  "subnet-f94017f6"
+                  ]
   }
 }
 
@@ -54,19 +66,48 @@ resource "aws_iam_policy" "lambda_logging_policy" {
   policy = data.aws_iam_policy_document.HC_cloudwatch_policy_doc.json
 }
 
-data "aws_iam_policy_document" "HC_cloudwatch_policy_doc" {
-  version = "2012-10-17"
-  statement {
-    actions = [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents",
-      ]
-    resources = ["*",]
-  }
-}
+# equivalent to managed policy AWSLambdaVPCAccessExecutionRole
+#data "aws_iam_policy_document" "HC_cloudwatch_policy_doc" {
+#  version = "2012-10-17"
+#  statement {
+#    actions = [
+#        "logs:CreateLogGroup",
+#        "logs:CreateLogStream",
+#        "logs:PutLogEvents",
+#        "ec2:CreateNetworkInterface",
+#        "ec2:DescribeNetworkInterfaces",
+#        "ec2:DeleteNetworkInterface"
+#      ]
+#    resources = ["*",]
+#  }
+#}
 
 resource "aws_iam_role_policy_attachment" "lambda_logs_attachment" {
   role       = aws_iam_role.HC_lambda_role.name
-  policy_arn = aws_iam_policy.lambda_logging_policy.arn
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+resource "aws_security_group" "RDS" {
+  name        = "RDS default"
+  description = "allow mysql 3306 port"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    description = "mysql"
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = "0.0.0.0/0"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "RDS mySQL"
+  }
 }
