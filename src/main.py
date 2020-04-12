@@ -20,8 +20,8 @@ def handler(event, contex):
     
     try:
         body = json.loads(body)
-    except (json.JSONDecodeError, TypeError):
-        pass
+    except (json.JSONDecodeError, TypeError) as e:
+        logging.error(f"ERROR: skiping json decodig: {e}")
 
     resource = event['resource'].upper()
     resource = resource[resource.rfind('/')+1:]
