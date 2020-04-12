@@ -5,39 +5,36 @@ docker.image(image).inside{
     stage('Clone'){
         checkout scm
     }
-
-    if (!params.APPLY){
-        stage('Plan') {
-            ansiColor(ansi) {
-                echo "##################"
-                echo "# TERRAFORM PLAN #"
-                echo "##################"
-                dir('infra') {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                        sh '''
-                            set +x
-                            terraform version
-                            terraform get
-                            terraform init
-                            terraform plan
-                            '''
+    withCredentials([string(credentialsId: 'DB_MASTER_PASSWORD', variable: 'TF_VAR_db_password')]) {
+        withCredentials([string(credentialsId: 'DB_MASTER_PASSWORD', variable: 'TF_VAR_db_password')]) {
+            if (!params.APPLY){
+                stage('Plan') {
+                    ansiColor(ansi) {
+                        echo "##################"
+                        echo "# TERRAFORM PLAN #"
+                        echo "##################"
+                        dir('infra') {
+                            sh '''
+                                set +x
+                                terraform version
+                                terraform get
+                                terraform init
+                                terraform plan
+                                '''
+                            }
+                        }
                     }
                 }
-            }
-        }
-    }
 
 
-    if (params.APPLY){
-        stage('Apply') {
-            ansiColor(ansi) {
-                echo "###################"
-                echo "# TERRAFORM APPLY #"
-                echo "###################"
-                
-                dir('infra') {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS_JMPCBA', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                        withCredentials([string(credentialsId: 'DB_MASTER_PASSWORD', variable: 'TF_VAR_db_password')]) {
+            if (params.APPLY){
+                stage('Apply') {
+                    ansiColor(ansi) {
+                        echo "###################"
+                        echo "# TERRAFORM APPLY #"
+                        echo "###################"
+                        
+                        dir('infra') {
                             sh '''
                             set +x
                             terraform version
