@@ -72,8 +72,8 @@ class Practica(Base):
     id = Column(Integer, primary_key=True)
     cuit = Column(String(50), nullable=False)
     afiliado = Column(String(50), ForeignKey('PACIENTES.id'), unique=True)
-    modulo = Column(String(50), ForeignKey('MODULOS.codigo'), unique=True)
-    sub_modulo = Column(String(50), ForeignKey('SUB_MODULOS.codigo'), unique=True)
+    modulo = Column(String(50), ForeignKey('MODULOS.id'), unique=True)
+    sub_modulo = Column(String(50), ForeignKey('SUB_MODULOS.id'), unique=True)
     id_prest = Column(Integer, ForeignKey('PRESTADORES.id'), unique=True)
     hs_normales = Column(Float(2), nullable=False)
     hs_feriados = Column(Float(2), nullable=False)
@@ -83,7 +83,7 @@ class Practica(Base):
     observaciones_paciente = Column(String(200))
     observaciones_prestacion = Column(String(200))
     ultima_modificacion = Column(Date)
-    usuario_ultima_modificacion = Column(String(50), ForeignKey('USUARIOS.DNI'))
+    usuario_ultima_modificacion = Column(String(50), ForeignKey('USUARIOS.id'))
 
 
 class Zona(Base):
