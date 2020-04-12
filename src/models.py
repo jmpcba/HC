@@ -83,7 +83,7 @@ class Practica(Base):
     observaciones_paciente = Column(String(200))
     observaciones_prestacion = Column(String(200))
     ultima_modificacion = Column(Date)
-    usuario_ultima_modificacion = Column(String(50), ForeignKey('USUARIOS.id'))
+    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
 
 
 class Zona(Base):
