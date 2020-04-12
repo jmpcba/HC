@@ -45,4 +45,12 @@ data "aws_iam_policy_document" "HC_lambda_role_policy_document" {
       identifiers = ["lambda.amazonaws.com"]
     }
   }
+  statement {
+    actions = [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ]
+    resources = ["arn:aws:logs:*:*:*",]
+  }
 }
