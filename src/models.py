@@ -80,8 +80,8 @@ class Practica(Base):
     hs_diferencial = Column(Float(2), nullable=False)
     fecha = Column(Date, nullable=False, unique=True)
     observaciones = Column(String(200), nullable=False)
-    observaciones_paciente = Column(String)
-    observaciones_prestacion = Column(String)
+    observaciones_paciente = Column(String(200))
+    observaciones_prestacion = Column(String(200))
     ultima_modificacion = Column(Date)
     usuario_ultima_modificacion = Column(String(50), ForeignKey('USUARIOS.DNI'))
 
