@@ -33,11 +33,12 @@ resource "aws_iam_role" "HC_lambda_role" {
           "name" = "lambda-vpc-role"
         }
 
-    assume_role_policy = data.aws_iam_policy_document.HC_lambda_role_policy_document.json
+    assume_role_policy = data.aws_iam_policy_document.HC_lambda_assume_role_policy_document.json
     }
 
-data "aws_iam_policy_document" "HC_lambda_role_policy_document" {
+data "aws_iam_policy_document" "HC_lambda_assume_role_policy_document" {
   version = "2012-10-17"
+  
   statement {
     actions = ["sts:AssumeRole",]
     principals {
@@ -45,12 +46,27 @@ data "aws_iam_policy_document" "HC_lambda_role_policy_document" {
       identifiers = ["lambda.amazonaws.com"]
     }
   }
+}
+
+resource "aws_iam_policy" "lambda_logging_policy" {
+  name        = "lambda_logging"
+  description = "IAM policy for logging from a lambda"
+  policy = data.aws_iam_policy.HC_cloudwatch_policy_doc.json
+}
+
+data "aws_iam_policy_document" "HC_cloudwatch_policy_doc" {
+  version = "2012-10-17"
   statement {
     actions = [
         "logs:CreateLogGroup",
         "logs:CreateLogStream",
-        "logs:PutLogEvents"
+        "logs:PutLogEvents",
       ]
-    resources = ["arn:aws:logs:*:*:*",]
+    resources = ["*",]
   }
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_logs_attachment" {
+  role       = "${aws_iam_role.HC_lambda_role.name}"
+  policy_arn = "${aws_iam_policy.lambda_logging_policy.arn}"
 }
