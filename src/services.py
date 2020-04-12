@@ -88,7 +88,7 @@ class DataBrokerService(Service):
         
         finally:
             if self.response.code != 200:
-                logging.warning(f"ERROR: {str(self.response.body)}")
+                logging.error(f"ERROR: {str(self.response.body)}")
 
 
 class PrestadoresService(Service):
@@ -131,7 +131,7 @@ class PrestadoresService(Service):
         
         finally:
             if self.response.code != 200:
-                logging.warning(f"ERROR: {str(self.response.body)}")
+                logging.error(f"ERROR: {str(self.response.body)}")
 
     
     # UPDATE
@@ -173,7 +173,7 @@ class PrestadoresService(Service):
         
         finally:
             if self.response.code != 200:
-                logging.warning(f"ERROR: {str(self.response.body)}")
+                logging.error(f"ERROR: {str(self.response.body)}")
 
     
     def delete(self):
@@ -204,7 +204,7 @@ class PrestadoresService(Service):
         
         finally:
             if self.response.code != 200:
-                logging.warning(f"ERROR: {str(self.response.body)}")
+                logging.error(f"ERROR: {str(self.response.body)}")
 
 class PacientesService(Service):
     # INSERT
@@ -238,7 +238,7 @@ class PacientesService(Service):
         
         finally:
             if self.response.code != 200:
-                logging.warning(f"ERROR: {str(self.response.body)}")
+                logging.error(f"ERROR: {str(self.response.body)}")
 
     
     # UPDATE
@@ -273,7 +273,7 @@ class PacientesService(Service):
         
         finally:
             if self.response.code != 200:
-                logging.warning(f"ERROR: {str(self.response.body)}")
+                logging.error(f"ERROR: {str(self.response.body)}")
 
     
     def delete(self):
@@ -304,7 +304,7 @@ class PacientesService(Service):
         
         finally:
             if self.response.code != 200:
-                logging.warning(f"ERROR: {str(self.response.body)}")
+                logging.error(f"ERROR: {str(self.response.body)}")
 
         
 class AdminService(Service):
@@ -312,12 +312,17 @@ class AdminService(Service):
     def post(self, body):
         try:
             if body['operation'] == 'create':
+                logging.info('creating DB tables')
                 Base.metadata.create_all(engine)
                 self.response.body = 'db created'
 
         except Exception as e:
             self.response.code = 500
             self.response.body = e
+        
+        finally:
+            if self.response.code != 200:
+                logging.error(f"ERROR: {str(self.response.body)}")
     
     def get(self):
         self.response.body = "Service is working"
