@@ -17,7 +17,7 @@ def handler(event, context):
 
     method = event['httpMethod'].upper()
     body = event['body']
-    
+
     try:
         body = json.loads(body)
     except (json.JSONDecodeError, TypeError) as e:
@@ -29,15 +29,15 @@ def handler(event, context):
     service = service_mapper(resource)
     service = service()
 
-    if method == 'POST':  
+    if method == 'POST':
         service.post(body)
-    
+
     elif method == 'PUT':
         service.put(body)
-    
+
     elif method == 'GET':
         service.get()
-    
+
     logger.info(f'RESPONSE\n{service.response.service_response}')
     return service.response.service_response
 

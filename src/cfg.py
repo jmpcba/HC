@@ -6,24 +6,24 @@ import json
 
 class Setup:
 
-        def __init__(self, environment):
-                urls = {
-                        'dev': 'https://cl86zb12f8.execute-api.us-east-1.amazonaws.com/DEV/v1/ADMIN',
-                        'prod': 'https://cl86zb12f8.execute-api.us-east-1.amazonaws.com/PROD'
-                }
+    def __init__(self, environment):
+        urls = {
+            'dev': 'https://cl86zb12f8.execute-api.us-east-1.amazonaws.com/DEV/v1/ADMIN',
+            'prod': 'https://cl86zb12f8.execute-api.us-east-1.amazonaws.com/PROD'
+        }
 
-                self.url = urls[environment]
+        self.url = urls[environment]
         
-        def test_up(self):
-            r = requests.get(self.url)
-            print(f'CODE: {r.status_code}')
-            print(f'MESSAGE: {r.text}')
-        
-        def create_tables(self):
-            payload = {"operation":"create"}
-            r = requests.post(self.url, data=json.dumps(payload))
-            print(f'CODE: {r.status_code}')
-            print(f'MESSAGE: {r.text}')
+    def test_up(self):
+        r = requests.get(self.url)
+        print(f'CODE: {r.status_code}')
+        print(f'MESSAGE: {r.text}')
+    
+    def create_tables(self):
+        payload = {"operation":"create"}
+        r = requests.post(self.url, data=json.dumps(payload))
+        print(f'CODE: {r.status_code}')
+        print(f'MESSAGE: {r.text}')
 
 
 if __name__ == '__main__':

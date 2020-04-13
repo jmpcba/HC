@@ -155,7 +155,7 @@ class PrestadoresService(Service):
             prestador.zona=prest_mod['zona']
             prestador.comentario=prest_mod['comentario']
             prestador.baja=prest_mod['baja'],
-            prestador.usuario_ultima_modificacion=new_mod['usuario'],
+            prestador.usuario_ultima_modificacion=prest_mod['usuario'],
             prestador.ultima_modificacion=datetime.now()
 
             session.commit()
@@ -222,7 +222,7 @@ class PacientesService(Service):
                                 sub_modulo=new_paciente['sub_modulo'],
                                 baja=new_paciente['baja'],
                                 ultima_modificacion = datetime.now(),
-                                usuario_ultima_modificacion=new_prestador['usuario_ultima_modificacion']
+                                usuario_ultima_modificacion=new_paciente['usuario_ultima_modificacion']
                                 )
 
             session.add(paciente)
