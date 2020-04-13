@@ -167,6 +167,7 @@ class RDSConfig:
     LIQUIDACION = 'LIQUIDACION'
     FERIADOS = 'FERIADOS'
     ESPECIALIDADES = 'ESPECIALIDADES'
+    USUARIOS = 'USUARIOS'
 
     TABLES = [
         {'table_name': PRESTADORES, 'model': Prestador},
@@ -175,7 +176,7 @@ class RDSConfig:
         {'table_name': SUB_MODULOS, 'model': SubModulo},
         {'table_name': LIQUIDACION, 'model': Prestador},
         {'table_name': ZONAS, 'model': Zona},
-        {'table_name': USUARIOS, 'model': Usuario},
+        {'table_name': USUARIO, 'model': Usuario},
         {'table_name': LIQUIDACION, 'model': Liquidacion},
         {'table_name': FERIADOS, 'model': Feriado},
         {'table_name': ESPECIALIDADES, 'model': Especialidad},
