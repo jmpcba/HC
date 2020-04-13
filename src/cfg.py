@@ -34,8 +34,6 @@ class Setup:
             'nivel': 0,
             'pwd': 'noimportaahora',
             'usuario_ultima_modificacion': ''
-            'ultima_modificacion': 
-
         }
         r = requests.post(usr_url, json.dumps(payload))
         print(f'CODE: {r.status_code}')
