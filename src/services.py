@@ -344,17 +344,16 @@ class ModuloService(Service):
         try:
             logging.info("received request to insert new prestador")
             logging.info(json.dumps(new_modulo))
-            modulo = Modulo(CUIT=new_modulo['CUIT'], 
-                                codigo=new_modulo['codigo'],
-                                medico=new_modulo['medico'],
-                                enfermeria=new_modulo['enfermeria'],
-                                kinesiologia=new_modulo['kinesiologia'],
-                                fonoaudiologia=new_modulo['fonoaudiologia'],
-                                cuidador=new_modulo['cuidador'],
-                                nutricion=new_modulo['nutricion'],
-                                ultima_modificacion=datetime.now(),
-                                usuario_ultima_modificacion=new_modulo['usuario_ultima_modificacion']
-                                )
+            modulo = Modulo(codigo=new_modulo['codigo'],
+                            medico=new_modulo['medico'],
+                            enfermeria=new_modulo['enfermeria'],
+                            kinesiologia=new_modulo['kinesiologia'],
+                            fonoaudiologia=new_modulo['fonoaudiologia'],
+                            cuidador=new_modulo['cuidador'],
+                            nutricion=new_modulo['nutricion'],
+                            ultima_modificacion=datetime.now(),
+                            usuario_ultima_modificacion=new_modulo['usuario_ultima_modificacion']
+                            )
 
             session.add(modulo)
             session.commit()
