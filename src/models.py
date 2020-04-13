@@ -24,7 +24,7 @@ class Prestador(Base):
     comentario = Column(String(150), nullable=False)
     baja = Column(Boolean, nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USERS.id'))
+    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
 
 
 class Paciente(Base):
@@ -41,7 +41,7 @@ class Paciente(Base):
     sub_modulo = Column(String(20), ForeignKey('SUB_MODULOS.id'))
     baja = Column(Boolean, default=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USERS.id'))
+    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
 
     
 class Modulo(Base):
@@ -55,7 +55,7 @@ class Modulo(Base):
     cuidador = Column(Float(2), nullable=False)
     nutricion = Column(Float(2), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USERS.id'))
+    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
 
 
 class SubModulo(Base):
@@ -64,7 +64,7 @@ class SubModulo(Base):
     codigo = Column(String(20), unique=True)
     descripcion = Column(String(50), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USERS.id'))
+    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
 
 
 class Practica(Base):
@@ -83,7 +83,7 @@ class Practica(Base):
     observaciones_paciente = Column(String(200))
     observaciones_prestacion = Column(String(200))
     ultima_modificacion = Column(Date)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USERS.id'))
+    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
 
 
 class Zona(Base):
@@ -94,11 +94,11 @@ class Zona(Base):
     pwd = Column(String(50), nullable=False)
     propietario = Column(String(50), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USERS.id'))
+    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
 
 
 class Usuario(Base):
-    __tablename__ = 'USERS'
+    __tablename__ = 'USUARIOS'
     id = Column(Integer, primary_key=True)
     DNI = Column(String(50), unique=True)
     apellido = Column(String(50), nullable=False)
@@ -125,7 +125,7 @@ class Liquidacion(Base):
     importe_diferencial = Column(Float(2), nullable=False)
     monto_fijo = Column(Float(2), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USERS.id'))
+    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
 
 
 class Feriado(Base):
@@ -134,7 +134,7 @@ class Feriado(Base):
     fecha = Column(Date, unique=True)
     descripcion = Column(String(50), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USERS.id'))
+    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
 
 
 class Especialidad(Base):
@@ -163,7 +163,7 @@ class RDSConfig:
     SUB_MODULOS = 'SUB_MODULOS'
     ZONAS = 'ZONAS'
     PRACTICAS = 'PRACTICAS'
-    USERS = 'USERS'
+    USUARIOS = 'USUARIOS'
     LIQUIDACION = 'LIQUIDACION'
     FERIADOS = 'FERIADOS'
     ESPECIALIDADES = 'ESPECIALIDADES'
@@ -176,7 +176,7 @@ class RDSConfig:
         {'table_name': SUB_MODULOS, 'model': SubModulo},
         {'table_name': LIQUIDACION, 'model': Prestador},
         {'table_name': ZONAS, 'model': Zona},
-        {'table_name': USUARIO, 'model': Usuario},
+        {'table_name': USUARIOS, 'model': Usuario},
         {'table_name': LIQUIDACION, 'model': Liquidacion},
         {'table_name': FERIADOS, 'model': Feriado},
         {'table_name': ESPECIALIDADES, 'model': Especialidad},

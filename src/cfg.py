@@ -25,8 +25,8 @@ class Setup:
         print(f'CODE: {r.status_code}')
         print(f'MESSAGE: {r.text}')
 
-    def drop_usuario(self):
-        payload = {"operation":"dropusuarios"}
+    def drop(self):
+        payload = {"operation":"drop"}
         r = requests.post(self.url, data=json.dumps(payload))
         print(f'CODE: {r.status_code}')
         print(f'MESSAGE: {r.text}')
@@ -60,4 +60,4 @@ if __name__ == '__main__':
     elif args.operation == 'adduser':
         admin.create_user()
     elif args.operation == 'drop':
-        admin.drop_usuario()
+        admin.drop()

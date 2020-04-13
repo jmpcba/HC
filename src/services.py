@@ -6,7 +6,7 @@ from datetime import datetime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError, StatementError
 from sqlalchemy import create_engine
-from sqlalchemy_utils import database_exists, create_database
+from sqlalchemy_utils import database_exists, create_database, drop_database
 from common import to_dict
 from models import Base, Prestador,Paciente, Modulo, SubModulo, Zona, Usuario, RDSConfig
 from errors import ObjectNotFoundError
@@ -326,9 +326,9 @@ class AdminService(Service):
                 Base.metadata.create_all(engine)
                 self.response.body = 'db create operation finished'
             
-            if body['operation'] == 'dropusuarios':
+            if body['operation'] == 'drop':
                 logging.info("dropping table usuarios")
-                result = engine.execute('DROP TABLE USUARIOS;')
+                result = drop_database(engine.url)
                 logging.info(result)
                 self.response.body = result
 
