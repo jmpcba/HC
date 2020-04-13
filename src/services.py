@@ -459,7 +459,6 @@ class UsuarioService(Service):
                             nombre=new_user['nombre'],
                             nivel=new_user['nivel'],
                             pwd=new_user['pwd'],
-                            usuario_ultima_modificacion=new_user['usuario_ultima_modificacion'],
                             ultima_modificacion=datetime.now()
                             )
 
@@ -495,7 +494,6 @@ class UsuarioService(Service):
             usr.nombre=usr_mod['nombre']
             usr.nivel=usr_mod['nivel']
             usr.pwd=usr_mod['pwd']
-            usr.usuario_ultima_modificacion=usr_mod['usuario_ultima_modificacion'],
             usr.ultima_modificacion=datetime.now()
 
             session.commit()
