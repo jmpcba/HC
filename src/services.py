@@ -325,6 +325,12 @@ class AdminService(Service):
                 logging.info('creating tables')
                 Base.metadata.create_all(engine)
                 self.response.body = 'db create operation finished'
+            
+            if body['operation'] == 'dropusuarios':
+                logging.info("dropping table usuarios")
+                result = engine.execute('DROP TABLE USUARIOS;')
+                logging.info(result)
+                self.response.body = result
 
         except Exception as e:
             self.response.code = 500
