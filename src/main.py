@@ -1,7 +1,7 @@
 import errors
 import logging
 import json
-from services import DataBrokerService, PrestadoresService, PacientesService, AdminService
+from services import DataBrokerService, PrestadoresService, PacientesService, AdminService, ModuloService
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -46,7 +46,8 @@ def service_mapper(resource):
     resources = {
         'PACIENTE' : PacientesService,
         'PRESTADOR' : PrestadoresService,
-        'ADMIN': AdminService
+        'ADMIN': AdminService,
+        'MODULO': ModuloService
     }
     return resources[resource]
 

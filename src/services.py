@@ -336,3 +336,108 @@ class AdminService(Service):
     
     def get(self):
         self.response.body = "Service is working"
+
+
+class ModuloService(Service):
+    # INSERT
+    def post(self, new_modulo):
+        try:
+            logging.info("received request to insert new prestador")
+            logging.info(json.dumps(new_modulo))
+            modulo = Modulo(CUIT=new_modulo['CUIT'], 
+                                codigo=new_modulo['codigo'],
+                                medico=new_modulo['medico'],
+                                enfermeria=new_modulo['enfermeria'],
+                                kinesiologia=new_modulo['kinesiologia'],
+                                fonoaudiologia=new_modulo['fonoaudiologia'],
+                                cuidador=new_modulo['cuidador'],
+                                nutricion=new_modulo['nutricion'],
+                                ultima_modificacion=datetime.now(),
+                                usuario_ultima_modificacion=new_modulo['usuario_ultima_modificacion']
+                                )
+
+            session.add(modulo)
+            session.commit()
+            logging.info(f"New Prestador: {modulo.id} inserted")
+            self.response.body = "Nuevo modulo insertado"
+        
+        except KeyError as e:
+            self.response.code = 500
+            self.response.body = e
+            session.rollback()
+        
+        except (IntegrityError, StatementError) as e:
+            session.rollback()
+            self.response.code = 500
+            self.response.body = e
+        
+        finally:
+            if self.response.code != 200:
+                logging.error(f"ERROR: {str(self.response.body)}")
+
+    
+    # UPDATE
+    def put(self, modulo_mod):
+        try:
+            logging.info(f'Modifiying Modulo {1}')
+            id = modulo_mod['id']
+            modulo = session.query(Modulo).filter(Modulo.id == id).first()
+
+            modulo.codigo=modulo_mod['codigo']
+            modulo.medico=modulo_mod['medico']
+            modulo.enfermeria=modulo_mod['enfermeria']
+            modulo.kinesiologia=modulo_mod['kinesiologia']
+            modulo.fonoaudiologia=modulo_mod['fonoaudiologia']
+            modulo.cuidador=modulo_mod['cuidador']
+            modulo.nutricion=modulo_mod['nutricion']
+            modulo.usuario_ultima_modificacion=modulo_mod['usuario_ultima_modificacion'],
+            modulo.ultima_modificacion=datetime.now()
+
+            session.commit()
+
+            self.response.body = f"modulo: {modulo.id} modified"
+        
+        except KeyError as e:
+            self.response.code = 500
+            self.response.body = f"Invalid Parameter: {e}"
+            session.rollback()
+        
+        except IntegrityError as e:
+            self.response.code = 500
+            self.response.body = e
+            session.rollback()
+        
+        finally:
+            if self.response.code != 200:
+                logging.error(f"ERROR: {str(self.response.body)}")
+
+    
+    def delete(self):
+        pass
+    
+    def get(self, id=None):
+        try:
+            if id:
+                modulo = session.query(Modulo).filter(Modulo.id == id).first()
+                if modulo:
+                    self.response.body = vars(modulo)
+                else:
+                    raise ObjectNotFoundError
+            else:
+                ds = DataBrokerService()
+                ds.get(RDSConfig.PRESTADORES)
+                self.response.code = ds.response.code
+                self.response.body = ds.response.body[RDSConfig.PRESTADORES]
+                
+        
+        except ObjectNotFoundError as e:
+            self.response.code = 404
+            self.response.body = e
+        
+        except IntegrityError as e:
+            self.response.code = 500
+            self.response.body = e
+        
+        finally:
+            if self.response.code != 200:
+                logging.error(f"ERROR: {str(self.response.body)}")

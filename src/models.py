@@ -180,11 +180,3 @@ class RDSConfig:
         {'table_name': FERIADOS, 'model': Feriado},
         {'table_name': ESPECIALIDADES, 'model': Especialidad},
     ]
-    
-
-def create_tables():
-    engine = create_engine(RDSConfig.ENGINE, echo=True)
-    if not database_exists(engine.url):
-        create_database(engine.url)
-
-    Base.metadata.create_all(engine)
