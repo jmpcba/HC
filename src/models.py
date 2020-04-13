@@ -106,6 +106,7 @@ class Usuario(Base):
     nivel = Column(String(50), nullable=False)
     pwd = Column(String(50), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
+    usuario_ultima_modificacion = Column(Integer, nullable=True)
 
 
 class Liquidacion(Base):
