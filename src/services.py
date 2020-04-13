@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError, StatementError
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 from common import to_dict
-from models import Base, Prestador,Paciente, Modulo, SubModulo, Zona, RDSConfig
+from models import Base, Prestador,Paciente, Modulo, SubModulo, Zona, Usuario, RDSConfig
 from errors import ObjectNotFoundError
 
 engine = create_engine(RDSConfig.ENGINE)
@@ -395,6 +395,105 @@ class ModuloService(Service):
             session.commit()
 
             self.response.body = f"modulo: {modulo.id} modified"
+        
+        except KeyError as e:
+            self.response.code = 500
+            self.response.body = f"Invalid Parameter: {e}"
+            session.rollback()
+        
+        except IntegrityError as e:
+            self.response.code = 500
+            self.response.body = e
+            session.rollback()
+        
+        finally:
+            if self.response.code != 200:
+                logging.error(f"ERROR: {str(self.response.body)}")
+
+    
+    def delete(self):
+        pass
+    
+    def get(self, id=None):
+        try:
+            if id:
+                modulo = session.query(Modulo).filter(Modulo.id == id).first()
+                if modulo:
+                    self.response.body = vars(modulo)
+                else:
+                    raise ObjectNotFoundError
+            else:
+                ds = DataBrokerService()
+                ds.get(RDSConfig.PRESTADORES)
+                self.response.code = ds.response.code
+                self.response.body = ds.response.body[RDSConfig.PRESTADORES]
+                
+        
+        except ObjectNotFoundError as e:
+            self.response.code = 404
+            self.response.body = e
+        
+        except IntegrityError as e:
+            self.response.code = 500
+            self.response.body = e
+        
+        finally:
+            if self.response.code != 200:
+                logging.error(f"ERROR: {str(self.response.body)}")
+            
+
+class UsuarioService(Service):
+    # INSERT
+    def post(self, new_user):
+        try:
+            logging.info("received request to insert new user")
+            logging.info(json.dumps(new_user))
+            _new_user = Usuario(DNI=new_user['DNI'],
+                            apellido=new_user['apellido'],
+                            nombre=new_user['nombre'],
+                            nivel=new_user['nivel'],
+                            pwd=new_user['pwd'],
+                            usuario_ultima_modificacion=new_user['usuario_ultima_modificacion']
+                            )
+
+            session.add(_new_user)
+            session.commit()
+            logging.info(f"New Prestador: {_new_user.id} inserted")
+            self.response.body = "Nuevo usuario insertado"
+        
+        except KeyError as e:
+            self.response.code = 500
+            self.response.body = e
+            session.rollback()
+        
+        except (IntegrityError, StatementError) as e:
+            session.rollback()
+            self.response.code = 500
+            self.response.body = e
+        
+        finally:
+            if self.response.code != 200:
+                logging.error(f"ERROR: {str(self.response.body)}")
+
+    
+    # UPDATE
+    def put(self, usr_mod):
+        try:
+            logging.info(f'Modifiying Usuario {1}')
+            id = usr_mod['id']
+            usr = session.query(Usuario).filter(Usuario.id == id).first()
+
+            usr.DNI=usr_mod['DNI']
+            usr.apellido=usr_mod['apellido']
+            usr.nombre=usr_mod['nombre']
+            usr.nivel=usr_mod['nivel']
+            usr.pwd=usr_mod['pwd']
+            usr.usuario_ultima_modificacion=usr_mod['usuario_ultima_modificacion'],
+            usr.ultima_modificacion=datetime.now()
+
+            session.commit()
+
+            self.response.body = f"modulo: {usr.id} modified"
         
         except KeyError as e:
             self.response.code = 500
