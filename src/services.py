@@ -111,7 +111,6 @@ class PrestadoresService(Service):
                                 zona=new_prestador['zona'],
                                 comentario=new_prestador['comentario'],
                                 baja=new_prestador['baja'],
-                                usuario_ultima_modificacion=new_prestador['usuario'],
                                 ultima_modificacion=datetime.now(),
                                 usuario_ultima_modificacion=new_prestador['usuario_ultima_modificacion']
                                 )
