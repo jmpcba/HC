@@ -453,7 +453,8 @@ class UsuarioService(Service):
                             nombre=new_user['nombre'],
                             nivel=new_user['nivel'],
                             pwd=new_user['pwd'],
-                            usuario_ultima_modificacion=new_user['usuario_ultima_modificacion']
+                            usuario_ultima_modificacion=new_user['usuario_ultima_modificacion'],
+                            ultima_modificacion=datetime.now()
                             )
 
             session.add(_new_user)

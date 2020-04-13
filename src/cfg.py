@@ -25,14 +25,16 @@ class Setup:
         print(f'CODE: {r.status_code}')
         print(f'MESSAGE: {r.text}')
     
-    def create_user(self, usr):
+    def create_user(self):
         usr_url = 'https://cl86zb12f8.execute-api.us-east-1.amazonaws.com/DEV/v1/USUARIO'
         payload = {
             'DNI': '29188989',
             'apellido': 'palacios',
             'nombre': 'juan manuel',
             'nivel': 0,
-            'pwd': 'noimportaahora'
+            'pwd': 'noimportaahora',
+            'usuario_ultima_modificacion': ''
+            'ultima_modificacion': 
 
         }
         r = requests.post(usr_url, json.dumps(payload))
