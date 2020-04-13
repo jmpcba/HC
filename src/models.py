@@ -37,8 +37,8 @@ class Paciente(Base):
     localidad = Column(String(50), nullable=False)
     obra_social = Column(String(50), nullable=False)
     observacion = Column(String(50), nullable=False)
-    modulo = Column(String(20), ForeignKey('MODULOS.id'))
-    sub_modulo = Column(String(20), ForeignKey('SUB_MODULOS.id'))
+    modulo = Column(Integer, ForeignKey('MODULOS.id'))
+    sub_modulo = Column(Integer, ForeignKey('SUB_MODULOS.id'))
     baja = Column(Boolean, default=False)
     ultima_modificacion = Column(Date, nullable=False)
     usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
@@ -106,7 +106,6 @@ class Usuario(Base):
     nivel = Column(String(50), nullable=False)
     pwd = Column(String(50), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, nullable=True)
 
 
 class Liquidacion(Base):
