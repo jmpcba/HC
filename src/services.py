@@ -430,9 +430,9 @@ class ModuloService(Service):
                     raise ObjectNotFoundError
             else:
                 ds = DataBrokerService()
-                ds.get(RDSConfig.PRESTADORES)
+                ds.get(RDSConfig.MODULOS)
                 self.response.code = ds.response.code
-                self.response.body = ds.response.body[RDSConfig.PRESTADORES]
+                self.response.body = ds.response.body[RDSConfig.MODULOS]
                 
         
         except ObjectNotFoundError as e:
@@ -521,16 +521,16 @@ class UsuarioService(Service):
     def get(self, id=None):
         try:
             if id:
-                modulo = session.query(Modulo).filter(Modulo.id == id).first()
+                modulo = session.query(Usuario).filter(Usuario.id == id).first()
                 if modulo:
                     self.response.body = vars(modulo)
                 else:
                     raise ObjectNotFoundError
             else:
                 ds = DataBrokerService()
-                ds.get(RDSConfig.PRESTADORES)
+                ds.get(RDSConfig.USUARIOS)
                 self.response.code = ds.response.code
-                self.response.body = ds.response.body[RDSConfig.PRESTADORES]
+                self.response.body = ds.response.body[RDSConfig.USUARIOS]
                 
         
         except ObjectNotFoundError as e:
