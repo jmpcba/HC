@@ -113,7 +113,7 @@ class PrestadoresService(Service):
                                 baja=new_prestador['baja'],
                                 usuario_ultima_modificacion=new_prestador['usuario'],
                                 ultima_modificacion=datetime.now(),
-                                usuario_ultima_modificacion=new_prestador['usuario_ultima_modificacion'],
+                                usuario_ultima_modificacion=new_prestador['usuario_ultima_modificacion']
                                 )
 
             session.add(prestador)
@@ -221,8 +221,9 @@ class PacientesService(Service):
                                 observacion=new_paciente['observacion'],
                                 modulo=new_paciente['modulo'],
                                 sub_modulo=new_paciente['sub_modulo'],
-                                baja=new_paciente['baja']
-                                ultima_modificacion = datetime.now
+                                baja=new_paciente['baja'],
+                                ultima_modificacion = datetime.now(),
+                                usuario_ultima_modificacion=new_prestador['usuario_ultima_modificacion']
                                 )
 
             session.add(paciente)
