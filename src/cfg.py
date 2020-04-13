@@ -24,7 +24,13 @@ class Setup:
         r = requests.post(self.url, data=json.dumps(payload))
         print(f'CODE: {r.status_code}')
         print(f'MESSAGE: {r.text}')
-    
+
+    def drop_usuario(self):
+        payload = {"operation":"dropusuarios"}
+        r = requests.post(self.url, data=json.dumps(payload))
+        print(f'CODE: {r.status_code}')
+        print(f'MESSAGE: {r.text}')
+
     def create_user(self):
         usr_url = 'https://cl86zb12f8.execute-api.us-east-1.amazonaws.com/DEV/v1/USUARIO'
         payload = {
@@ -45,7 +51,7 @@ if __name__ == '__main__':
     logger.setLevel(logging.INFO)
 
     parser = argparse.ArgumentParser(description='DB setup options')
-    parser.add_argument('operation', help='what operation do you want to execute?', choices=['create','adduser'])
+    parser.add_argument('operation', help='what operation do you want to execute?', choices=['create','adduser', 'drop'])
     args = parser.parse_args()
     admin = Setup('dev')
     
@@ -53,3 +59,5 @@ if __name__ == '__main__':
         admin.create_tables()
     elif args.operation == 'adduser':
         admin.create_user()
+    elif args.operation == 'drop':
+        admin.drop_usuario()

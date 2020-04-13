@@ -98,7 +98,7 @@ class Zona(Base):
 
 
 class Usuario(Base):
-    __tablename__ = 'USUARIOS'
+    __tablename__ = 'USERS'
     id = Column(Integer, primary_key=True)
     DNI = Column(String(50), unique=True)
     apellido = Column(String(50), nullable=False)
@@ -163,7 +163,7 @@ class RDSConfig:
     SUB_MODULOS = 'SUB_MODULOS'
     ZONAS = 'ZONAS'
     PRACTICAS = 'PRACTICAS'
-    USUARIOS = 'USUARIOS'
+    USUARIOS = 'USERS'
     LIQUIDACION = 'LIQUIDACION'
     FERIADOS = 'FERIADOS'
     ESPECIALIDADES = 'ESPECIALIDADES'
