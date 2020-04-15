@@ -115,12 +115,16 @@ class Service:
     def put(self, body):
         try:
             logging.info(f'Modifiying table {self.model.table_name}')
+            
+            id = body['id']
+            current = session.query(self.model.model_map).filter(self.model.model_map.id == id).first()
             new_object = self.model.model_map
             new_object = new_object(**body)
-            
-            session.add(new_object)
+            new_object.id = id
+
+            current = new_object
             session.commit()
-            self.response.body = f'Objecto {self.model.table_name} modificado'
+            self.response.body = f'Objeto {self.model.table_name} modificado'
         
         except KeyError as e:
             self.response.code = 500
