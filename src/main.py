@@ -1,8 +1,7 @@
-import errors
 import logging
 import json
-from services import Service, AdminService
-from models import Resources
+from .services import Service, AdminService
+from .RDS import Resources
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
