@@ -163,7 +163,7 @@ class Resources(Enum):
     PRESTADOR = 'PRESTADOR'
     PACIENTE = 'PACIENTE'
     MODULO = 'MODULO'
-    SUB_MODULO = 'SUB_MODULO'
+    SUBMODULO = 'SUBMODULO'
     LIQUIDACION = 'LIQUIDACION'
     ZONA = 'ZONA'
     USUARIO = 'USUARIO'
@@ -178,7 +178,7 @@ class RDSModel:
         Resources.PRESTADOR.value: Prestador,
         Resources.PACIENTE.value: Paciente,
         Resources.MODULO.value: Modulo,
-        Resources.SUB_MODULO.value: SubModulo,
+        Resources.SUBMODULO.value: SubModulo,
         Resources.LIQUIDACION.value: Liquidacion,
         Resources.ZONA.value: Zona,
         Resources.USUARIO.value: Usuario,

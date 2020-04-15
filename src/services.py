@@ -56,9 +56,7 @@ class Service:
     def __init__(self, resource):
             self.response = Response()
             self.resource = resource
-            
-            if resource == Resources.MODULO.value:
-                self.model = RDSModel(resource)
+            self.model = RDSModel(resource)
 
     def get(self):
         
@@ -131,6 +129,12 @@ class Service:
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
             
+            elif self.resource == Resources.SUB_MODULO.value:
+                current.codigo = new_object.codigo
+                current.descripcion = new_object.descripcion
+                current.ultima_modificacion = datetime.now()
+                current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
+
             session.commit()
             self.response.body = f'Objeto {current.id} modificado'
         
