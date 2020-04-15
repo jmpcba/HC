@@ -172,20 +172,21 @@ class Resources(Enum):
     ADMIN = 'ADMIN'
     PRACTICA = 'PRACTICA'
 
+
 class RDSModel:
 
     def __init__(self, resource):
         models = {
-        Resources.PRESTADOR.value: Prestador,
-        Resources.PACIENTE.value: Paciente,
-        Resources.MODULO.value: Modulo,
-        Resources.SUBMODULO.value: SubModulo,
-        Resources.LIQUIDACION.value: Liquidacion,
-        Resources.ZONA.value: Zona,
-        Resources.USUARIO.value: Usuario,
-        Resources.FERIADO.value: Feriado,
-        Resources.ESPECIALIDAD.value: Especialidad,
-        Resources.PRACTICA.value: Practica,
+            Resources.PRESTADOR.value: Prestador,
+            Resources.PACIENTE.value: Paciente,
+            Resources.MODULO.value: Modulo,
+            Resources.SUBMODULO.value: SubModulo,
+            Resources.LIQUIDACION.value: Liquidacion,
+            Resources.ZONA.value: Zona,
+            Resources.USUARIO.value: Usuario,
+            Resources.FERIADO.value: Feriado,
+            Resources.ESPECIALIDAD.value: Especialidad,
+            Resources.PRACTICA.value: Practica,
         }
 
         self._model = models[resource]

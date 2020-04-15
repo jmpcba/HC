@@ -53,9 +53,9 @@ class Response:
 class Service:
 
     def __init__(self, resource):
-            self.response = Response()
-            self.resource = resource
-            self.model = RDSModel(resource)
+        self.response = Response()
+        self.resource = resource
+        self.model = RDSModel(resource)
 
     def get(self):
         
@@ -99,7 +99,7 @@ class Service:
             self.response.body = e
             session.rollback()
         
-        except (IntegrityError) as e:
+        except IntegrityError as e:
             session.rollback()
             self.response.code = 500
             self.response.body = 'El objeto ya existe'
@@ -107,7 +107,6 @@ class Service:
         finally:
             if self.response.code != 200:
                 logging.error(f"ERROR: {str(self.response.body)}")
-
 
     def put(self, body):
         try:
@@ -236,6 +235,8 @@ class Service:
         finally:
             if self.response.code != 200:
                 logging.error(f"ERROR: {str(self.response.body)}")
+
+
 class AdminService:
 
     def __init__(self):

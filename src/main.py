@@ -12,6 +12,7 @@ logger.setLevel(logging.INFO)
 # liquidaciones TBD
 # hay un solo main, tengo que averiguar recurso y metodo
 
+
 def handler(event, context):
     logger.info(f'REQUEST\n{event}')
 
@@ -42,6 +43,7 @@ def handler(event, context):
 
     logger.info(f'RESPONSE\n{service.response.service_response}')
     return service.response.service_response
+
 
 """
 {
