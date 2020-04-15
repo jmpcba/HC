@@ -1,7 +1,8 @@
 import errors
 import logging
 import json
-from services import DataBrokerService, PrestadoresService, PacientesService, AdminService, ModuloService, UsuarioService
+from services import Service, AdminService
+from models import Resources
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -26,8 +27,10 @@ def handler(event, context):
     resource = event['resource'].upper()
     resource = resource[resource.rfind('/')+1:]
 
-    service = service_mapper(resource)
-    service = service()
+    service = Service(resource)
+
+    if resource == Resources.ADMIN:
+        service = AdminService()
 
     if method == 'POST':
         service.post(body)
@@ -40,17 +43,6 @@ def handler(event, context):
 
     logger.info(f'RESPONSE\n{service.response.service_response}')
     return service.response.service_response
-
-
-def service_mapper(resource):
-    resources = {
-        'PACIENTE' : PacientesService,
-        'PRESTADOR' : PrestadoresService,
-        'ADMIN': AdminService,
-        'MODULO': ModuloService,
-        'USUARIO': UsuarioService
-    }
-    return resources[resource]
 
 """
 {

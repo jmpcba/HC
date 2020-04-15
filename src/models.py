@@ -1,8 +1,10 @@
 import os
+import json
+from enum import Enum
 from sqlalchemy import create_engine, Column, ForeignKey, Integer, String, Float, Boolean, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-import json
+
 
 Base = declarative_base()
 
@@ -156,27 +158,40 @@ class RDSConfig:
     DIALECT = 'mysql+pymysql'
     ENGINE = f'{DIALECT}://{USER}:{PWD}@{RDS_HOST}/{DB}'
 
-    PRESTADORES = 'PRESTADORES'
-    PACIENTES = 'PACIENTES'
-    MODULOS = 'MODULOS'
-    SUB_MODULOS = 'SUB_MODULOS'
-    ZONAS = 'ZONAS'
-    PRACTICAS = 'PRACTICAS'
-    USUARIOS = 'USUARIOS'
-    LIQUIDACION = 'LIQUIDACION'
-    FERIADOS = 'FERIADOS'
-    ESPECIALIDADES = 'ESPECIALIDADES'
-    USUARIOS = 'USUARIOS'
 
-    TABLES = [
-        {'table_name': PRESTADORES, 'model': Prestador},
-        {'table_name': PACIENTES, 'model': Paciente},
-        {'table_name': MODULOS, 'model': Modulo},
-        {'table_name': SUB_MODULOS, 'model': SubModulo},
-        {'table_name': LIQUIDACION, 'model': Prestador},
-        {'table_name': ZONAS, 'model': Zona},
-        {'table_name': USUARIOS, 'model': Usuario},
-        {'table_name': LIQUIDACION, 'model': Liquidacion},
-        {'table_name': FERIADOS, 'model': Feriado},
-        {'table_name': ESPECIALIDADES, 'model': Especialidad},
-    ]
+class Resources(Enum):
+    PRESTADOR = 'PRESTADOR'
+    PACIENTE = 'PACIENTE'
+    MODULO = 'MODULO'
+    SUB_MODULO = 'SUB_MODULO'
+    LIQUIDACION = 'LIQUIDACION'
+    ZONA = 'ZONA'
+    USUARIO = 'USUARIO'
+    FERIADO = 'FERIADO',
+    ESPECIALIDAD = 'ESPECIALIDAD'
+    ADMIN = 'ADMIN'
+
+class RDSModel:
+
+    def __init__(self, resource):
+        models = {
+        Resources.PRESTADOR.value: Prestador,
+        Resources.PACIENTE.value: Paciente,
+        Resources.MODULO.value: Modulo,
+        Resources.SUB_MODULO.value: SubModulo,
+        Resources.LIQUIDACION.value: Liquidacion,
+        Resources.ZONA.value: Zona,
+        Resources.USUARIO.value: Usuario,
+        Resources.FERIADO.value: Feriado,
+        Resources.ESPECIALIDAD.value: Especialidad,
+        }
+
+        self._model = models[resource]
+
+    @property
+    def model_map(self):
+        return self._model
+
+    @property
+    def table_name(self):
+        return self._model.__tablename__

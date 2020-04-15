@@ -7,9 +7,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError, StatementError
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database, drop_database
-from common import to_dict
-from models import Base, Prestador,Paciente, Modulo, SubModulo, Zona, Usuario, RDSConfig
-from errors import ObjectNotFoundError
+from models import Base, RDSConfig, Resources, RDSModel
+
 
 engine = create_engine(RDSConfig.ENGINE)
 Base.metadata.bind = engine
@@ -51,37 +50,31 @@ class Response:
             'body': json.dumps(self._body, default=str)
             }
 
-class Service:
-    def __init__(self):
-        self.response = Response()
 
-class DataBrokerService(Service):
-    
-    def get(self, in_tables):
+class Service:
+
+    def __init__(self, resource):
+            self.response = Response()
+            self.resource = resource
+            
+            if resource == Resources.MODULO.value:
+                self.model = RDSModel(resource)
+
+    def get(self):
         
-        result = {}
-        
+        result = None
         try:
-            for t in RDSConfig.TABLES:
-                if t['table_name'] in in_tables:
-                    logging.info(f"Fetching table {t['table_name']}")
-                    result[t['table_name']] = [vars(r) for r in session.query(t['model']).all()]
+            logging.info(f"Fetching table {self.model.table_name}")
+            result = [vars(r) for r in session.query(self.model.model_map).all()]
             if result:
                 self.response.body = result
             else:
-                raise errors.ObjectNotFoundError()
-        
-        except errors.ObjectNotFoundError as e:
-            self.response.body = e
-            self.response.code = 404
+                self.response.body = e
+                self.response.code = 404
             
         except pymysql.MySQLError as e:
             self.response.body = e
             self.response.code = 500
-        
-        except errors.InvalidParameter as e:
-            self.response.body = e
-            self.response.code = 400
             
         except Exception as e:
             self.response.body = e
@@ -90,228 +83,63 @@ class DataBrokerService(Service):
         finally:
             if self.response.code != 200:
                 logging.error(f"ERROR: {str(self.response.body)}")
-
-
-class PrestadoresService(Service):
-    # INSERT
-    def post(self, new_prestador):
-        try:
-            logging.info("received request to insert new prestador")
-            logging.info(json.dumps(new_prestador))
-            prestador = Prestador(CUIT=new_prestador['CUIT'], 
-                                nombre=new_prestador['nombre'],
-                                apellido=new_prestador['apellido'],
-                                mail=new_prestador['mail'],
-                                especialidad=new_prestador['especialidad'],
-                                servicio=new_prestador['servicio'],
-                                localidad=new_prestador['localidad'],
-                                monto_feriado=new_prestador['monto_feriado'],
-                                monto_semana=new_prestador['monto_semana'],
-                                monto_fijo=new_prestador['monto_fijo'],
-                                zona=new_prestador['zona'],
-                                comentario=new_prestador['comentario'],
-                                baja=new_prestador['baja'],
-                                ultima_modificacion=datetime.now(),
-                                usuario_ultima_modificacion=new_prestador['usuario_ultima_modificacion']
-                                )
-
-            session.add(prestador)
-            session.commit()
-            logging.info("New prestador inserted into DB")
-            self.response.body = f"New Prestador: {prestador.id} inserted"
-        
-        except KeyError as e:
-            self.response.code = 500
-            self.response.body = e
-            session.rollback()
-        
-        except (IntegrityError, StatementError) as e:
-            session.rollback()
-            self.response.code = 500
-            self.response.body = e
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
-
     
-    # UPDATE
-    def put(self, prest_mod):
+    def post(self, body):
         try:
-            logging.info(f'Modifiying Prestador {1}')
-            id = prest_mod['id']
-            prestador = session.query(Prestador).filter(Prestador.id == id).first()
-
-            prestador.CUIT=prest_mod['CUIT']
-            prestador.nombre=prest_mod['nombre']
-            prestador.apellido=prest_mod['apellido']
-            prestador.mail=prest_mod['mail']
-            prestador.especialidad=prest_mod['especialidad']
-            prestador.servicio=prest_mod['servicio']
-            prestador.localidad=prest_mod['localidad']
-            prestador.monto_feriado=prest_mod['monto_feriado']
-            prestador.monto_semana=prest_mod['monto_semana']
-            prestador.monto_fijo=prest_mod['monto_fijo']
-            prestador.zona=prest_mod['zona']
-            prestador.comentario=prest_mod['comentario']
-            prestador.baja=prest_mod['baja'],
-            prestador.usuario_ultima_modificacion=prest_mod['usuario'],
-            prestador.ultima_modificacion=datetime.now()
-
-            session.commit()
-
-            self.response.body = f"Prestador: {prestador.id} modified"
-        
-        except KeyError as e:
-            self.response.code = 500
-            self.response.body = f"Invalid Parameter: {e}"
-            session.rollback()
-        
-        except IntegrityError as e:
-            self.response.code = 500
-            self.response.body = e
-            session.rollback()
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
-
+            logging.info(f"received request to insert new object in: {self.model.table_name}")
+            logging.info(f'OBJECT: {json.dumps(body)}')
     
-    def delete(self):
-        pass
-    
-    def get(self, id=None):
-        try:
-            if id:
-                prestador = session.query(Prestador).filter(Prestador.id == id).first()
-                if prestador:
-                    self.response.body = vars(prestador)
-                else:
-                    raise ObjectNotFoundError
-            else:
-                ds = DataBrokerService()
-                ds.get(RDSConfig.PRESTADORES)
-                self.response.code = ds.response.code
-                self.response.body = ds.response.body[RDSConfig.PRESTADORES]
-                
-        
-        except ObjectNotFoundError as e:
-            self.response.code = 404
-            self.response.body = e
-        
-        except IntegrityError as e:
-            self.response.code = 500
-            self.response.body = e
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
-
-class PacientesService(Service):
-    # INSERT
-    def post(self, new_paciente):
-        try:
-            paciente = Paciente(afiliado=new_paciente['afiliado'], 
-                                DNI=new_paciente['DNI'], 
-                                nombre=new_paciente['nombre'],
-                                apellido=new_paciente['apellido'],
-                                localidad=new_paciente['localidad'],
-                                obra_social=new_paciente['obra_social'],
-                                observacion=new_paciente['observacion'],
-                                modulo=new_paciente['modulo'],
-                                sub_modulo=new_paciente['sub_modulo'],
-                                baja=new_paciente['baja'],
-                                ultima_modificacion = datetime.now(),
-                                usuario_ultima_modificacion=new_paciente['usuario_ultima_modificacion']
-                                )
-
-            session.add(paciente)
-            session.commit()
-            self.response.body = f"New Paciente: {paciente.afiliado} inserted"
-        
-        except KeyError as e:
-            self.response.code = 500
-            self.response.body = e
-            session.rollback()
-        
-        except (IntegrityError, StatementError) as e:
-            session.rollback()
-            self.response.code = 500
-            self.response.body = e
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
-
-    
-    # UPDATE
-    def put(self, pac_mod):
-        try:
+            new_object = self.model.model_map
+            new_object = new_object(**body)
             
-            afiliado = pac_mod['afiliado']
-            logging.info(f'Modifiying Paciente {afiliado}')
-            paciente = session.query(Paciente).filter(Paciente.afiliado == afiliado).first()
-
-            paciente.DNI=pac_mod['DNI']
-            paciente.nombre=pac_mod['nombre']
-            paciente.apellido=pac_mod['apellido']
-            paciente.localidad=pac_mod['localidad']
-            paciente.obra_social=pac_mod['obra_social']
-            paciente.observacion=pac_mod['observacion']
-            paciente.modulo=pac_mod['modulo']
-            paciente.sub_modulo=pac_mod['sub_modulo']
-            paciente.baja=pac_mod['baja']
-
+            session.add(new_object)
             session.commit()
+            logging.info(f"New object inserted into DB: {self.model.table_name}")
+            self.response.body = f'Nuevo objeto insertado en {self.model.table_name}'
+        
+        except KeyError as e:
+            self.response.code = 500
+            self.response.body = e
+            session.rollback()
+        
+        except (IntegrityError) as e:
+            session.rollback()
+            self.response.code = 500
+            self.response.body = 'El objeto ya existe'
+        
+        finally:
+            if self.response.code != 200:
+                logging.error(f"ERROR: {str(self.response.body)}")
 
-            self.response.body = f"Paciente: {paciente.afiliado} modified"
+
+    def put(self, body):
+        try:
+            logging.info(f'Modifiying table {self.model.table_name}')
+            new_object = self.model.model_map
+            new_object = new_object(**body)
+            
+            session.add(new_object)
+            session.commit()
+            self.response.body = f'Objecto {self.model.table_name} modificado'
         
         except KeyError as e:
             self.response.code = 500
             self.response.body = f"Invalid Parameter: {e}"
+            session.rollback()
         
         except IntegrityError as e:
             self.response.code = 500
             self.response.body = e
+            session.rollback()
         
         finally:
             if self.response.code != 200:
                 logging.error(f"ERROR: {str(self.response.body)}")
+class AdminService:
 
-    
-    def delete(self):
-        pass
-    
-    def get(self, id=None):
-        try:
-            if id:
-                paciente = session.query(Paciente).filter(Paciente.afiliado == id).first()
-                if paciente:
-                    self.response.body = vars(paciente)
-                else:
-                    raise ObjectNotFoundError
-            else:
-                ds = DataBrokerService()
-                ds.get(RDSConfig.PACIENTES)
-                self.response.code = ds.response.code
-                self.response.body = ds.response.body[RDSConfig.PACIENTES]
-                
+    def __init__(self):
+        self.response = Response()
         
-        except ObjectNotFoundError as e:
-            self.response.code = 404
-            self.response.body = e
-        
-        except IntegrityError as e:
-            self.response.code = 500
-            self.response.body = e
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
-
-        
-class AdminService(Service):
-
     def post(self, body):
         logging.info(f'post method body: {body}')
         try:
@@ -328,9 +156,8 @@ class AdminService(Service):
             
             if body['operation'] == 'drop':
                 logging.info("dropping table usuarios")
-                result = drop_database(engine.url)
-                logging.info(result)
-                self.response.body = result
+                drop_database(engine.url)
+                self.response.body = 'table usuarios dropped'
 
         except Exception as e:
             self.response.code = 500
@@ -342,205 +169,3 @@ class AdminService(Service):
     
     def get(self):
         self.response.body = "Service is working"
-
-
-class ModuloService(Service):
-    # INSERT
-    def post(self, new_modulo):
-        try:
-            logging.info("received request to insert new prestador")
-            logging.info(json.dumps(new_modulo))
-            modulo = Modulo(codigo=new_modulo['codigo'],
-                            medico=new_modulo['medico'],
-                            enfermeria=new_modulo['enfermeria'],
-                            kinesiologia=new_modulo['kinesiologia'],
-                            fonoaudiologia=new_modulo['fonoaudiologia'],
-                            cuidador=new_modulo['cuidador'],
-                            nutricion=new_modulo['nutricion'],
-                            ultima_modificacion=datetime.now(),
-                            usuario_ultima_modificacion=new_modulo['usuario_ultima_modificacion']
-                            )
-
-            session.add(modulo)
-            session.commit()
-            logging.info(f"New Prestador: {modulo.id} inserted")
-            self.response.body = "Nuevo modulo insertado"
-        
-        except KeyError as e:
-            self.response.code = 500
-            self.response.body = e
-            session.rollback()
-        
-        except (IntegrityError, StatementError) as e:
-            session.rollback()
-            self.response.code = 500
-            self.response.body = e
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
-
-    
-    # UPDATE
-    def put(self, modulo_mod):
-        try:
-            logging.info(f'Modifiying Modulo {1}')
-            id = modulo_mod['id']
-            modulo = session.query(Modulo).filter(Modulo.id == id).first()
-
-            modulo.codigo=modulo_mod['codigo']
-            modulo.medico=modulo_mod['medico']
-            modulo.enfermeria=modulo_mod['enfermeria']
-            modulo.kinesiologia=modulo_mod['kinesiologia']
-            modulo.fonoaudiologia=modulo_mod['fonoaudiologia']
-            modulo.cuidador=modulo_mod['cuidador']
-            modulo.nutricion=modulo_mod['nutricion']
-            modulo.usuario_ultima_modificacion=modulo_mod['usuario_ultima_modificacion'],
-            modulo.ultima_modificacion=datetime.now()
-
-            session.commit()
-
-            self.response.body = f"modulo: {modulo.id} modified"
-        
-        except KeyError as e:
-            self.response.code = 500
-            self.response.body = f"Invalid Parameter: {e}"
-            session.rollback()
-        
-        except IntegrityError as e:
-            self.response.code = 500
-            self.response.body = e
-            session.rollback()
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
-
-    
-    def delete(self):
-        pass
-    
-    def get(self, id=None):
-        try:
-            if id:
-                modulo = session.query(Modulo).filter(Modulo.id == id).first()
-                if modulo:
-                    self.response.body = vars(modulo)
-                else:
-                    raise ObjectNotFoundError
-            else:
-                ds = DataBrokerService()
-                ds.get(RDSConfig.MODULOS)
-                self.response.code = ds.response.code
-                self.response.body = ds.response.body[RDSConfig.MODULOS]
-                
-        
-        except ObjectNotFoundError as e:
-            self.response.code = 404
-            self.response.body = e
-        
-        except IntegrityError as e:
-            self.response.code = 500
-            self.response.body = e
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
-            
-
-class UsuarioService(Service):
-    # INSERT
-    def post(self, new_user):
-        try:
-            logging.info("received request to insert new user")
-            logging.info(json.dumps(new_user))
-            _new_user = Usuario(DNI=new_user['DNI'],
-                            apellido=new_user['apellido'],
-                            nombre=new_user['nombre'],
-                            nivel=new_user['nivel'],
-                            pwd=new_user['pwd'],
-                            ultima_modificacion=datetime.now()
-                            )
-
-            session.add(_new_user)
-            session.commit()
-            logging.info(f"New Prestador: {_new_user.id} inserted")
-            self.response.body = "Nuevo usuario insertado"
-        
-        except KeyError as e:
-            self.response.code = 500
-            self.response.body = e
-            session.rollback()
-        
-        except (IntegrityError, StatementError) as e:
-            session.rollback()
-            self.response.code = 500
-            self.response.body = e
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
-
-    
-    # UPDATE
-    def put(self, usr_mod):
-        try:
-            logging.info(f'Modifiying Usuario {1}')
-            id = usr_mod['id']
-            usr = session.query(Usuario).filter(Usuario.id == id).first()
-
-            usr.DNI=usr_mod['DNI']
-            usr.apellido=usr_mod['apellido']
-            usr.nombre=usr_mod['nombre']
-            usr.nivel=usr_mod['nivel']
-            usr.pwd=usr_mod['pwd']
-            usr.ultima_modificacion=datetime.now()
-
-            session.commit()
-
-            self.response.body = f"modulo: {usr.id} modified"
-        
-        except KeyError as e:
-            self.response.code = 500
-            self.response.body = f"Invalid Parameter: {e}"
-            session.rollback()
-        
-        except IntegrityError as e:
-            self.response.code = 500
-            self.response.body = e
-            session.rollback()
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
-
-    
-    def delete(self):
-        pass
-    
-    def get(self, id=None):
-        try:
-            if id:
-                modulo = session.query(Usuario).filter(Usuario.id == id).first()
-                if modulo:
-                    self.response.body = vars(modulo)
-                else:
-                    raise ObjectNotFoundError
-            else:
-                ds = DataBrokerService()
-                ds.get(RDSConfig.USUARIOS)
-                self.response.code = ds.response.code
-                self.response.body = ds.response.body[RDSConfig.USUARIOS]
-                
-        
-        except ObjectNotFoundError as e:
-            self.response.code = 404
-            self.response.body = e
-        
-        except IntegrityError as e:
-            self.response.code = 500
-            self.response.body = e
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
