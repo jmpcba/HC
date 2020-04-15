@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError, StatementError
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from models import Base, RDSConfig, Resources, RDSModel
-
+from common import all_members
 
 engine = create_engine(RDSConfig.ENGINE)
 Base.metadata.bind = engine
@@ -118,11 +118,13 @@ class Service:
             
             id = body['id']
             current = session.query(self.model.model_map).filter(self.model.model_map.id == id).first()
+
             new_object = self.model.model_map
             new_object = new_object(**body)
-            new_object.id = id
 
-            current = new_object
+            for curr, new in zip(all_members(current), all_members(new_object)):
+                curr = new
+
             session.commit()
             self.response.body = f'Objeto {self.model.table_name} modificado'
         
