@@ -69,7 +69,7 @@ class Service:
             if result:
                 self.response.body = result
             else:
-                self.response.body = e
+                self.response.body = 'No se encontro la tabla'
                 self.response.code = 404
             
         except pymysql.MySQLError as e:
@@ -120,7 +120,6 @@ class Service:
             new_object = new_object(**body)
             current = session.query(self.model.model_map).filter(self.model.model_map.id == new_object.id).first()
             
-            """
             if self.resource == Resources.MODULO.value:
                 current.codigo = new_object.codigo
                 current.medico = new_object.medico
@@ -131,8 +130,7 @@ class Service:
                 current.nutricion = new_object.nutricion
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
-            """
-            session.add(new_object)
+            
             session.commit()
             self.response.body = f'Objeto {current.id} modificado'
         
@@ -143,7 +141,7 @@ class Service:
         
         except IntegrityError as e:
             self.response.code = 500
-            self.response.body = e
+            self.response.body = 'Objecto duplicado'
             session.rollback()
         
         finally:
