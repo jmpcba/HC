@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError, StatementError
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from models import Base, RDSConfig, Resources, RDSModel
-from common import all_members
+
 
 engine = create_engine(RDSConfig.ENGINE)
 Base.metadata.bind = engine
@@ -122,8 +122,17 @@ class Service:
             new_object = self.model.model_map
             new_object = new_object(**body)
 
-            for curr, new in zip(all_members(current), all_members(new_object)):
-                curr = new
+
+            if self.resource == Resources.MODULO.value:
+                current.codigo = new_object.codigo
+                current.medico = new_object.medico
+                current.enfermeria = new_object.enfermeria
+                current.kinesiologia = new_object.kinesiologia
+                current.fonoaudiologia = new_object.fonoaudiologia
+                current.cuidador = new_object.cuidador
+                current.nutricion = new_object.nutricion
+                current.ultima_modificacion = datetime.now()
+                current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
 
             session.commit()
             self.response.body = f'Objeto {self.model.table_name} modificado'
