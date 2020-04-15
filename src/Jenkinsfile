@@ -17,7 +17,7 @@ docker.image(image).inside {
         sh """
             set -x
             . env/bin/activate
-            pylint src
+            pylint -E src
             """
     }
 
