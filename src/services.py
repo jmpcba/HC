@@ -134,6 +134,92 @@ class Service:
                 current.descripcion = new_object.descripcion
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
+            
+            elif self.resource == Resources.PRESTADOR.value:
+                current.CUIT = new_object.CUIT
+                current.nombre = new_object.nombre
+                current.apellido = new_object.apellido
+                current.mail = new_object.mail
+                current.especialidad = new_object.especialidad
+                current.servicio = new_object.servicio
+                current.localidad = new_object.localidad
+                current.monto_feriado = new_object.monto_feriado
+                current.monto_semana = new_object.monto_semana
+                current.monto_fijo = new_object.monto_fijo
+                current.zona = new_object.zona
+                current.comentario = new_object.comentario
+                current.baja = new_object.baja
+                current.ultima_modificacion = datetime.now()
+                current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
+            
+            elif self.resource == Resources.PACIENTE:
+                current.afiliado = new_object.afiliado
+                current.DNI = new_object.DNI
+                current.nombre = new_object.nombre
+                current.apellido = new_object.apellido
+                current.localidad = new_object.localidad
+                current.obra_social = new_object.obra_social
+                current.observacion = new_object.observacion
+                current.modulo = new_object.monto_fijo
+                current.ultima_modificacion = datetime.now()
+                current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
+            
+            elif self.resource == Resources.PRACTICA:
+                current.cuit = new_object.cuit
+                current.afiliado = new_object.afiliado
+                current.modulo = new_object.modulo
+                current.sub_modulo = new_object.sub_modulo
+                current.id_prest = new_object.id_prest
+                current.hs_normales = new_object.hs_normales
+                current.hs_feriados = new_object.hs_feriados
+                current.hs_diferencial = new_object.hs_diferencial
+                current.fecha = new_object.fecha
+                current.observaciones = new_object.observaciones
+                current.observaciones_paciente = new_object.observaciones_paciente
+                current.observaciones_prestacion = new_object.observaciones_prestacion
+                current.ultima_modificacion = datetime.now()
+                current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
+            
+            elif self.resource == Resources.ZONA:
+                current.nombre = new_object.nombre
+                current.mail = new_object.mail
+                current.pwd = new_object.pwd
+                current.propietario = new_object.propietario
+                current.ultima_modificacion = datetime.now()
+                current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
+            
+            elif self.resource == Resources.USUARIO:
+                current.DNI = new_object.DNI
+                current.apellido = new_object.apellido
+                current.nombre = new_object.nombre
+                current.nivel = new_object.nivel
+                current.pwd = new_object.pwd
+                current.ultima_modificacion = datetime.now()
+            
+            elif self.resource == Resources.LIQUIDACION:
+                current.cuit = new_object.cuit
+                current.localidad = new_object.localidad
+                current.especialidad = new_object.especialidad
+                current.mes = new_object.mes
+                current.id_prest = new_object.id_prest
+                current.hs_normales = new_object.hs_normales
+                current.hs_feriados = new_object.hs_feriados
+                current.hs_diferencial = new_object.hs_diferencial
+                current.importe_normal = new_object.importe_normal
+                current.importe_feriado = new_object.importe_feriado
+                current.importe_diferencial = new_object.importe_diferencial
+                current.monto_fijo = new_object.monto_fijo
+                current.ultima_modificacion = datetime.now()
+                current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
+            
+            elif self.resource == Resources.FERIADO:
+                current.fecha = new_object.fecha
+                current.descripcion = new_object.descripcion
+                current.ultima_modificacion = datetime.now()
+                current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
+            
+            elif self.resource == Resources.ESPECIALIDAD:
+                current.nombre = new_object.nombre
 
             session.commit()
             self.response.body = f'Objeto {current.id} modificado'
@@ -155,7 +241,7 @@ class AdminService:
 
     def __init__(self):
         self.response = Response()
-        
+
     def post(self, body):
         logging.info(f'post method body: {body}')
         try:

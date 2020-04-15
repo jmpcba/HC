@@ -6,6 +6,21 @@ docker.image(image).inside {
         checkout scm
     }
 
+    stage('virtual ENV'){
+        sh """
+        set -x
+        python3 -m venv env
+        """
+    }
+
+    stage('validate'){
+        sh """
+            set -x
+            . env/bin/activate
+            pylint src
+            """
+    }
+
     stage('Build') { 
         echo "#########################"
         echo "# BUILDING DEPENDENCIES #"
@@ -13,7 +28,6 @@ docker.image(image).inside {
 
         sh """
             set +x
-            python3 -m venv env
             . env/bin/activate
             python3 -m pip install -r src/requirements.txt
             cp src/*.py ${sitePackageDir}

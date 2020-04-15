@@ -170,6 +170,7 @@ class Resources(Enum):
     FERIADO = 'FERIADO',
     ESPECIALIDAD = 'ESPECIALIDAD'
     ADMIN = 'ADMIN'
+    PRACTICA = 'PRACTICA'
 
 class RDSModel:
 
@@ -184,6 +185,7 @@ class RDSModel:
         Resources.USUARIO.value: Usuario,
         Resources.FERIADO.value: Feriado,
         Resources.ESPECIALIDAD.value: Especialidad,
+        Resources.PRACTICA.value: Practica,
         }
 
         self._model = models[resource]
