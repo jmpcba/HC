@@ -116,13 +116,12 @@ class Service:
         try:
             logging.info(f'Modifiying table {self.model.table_name}')
             
-            id = body['id']
-            current = session.query(self.model.model_map).filter(self.model.model_map.id == id).first()
-
             new_object = self.model.model_map
             new_object = new_object(**body)
+            current = session.query(self.model.model_map).filter(self.model.model_map.id == new_object.id).first()
+            current = new_object
 
-
+            """
             if self.resource == Resources.MODULO.value:
                 current.codigo = new_object.codigo
                 current.medico = new_object.medico
@@ -133,9 +132,9 @@ class Service:
                 current.nutricion = new_object.nutricion
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
-
+            """
             session.commit()
-            self.response.body = f'Objeto {self.model.table_name} modificado'
+            self.response.body = f'Objeto {current.id} modificado'
         
         except KeyError as e:
             self.response.code = 500
