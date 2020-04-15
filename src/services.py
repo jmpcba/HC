@@ -119,8 +119,7 @@ class Service:
             new_object = self.model.model_map
             new_object = new_object(**body)
             current = session.query(self.model.model_map).filter(self.model.model_map.id == new_object.id).first()
-            current = new_object
-
+            
             """
             if self.resource == Resources.MODULO.value:
                 current.codigo = new_object.codigo
@@ -133,6 +132,7 @@ class Service:
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
             """
+            session.add(new_object)
             session.commit()
             self.response.body = f'Objeto {current.id} modificado'
         
