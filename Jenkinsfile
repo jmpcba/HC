@@ -19,7 +19,7 @@ docker.image(image).inside {
         sh """
             set -x
             . env/bin/activate
-            python3 -m pylint -E src
+            python3 -m pylint -E *.py
             """
     }
 
