@@ -27,7 +27,7 @@ def handler(event, context):
     resource = event['resource'].upper()
     resource = resource[resource.rfind('/')+1:]
 
-    if resource == Resources.ADMIN:
+    if resource == Resources.ADMIN.value:
         service = AdminService()
     else:
         service = Service(resource)
