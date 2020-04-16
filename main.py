@@ -27,10 +27,10 @@ def handler(event, context):
     resource = event['resource'].upper()
     resource = resource[resource.rfind('/')+1:]
 
-    service = Service(resource)
-
     if resource == Resources.ADMIN:
         service = AdminService()
+    else:
+        service = Service(resource)
 
     if method == 'POST':
         service.post(body)
