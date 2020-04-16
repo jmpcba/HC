@@ -2,3 +2,4 @@ sqlalchemy
 sqlalchemy-utils
 pymysql
 pylint
+requests
