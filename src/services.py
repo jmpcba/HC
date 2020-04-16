@@ -127,7 +127,7 @@ class Service:
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
             
-            elif self.resource == Resources.SUB_MODULO.value:
+            elif self.resource == Resources.SUBMODULO.value:
                 current.codigo = new_object.codigo
                 current.descripcion = new_object.descripcion
                 current.ultima_modificacion = datetime.now()
