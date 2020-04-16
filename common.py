@@ -1,6 +1,7 @@
 class Chars:
     EOL = '#'
 
+
 def to_dict(obj):
     """
     A function takes in a custom object and returns a dictionary representation of the object.

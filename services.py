@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError, StatementError
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database, drop_database
-from .RDS import Base, RDSConfig, Resources, RDSModel
+from RDS import Base, RDSConfig, Resources, RDSModel
 
 
 engine = create_engine(RDSConfig.ENGINE)
