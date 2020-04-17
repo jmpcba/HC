@@ -58,8 +58,6 @@ class Service:
         self.model = RDSModel(resource)
 
     def get(self):
-        
-        result = None
         try:
             logging.info(f"Fetching table {self.model.table_name}")
             result = [vars(r) for r in session.query(self.model.model_map).all()]
