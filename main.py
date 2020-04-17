@@ -1,7 +1,7 @@
-import errors
 import logging
 import json
-from services import DataBrokerService, PrestadoresService, PacientesService, AdminService, ModuloService, UsuarioService
+from services import Service, AdminService
+from RDS import Resources
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -11,6 +11,7 @@ logger.setLevel(logging.INFO)
 # practicas es el unico que va a filtrar.
 # liquidaciones TBD
 # hay un solo main, tengo que averiguar recurso y metodo
+
 
 def handler(event, context):
     logger.info(f'REQUEST\n{event}')
@@ -26,8 +27,10 @@ def handler(event, context):
     resource = event['resource'].upper()
     resource = resource[resource.rfind('/')+1:]
 
-    service = service_mapper(resource)
-    service = service()
+    if resource == Resources.ADMIN.value:
+        service = AdminService()
+    else:
+        service = Service(resource)
 
     if method == 'POST':
         service.post(body)
@@ -41,16 +44,6 @@ def handler(event, context):
     logger.info(f'RESPONSE\n{service.response.service_response}')
     return service.response.service_response
 
-
-def service_mapper(resource):
-    resources = {
-        'PACIENTE' : PacientesService,
-        'PRESTADOR' : PrestadoresService,
-        'ADMIN': AdminService,
-        'MODULO': ModuloService,
-        'USUARIO': UsuarioService
-    }
-    return resources[resource]
 
 """
 {

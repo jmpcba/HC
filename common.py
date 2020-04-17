@@ -1,6 +1,7 @@
 class Chars:
     EOL = '#'
 
+
 def to_dict(obj):
     """
     A function takes in a custom object and returns a dictionary representation of the object.
@@ -17,3 +18,6 @@ def to_dict(obj):
     obj_dict.update(obj.__dict__)
 
     return obj_dict
+
+def all_members(clazz):
+    return [a for a in dir(clazz) if not a.startswith('__') and not callable(getattr(clazz, a))]

@@ -51,7 +51,8 @@ if __name__ == '__main__':
     logger.setLevel(logging.INFO)
 
     parser = argparse.ArgumentParser(description='DB setup options')
-    parser.add_argument('operation', help='what operation do you want to execute?', choices=['create','adduser', 'drop'])
+    parser.add_argument('operation', help='what operation do you want to execute?',
+                        choices=['create', 'adduser', 'drop'])
     args = parser.parse_args()
     admin = Setup('dev')
     

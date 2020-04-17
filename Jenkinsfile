@@ -6,17 +6,31 @@ docker.image(image).inside {
         checkout scm
     }
 
-    stage('Build') { 
+    stage('environment setup'){
+        sh """
+        set -x
+        python3 -m venv env
+        . env/bin/activate
+        python3 -m pip install -r requirements.txt
+        """
+    }
+
+    stage('validate code'){
+        sh """
+            set -x
+            . env/bin/activate
+            python3 -m pylint -E *.py
+            """
+    }
+
+    stage('Build package') {
         echo "#########################"
         echo "# BUILDING DEPENDENCIES #"
         echo "#########################"
 
         sh """
             set +x
-            python3 -m venv env
-            . env/bin/activate
-            python3 -m pip install -r src/requirements.txt
-            cp src/*.py ${sitePackageDir}
+            cp *.py ${sitePackageDir}
             """
         
         dir(sitePackageDir){
@@ -25,7 +39,7 @@ docker.image(image).inside {
         }
     }
 
-    stage('Deploy') {
+    stage('Deploy to AWS') {
         echo "####################"
         echo "# UPLOADING TO AWS #"
         echo "####################"  
