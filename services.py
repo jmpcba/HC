@@ -60,7 +60,7 @@ class Service:
     def get(self):
         try:
             logging.info(f"Fetching table {self.model.table_name}")
-            result = [vars(r).pop('_sa_instance_state', None) for r in session.query(self.model.model_map).all()]
+            result = [vars(r) for r in session.query(self.model.model_map).all()]
             if result:
                 self.response.body = result
             else:
