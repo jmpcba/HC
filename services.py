@@ -60,10 +60,9 @@ class Service:
     def get(self):
         try:
             logging.info(f"Fetching table {self.model.table_name}")
-            result = [vars(r) for r in session.query(self.model.model_map).all()]
+            result = [vars(r).pop('_sa_instance_state', None) for r in session.query(self.model.model_map).all()]
             if result:
-                clean_result = [i.pop('_sa_instance_state', None) for i in result]
-                self.response.body = clean_result
+                self.response.body = result
             else:
                 self.response.body = 'No se encontro la tabla'
                 self.response.code = 404
