@@ -38,7 +38,7 @@ docker.image(image).inside{
                             sh '''
                             set +x
                             terraform version
-                            terraform get
+                            terraform get -update
                             terraform init
                             terraform apply -auto-approve
                             '''
