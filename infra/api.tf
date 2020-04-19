@@ -5,7 +5,7 @@ locals {
 }
 
 module "api" {
-    source = "github.com/jmpcba/modulos_tf.git//api?ref=single_module"
+    source = "github.com/jmpcba/modulos_tf.git//api?ref=master"
     lambda_uri = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${aws_lambda_function.HC_backend_lambda.arn}/invocations"
     api_name = local.api_name
     api_description = local.api_description
