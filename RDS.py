@@ -26,7 +26,7 @@ class Prestador(Base):
     comentario = Column(String(150), nullable=False)
     baja = Column(Boolean, nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
+    usuario_ultima_modificacion = Column(String(50), nullable=False)
 
 
 class Paciente(Base):
@@ -43,7 +43,7 @@ class Paciente(Base):
     sub_modulo = Column(Integer, ForeignKey('SUB_MODULOS.id'))
     baja = Column(Boolean, default=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
+    usuario_ultima_modificacion = Column(String(50), nullable=False)
 
     
 class Modulo(Base):
@@ -57,7 +57,7 @@ class Modulo(Base):
     cuidador = Column(Float(2), nullable=False)
     nutricion = Column(Float(2), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
+    usuario_ultima_modificacion = Column(String(50), nullable=False)
 
 
 class SubModulo(Base):
@@ -66,7 +66,7 @@ class SubModulo(Base):
     codigo = Column(String(20), unique=True)
     descripcion = Column(String(50), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
+    usuario_ultima_modificacion = Column(String(50), nullable=False)
 
 
 class Practica(Base):
@@ -85,7 +85,7 @@ class Practica(Base):
     observaciones_paciente = Column(String(200))
     observaciones_prestacion = Column(String(200))
     ultima_modificacion = Column(Date)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
+    usuario_ultima_modificacion = Column(String(50), nullable=False)
 
 
 class Zona(Base):
@@ -96,18 +96,7 @@ class Zona(Base):
     pwd = Column(String(50), nullable=False)
     propietario = Column(String(50), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
-
-
-class Usuario(Base):
-    __tablename__ = 'USUARIOS'
-    id = Column(Integer, primary_key=True)
-    DNI = Column(String(50), unique=True)
-    apellido = Column(String(50), nullable=False)
-    nombre = Column(String(50), nullable=False)
-    nivel = Column(String(50), nullable=False)
-    pwd = Column(String(50), nullable=False)
-    ultima_modificacion = Column(Date, nullable=False)
+    usuario_ultima_modificacion = Column(String(50), nullable=False)
 
 
 class Liquidacion(Base):
@@ -126,7 +115,7 @@ class Liquidacion(Base):
     importe_diferencial = Column(Float(2), nullable=False)
     monto_fijo = Column(Float(2), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
+    usuario_ultima_modificacion = Column(String(50), nullable=False)
 
 
 class Feriado(Base):
@@ -135,7 +124,7 @@ class Feriado(Base):
     fecha = Column(Date, unique=True)
     descripcion = Column(String(50), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
-    usuario_ultima_modificacion = Column(Integer, ForeignKey('USUARIOS.id'))
+    usuario_ultima_modificacion = Column(String(50), nullable=False)
 
 
 class Especialidad(Base):
@@ -183,7 +172,6 @@ class RDSModel:
             Resources.SUBMODULO.value: SubModulo,
             Resources.LIQUIDACION.value: Liquidacion,
             Resources.ZONA.value: Zona,
-            Resources.USUARIO.value: Usuario,
             Resources.FERIADO.value: Feriado,
             Resources.ESPECIALIDAD.value: Especialidad,
             Resources.PRACTICA.value: Practica,

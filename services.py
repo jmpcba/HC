@@ -63,23 +63,21 @@ class Service:
             result = [vars(r) for r in session.query(self.model.model_map).all()]
             if result:
                 # remove _sa_instance_state before returning the object
-                [r.pop('_sa_instance_state',None) for r in result]
+                [r.pop('_sa_instance_state', None) for r in result]
                 self.response.body = result
             else:
-                self.response.body = 'No se encontro la tabla'
+                self.response.body = f'No se encontro la tabla {self.model.table_name}'
                 self.response.code = 404
             
         except pymysql.MySQLError as e:
+            logging.error(e)
             self.response.body = e
             self.response.code = 500
             
         except Exception as e:
+            logging.error(e)
             self.response.body = e
             self.response.code = 503
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
     
     def post(self, body):
         try:
@@ -95,18 +93,16 @@ class Service:
             self.response.body = f'Nuevo objeto insertado en {self.model.table_name}'
         
         except KeyError as e:
+            logging.error(e)
             self.response.code = 500
             self.response.body = e
             session.rollback()
         
         except IntegrityError as e:
+            logging.error(e)
             session.rollback()
             self.response.code = 500
             self.response.body = 'El objeto ya existe'
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
 
     def put(self, body):
         try:
@@ -186,14 +182,6 @@ class Service:
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
             
-            elif self.resource == Resources.USUARIO:
-                current.DNI = new_object.DNI
-                current.apellido = new_object.apellido
-                current.nombre = new_object.nombre
-                current.nivel = new_object.nivel
-                current.pwd = new_object.pwd
-                current.ultima_modificacion = datetime.now()
-            
             elif self.resource == Resources.LIQUIDACION:
                 current.cuit = new_object.cuit
                 current.localidad = new_object.localidad
@@ -223,18 +211,16 @@ class Service:
             self.response.body = f'Objeto {current.id} modificado'
         
         except KeyError as e:
+            logging.error(e)
             self.response.code = 500
             self.response.body = f"Invalid Parameter: {e}"
             session.rollback()
         
         except IntegrityError as e:
+            logging.error(e)
             self.response.code = 500
             self.response.body = 'Objecto duplicado'
             session.rollback()
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
 
 
 class AdminService:
@@ -262,12 +248,9 @@ class AdminService:
                 self.response.body = 'table usuarios dropped'
 
         except Exception as e:
+            logging.error(e)
             self.response.code = 500
             self.response.body = e
-        
-        finally:
-            if self.response.code != 200:
-                logging.error(f"ERROR: {str(self.response.body)}")
     
     def get(self):
         self.response.body = "Service is working"
