@@ -154,7 +154,7 @@ class Service:
                 current.localidad = new_object.localidad
                 current.obra_social = new_object.obra_social
                 current.observacion = new_object.observacion
-                current.modulo = new_object.monto_fijo
+                current.modulo = new_object.modulo
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
             
