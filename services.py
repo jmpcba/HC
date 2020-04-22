@@ -146,7 +146,7 @@ class Service:
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
             
-            elif self.resource == Resources.PACIENTE:
+            elif self.resource == Resources.PACIENTE.value:
                 current.afiliado = new_object.afiliado
                 current.DNI = new_object.DNI
                 current.nombre = new_object.nombre
@@ -158,7 +158,7 @@ class Service:
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
             
-            elif self.resource == Resources.PRACTICA:
+            elif self.resource == Resources.PRACTICA.value:
                 current.cuit = new_object.cuit
                 current.afiliado = new_object.afiliado
                 current.modulo = new_object.modulo
@@ -174,7 +174,7 @@ class Service:
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
             
-            elif self.resource == Resources.ZONA:
+            elif self.resource == Resources.ZONA.value:
                 current.nombre = new_object.nombre
                 current.mail = new_object.mail
                 current.pwd = new_object.pwd
@@ -182,7 +182,7 @@ class Service:
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
             
-            elif self.resource == Resources.LIQUIDACION:
+            elif self.resource == Resources.LIQUIDACION.value:
                 current.cuit = new_object.cuit
                 current.localidad = new_object.localidad
                 current.especialidad = new_object.especialidad
@@ -198,14 +198,17 @@ class Service:
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
             
-            elif self.resource == Resources.FERIADO:
+            elif self.resource == Resources.FERIADO.value:
                 current.fecha = new_object.fecha
                 current.descripcion = new_object.descripcion
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_object.usuario_ultima_modificacion
             
-            elif self.resource == Resources.ESPECIALIDAD:
+            elif self.resource == Resources.ESPECIALIDAD.value:
                 current.nombre = new_object.nombre
+
+            else:
+                raise Exception(f"el recurso {self.resource} es invalido")
 
             session.commit()
             self.response.body = f'Objeto {current.id} modificado'
