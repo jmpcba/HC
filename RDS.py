@@ -114,6 +114,7 @@ class Liquidacion(Base):
     importe_feriado = Column(Float(2), nullable=False)
     importe_diferencial = Column(Float(2), nullable=False)
     monto_fijo = Column(Float(2), nullable=False)
+    monto_diferencial = Column(Float(2), nullable=False)
     ultima_modificacion = Column(Date, nullable=False)
     usuario_ultima_modificacion = Column(String(50), nullable=False)
 

@@ -140,6 +140,7 @@ class Service:
                 current.monto_feriado = new_object.monto_feriado
                 current.monto_semana = new_object.monto_semana
                 current.monto_fijo = new_object.monto_fijo
+                current.monto_diferencial = new_object.monto_diferencial
                 current.zona = new_object.zona
                 current.comentario = new_object.comentario
                 current.baja = new_object.baja
