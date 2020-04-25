@@ -18,7 +18,7 @@ def handler(event, context):
 
     method = event['httpMethod'].upper()
     body = event['body']
-    queryString = event['queryStringParameters']
+    query_string = event['queryStringParameters']
 
     try:
         body = json.loads(body)
@@ -40,9 +40,10 @@ def handler(event, context):
         service.put(body)
 
     elif method == 'GET':
-        if 'year' in queryString:
-            year = queryString[queryString.find('=')+1:]
-            service.get(year=year)
+        if query_string:
+            if 'year' in query_string:
+                year = query_string[query_string.find('=')+1:]
+                service.get(year=year)
         else:
             service.get()
 
