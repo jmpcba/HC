@@ -42,7 +42,7 @@ def handler(event, context):
     elif method == 'GET':
         if query_string:
             if 'year' in query_string:
-                year = query_string[query_string.find('=')+1:]
+                year = query_string.get('year')
                 service.get(year=year)
         else:
             service.get()
