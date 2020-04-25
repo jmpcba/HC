@@ -4,9 +4,9 @@ import pymysql
 from datetime import datetime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError, StatementError
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, between
 from sqlalchemy_utils import database_exists, create_database, drop_database
-from RDS import Base, RDSConfig, Resources, RDSModel
+from RDS import Base, RDSConfig, Resources, RDSModel, Feriado
 
 
 engine = create_engine(RDSConfig.ENGINE)
@@ -57,10 +57,17 @@ class Service:
         self.resource = resource
         self.model = RDSModel(resource)
 
-    def get(self):
+    def get(self, year_feriado=None):
         try:
             logging.info(f"Fetching table {self.model.table_name}")
-            result = [vars(r) for r in session.query(self.model.model_map).all()]
+
+            if self.resource == Resources.FERIADO and year_feriado:
+                logging.info(f'Fetching feriados for year {year_feriado}')
+                result = session.query(Feriado).filter(
+                    between(Feriado.fecha, f'1/1/{year_feriado}', f'12/31/{year_feriado}'))
+            else:
+                result = [vars(r) for r in session.query(self.model.model_map).all()]
+
             if result:
                 # remove _sa_instance_state before returning the object
                 [r.pop('_sa_instance_state', None) for r in result]
@@ -226,6 +233,31 @@ class Service:
             self.response.body = 'Objecto duplicado'
             session.rollback()
 
+    def delete(self, body):
+        try:
+            logging.info(f"received request to delete new object in: {self.model.table_name}")
+            logging.info(f'OBJECT: {json.dumps(body)}')
+
+            del_object = self.model.model_map
+            del_object = del_object(**body)
+
+            current = session.query(self.model.model_map).filter(self.model.model_map.id == del_object.id).first()
+            session.delete(current)
+            session.commit()
+            logging.info(f"object: {self.model.table_name} deleted from DB")
+            self.response.body = f'Object deleted from table: {self.model.table_name}'
+
+        except KeyError as e:
+            logging.error(e)
+            self.response.code = 500
+            self.response.body = e
+            session.rollback()
+
+        except IntegrityError as e:
+            logging.error(e)
+            session.rollback()
+            self.response.code = 500
+            self.response.body = 'El objeto ya existe'
 
 class AdminService:
 

@@ -18,6 +18,7 @@ def handler(event, context):
 
     method = event['httpMethod'].upper()
     body = event['body']
+    queryString = event['queryStringParameters']
 
     try:
         body = json.loads(body)
@@ -39,7 +40,7 @@ def handler(event, context):
         service.put(body)
 
     elif method == 'GET':
-        service.get()
+        service.get(queryString)
 
     logger.info(f'RESPONSE\n{service.response.service_response}')
     return service.response.service_response
