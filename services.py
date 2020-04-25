@@ -57,14 +57,15 @@ class Service:
         self.resource = resource
         self.model = RDSModel(resource)
 
-    def get(self, year_feriado=None):
+    def get(self, **kwargs):
+        year = kwargs.get('year')
         try:
             logging.info(f"Fetching table {self.model.table_name}")
 
-            if self.resource == Resources.FERIADO and year_feriado:
-                logging.info(f'Fetching feriados for year {year_feriado}')
+            if self.resource == Resources.FERIADO and year:
+                logging.info(f'Fetching feriados for year {year}')
                 result = session.query(Feriado).filter(
-                    between(Feriado.fecha, f'1/1/{year_feriado}', f'12/31/{year_feriado}'))
+                    between(Feriado.fecha, f'1/1/{year}', f'12/31/{year}'))
             else:
                 result = [vars(r) for r in session.query(self.model.model_map).all()]
 

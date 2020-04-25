@@ -40,7 +40,11 @@ def handler(event, context):
         service.put(body)
 
     elif method == 'GET':
-        service.get(queryString)
+        if 'year' in queryString:
+            year = queryString[queryString.find('=')+1:]
+            service.get(year=year)
+        else:
+            service.get()
 
     logger.info(f'RESPONSE\n{service.response.service_response}')
     return service.response.service_response
