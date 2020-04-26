@@ -73,7 +73,6 @@ class SubModulo(Base):
 class Practica(Base):
     __tablename__ = 'PRACTICAS'
     id = Column(Integer, primary_key=True)
-    cuit = Column(String(50), nullable=False)
     paciente = Column(Integer, ForeignKey('PACIENTES.id'), unique=True)
     modulo = Column(Integer, ForeignKey('MODULOS.id'), unique=True)
     sub_modulo = Column(Integer, ForeignKey('SUB_MODULOS.id'), unique=True)
