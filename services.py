@@ -91,12 +91,30 @@ class Service:
         try:
             logging.info(f"received request to insert new object in: {self.model.table_name}")
             logging.info(f'OBJECT: {json.dumps(body)}')
-    
             new_object = self.model.model_map
-            new_object = new_object(**body)
-            
-            session.add(new_object)
-            session.commit()
+
+            if self.resource == Resources.PRACTICA and type(body) == list:
+                logging.info(f"Inserting list of practicas")
+                error_list = []
+                errors = False
+                for practica in body:
+                    try:
+                        new_object = new_object(**practica)
+                        session.add(new_object)
+                        session.commit()
+                    except Exception as e:
+                        logging.error(e)
+                        error_list.append({'fecha': new_object.fecha, 'error': e})
+                        errors = True
+
+                if errors:
+                    self.response.code = 500
+                    self.response.body = error_list
+
+            else:
+                new_object = new_object(**body)
+                session.add(new_object)
+                session.commit()
             logging.info(f"New object inserted into DB: {self.model.table_name}")
             self.response.body = f'Nuevo objeto insertado en {self.model.table_name}'
         

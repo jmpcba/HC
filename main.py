@@ -21,6 +21,7 @@ def handler(event, context):
     query_string = event['queryStringParameters']
 
     try:
+        logging.error(f"decoding request body to dict")
         body = json.loads(body)
     except (json.JSONDecodeError, TypeError) as e:
         logging.error(f"ERROR: skiping json decoding: {e}")
