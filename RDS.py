@@ -74,10 +74,10 @@ class Practica(Base):
     __tablename__ = 'PRACTICAS'
     id = Column(Integer, primary_key=True)
     cuit = Column(String(50), nullable=False)
-    afiliado = Column(Integer, ForeignKey('PACIENTES.id'), unique=True)
+    paciente = Column(Integer, ForeignKey('PACIENTES.id'), unique=True)
     modulo = Column(Integer, ForeignKey('MODULOS.id'), unique=True)
     sub_modulo = Column(Integer, ForeignKey('SUB_MODULOS.id'), unique=True)
-    id_prest = Column(Integer, ForeignKey('PRESTADORES.id'), unique=True)
+    prestador = Column(Integer, ForeignKey('PRESTADORES.id'), unique=True)
     hs_normales = Column(Float(2), nullable=False)
     hs_feriados = Column(Float(2), nullable=False)
     hs_diferencial = Column(Float(2), nullable=False)
