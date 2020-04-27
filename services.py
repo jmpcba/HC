@@ -65,7 +65,7 @@ class Service:
             if self.resource == Resources.FERIADO.value and year:
                 logging.info(f'Fetching feriados for year {year}')
                 result = [vars(r) for r in session.query(Feriado).filter(Feriado.fecha.between(
-                                                                            f'1/1/{year}', f'12/31/{year}')).all()]
+                                                                            f'{year}-1-1', f'{year}-12-31')).all()]
             else:
                 result = [vars(r) for r in session.query(self.model.model_map).all()]
 
