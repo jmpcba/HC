@@ -62,7 +62,7 @@ class Service:
         try:
             logging.info(f"Fetching table {self.model.table_name}")
 
-            if self.resource == Resources.FERIADO and year:
+            if self.resource == Resources.FERIADO.value and year:
                 logging.info(f'Fetching feriados for year {year}')
                 result = session.query(Feriado).filter(
                     between(Feriado.fecha, f'1/1/{year}', f'12/31/{year}'))
@@ -93,7 +93,7 @@ class Service:
             logging.info(f'OBJECT: {json.dumps(body)}')
             new_object = self.model.model_map
 
-            if self.resource == Resources.PRACTICA and type(body) == list:
+            if self.resource == Resources.PRACTICA.value and type(body) == list:
                 logging.info(f"Inserting list of practicas")
                 error_list = []
                 errors = False
