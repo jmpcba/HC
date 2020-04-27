@@ -102,11 +102,14 @@ class Service:
                     logging.info(f"Inserting: {json.dumps(practica)}")
                     new_object = new_object(**practica)
                     session.add(new_object)
-                    session.commit()
                 except Exception as e:
                     errors = True
+                    session.rollback()
                     logging.error(e)
                     error_list.append({'fecha': new_object.fecha, 'error': e})
+
+                finally:
+                    session.commit()
 
                 if errors:
                     self.response.body = error_list
