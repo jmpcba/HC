@@ -64,8 +64,8 @@ class Service:
 
             if self.resource == Resources.FERIADO.value and year:
                 logging.info(f'Fetching feriados for year {year}')
-                result = session.query(Feriado).filter(
-                    between(Feriado.fecha, f'1/1/{year}', f'12/31/{year}'))
+                result = [vars(r) for r in session.query(Feriado).filter(
+                    between(Feriado.fecha, f'1/1/{year}', f'12/31/{year}'))]
             else:
                 result = [vars(r) for r in session.query(self.model.model_map).all()]
 
@@ -88,47 +88,50 @@ class Service:
             self.response.code = 503
     
     def post(self, body):
-        try:
-            logging.info(f"received request to insert new object in: {self.model.table_name}")
-            logging.info(f'OBJECT: {json.dumps(body)}')
-            new_object = self.model.model_map
 
-            if self.resource == Resources.PRACTICA.value and type(body) == list:
-                logging.info(f"Inserting list of practicas")
-                error_list = []
-                errors = False
-                for practica in body:
-                    try:
-                        new_object = new_object(**practica)
-                        session.add(new_object)
-                        session.commit()
-                    except Exception as e:
-                        logging.error(e)
-                        error_list.append({'fecha': new_object.fecha, 'error': e})
-                        errors = True
+        logging.info(f"received request to insert new object in: {self.model.table_name}")
+        logging.info(f'OBJECT: {json.dumps(body)}')
+        new_object = self.model.model_map
+
+        if self.resource == Resources.PRACTICA.value and type(body) == list:
+            logging.info(f"Inserting list of practicas")
+            error_list = []
+            errors = False
+            for practica in body:
+                try:
+                    new_object = new_object(**practica)
+                    session.add(new_object)
+                    session.commit()
+                except Exception as e:
+                    errors = True
+                    logging.error(e)
+                    error_list.append({'fecha': new_object.fecha, 'error': e})
 
                 if errors:
-                    self.response.code = 500
                     self.response.body = error_list
+                else:
+                    logging.info(f"New object inserted into DB: {self.model.table_name}")
+                    self.response.body = f'Nuevos objetos insertado en {self.model.table_name}'
 
-            else:
+        else:
+            try:
                 new_object = new_object(**body)
                 session.add(new_object)
                 session.commit()
-            logging.info(f"New object inserted into DB: {self.model.table_name}")
-            self.response.body = f'Nuevo objeto insertado en {self.model.table_name}'
-        
-        except KeyError as e:
-            logging.error(e)
-            self.response.code = 500
-            self.response.body = e
-            session.rollback()
-        
-        except IntegrityError as e:
-            logging.error(e)
-            session.rollback()
-            self.response.code = 500
-            self.response.body = 'El objeto ya existe'
+                logging.info(f"New object inserted into DB: {self.model.table_name}")
+                self.response.body = f'Nuevo objeto insertado en {self.model.table_name}'
+
+            except KeyError as e:
+                logging.error(e)
+                self.response.code = 500
+                self.response.body = e
+                session.rollback()
+
+            except IntegrityError as e:
+                logging.error(e)
+                session.rollback()
+                self.response.code = 500
+                self.response.body = 'El objeto ya existe'
 
     def put(self, body):
         try:
