@@ -99,6 +99,7 @@ class Service:
             errors = False
             for practica in body:
                 try:
+                    logging.info(f"Inserting: {json.dumps(practica)}")
                     new_object = new_object(**practica)
                     session.add(new_object)
                     session.commit()
