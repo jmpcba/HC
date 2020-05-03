@@ -57,7 +57,7 @@ class Response:
 
     def __init__(self):
         self._code = 200
-        self._body = 'EMPTY RESPONSE'
+        self._body = ''
 
     @property
     def code(self):
