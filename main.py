@@ -1,16 +1,9 @@
 import logging
 import json
-from services import Service, AdminService
-from RDS import Resources
+from service import Service
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-
-# TODO notas: los recursos basicos como prestadores, zonas tienen que devolver
-# la tabla completa con GET, actualizar agregar y eliminar
-# practicas es el unico que va a filtrar.
-# liquidaciones TBD
-# hay un solo main, tengo que averiguar recurso y metodo
 
 
 def handler(event, context):
@@ -29,27 +22,9 @@ def handler(event, context):
     resource = event['resource'].upper()
     resource = resource[resource.rfind('/')+1:]
 
-    if resource == Resources.ADMIN.value:
-        service = AdminService()
-    else:
-        service = Service(resource)
-
-    if method == 'POST':
-        service.post(body)
-
-    elif method == 'PUT':
-        service.put(body)
-
-    elif method == 'GET':
-        if query_string:
-            if 'year' in query_string:
-                year = query_string.get('year')
-                service.get(year=year)
-        else:
-            service.get()
-
-    logger.info(f'RESPONSE\n{service.response.service_response}')
-    return service.response.service_response
+    service_response = Service.execute(resource, method, query_string, body)
+    logger.info(f'RESPONSE\n{service_response}')
+    return service_response
 
 
 """
