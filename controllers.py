@@ -1,6 +1,7 @@
 import logging
 import json
 import Entities
+import datetime
 from datetime import datetime
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from sqlalchemy import create_engine, between, and_
@@ -334,6 +335,16 @@ class ControllerPractica(BaseController):
         start_date = kwargs.get('start_date')
         end_date = kwargs.get('end_date')
         filter_expr = None
+
+        if start_date:
+            start_date = datetime.date(start_date[start_date.rfind('/') + 1: start_date.rfind('/') + 5],
+                                       start_date[start_date.find('/') + 1: start_date.rfind('/')],
+                                       start_date[:start_date.find('/')])
+
+        if end_date:
+            end_date = datetime.date(end_date[end_date.rfind('/') + 1: end_date.rfind('/') + 5],
+                                     end_date[end_date.find('/') + 1: end_date.rfind('/')],
+                                     end_date[:end_date.find('/')])
 
         if id_prest and id_pac:
             pass
