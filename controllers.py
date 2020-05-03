@@ -394,46 +394,55 @@ class ControllerPractica(BaseController):
 
     def create(self, body, **kwargs):
 
-        if type(body) == list:
-            new_practica = None
-            errors = []
-            for prac in body:
-                logging.info(f"INSERTING: {json.dumps(prac)}")
-                new_practica = self.entityClass(**prac)
+        if type(body) != list:
+            raise ValueError("body must be a list of practicas")
 
-                try:
-                    with session_scope() as s:
-                        s.add(new_practica)
-                        logging.info("object added")
-                except Exception as e:
-                    logging.error(e)
-                    errors.append({'date': new_practica.fecha, 'err': e})
+        errors = []
+        np_paciente = None
+        np_prestador = None
+        np_modulo = None
+        np_sub_modulo = None
+        np_observacion_paciente = None
+        np_observacion_prestador = None
 
-            self.response.code = 200
-            self.response.body = errors
+        for prac in body:
+            logging.info(f"INSERTING: {json.dumps(prac)}")
+            new_practica = self.entityClass(**prac)
+            np_paciente = new_practica.paciente
+            np_prestador = new_practica.prestador
+            np_modulo = new_practica.modulo
+            np_sub_modulo = new_practica.sub_modulo
+            np_observacion_paciente = new_practica.observaciones_paciente
+            np_observacion_prestador = new_practica.observaciones_prestador
+            try:
+                with session_scope() as s:
+                    s.add(new_practica)
+                    logging.info("object added")
+            except Exception as e:
+                logging.error(e)
+                errors.append({'date': new_practica.fecha, 'err': e})
 
-        else:
-            super().create(body)
-            new_practica = self.entityClass(**body)
+        self.response.code = 200
+        self.response.body = errors
 
         if len(body) != len(errors) or type(body) != list:
             logging.info('review if paciente or prestador needs to be update')
             try:
                 with session_scope() as s:
-                    pac = s.query(Entities.Paciente).filter(Entities.Paciente.id == new_practica.paciente).first()
-                    prest = s.query(Entities.Prestador).filter(Entities.Prestador.id == new_practica.prestador).first()
+                    pac = s.query(Entities.Paciente).filter(Entities.Paciente.id == np_paciente).first()
+                    prest = s.query(Entities.Prestador).filter(Entities.Prestador.id == np_prestador).first()
 
-                    if pac.modulo != new_practica.modulo or \
-                       pac.sub_modulo != new_practica.sub_modulo or \
-                       pac.observacion != new_practica.observaciones_paciente:
+                    if pac.modulo != np_modulo or \
+                       pac.sub_modulo != np_sub_modulo or \
+                       pac.observacion != np_observacion_paciente:
 
-                        pac.modulo = new_practica.modulo
-                        pac.sub_modulo = new_practica.sub_modulo
-                        pac.observacion = new_practica.observaciones_paciente
+                        pac.modulo = np_modulo
+                        pac.sub_modulo = np_sub_modulo
+                        pac.observacion = np_observacion_paciente
                         logging.info("updated PACIENTE")
 
-                    if prest.comentario != new_practica.observaciones_prestador:
-                        prest.comentario = new_practica.observaciones_prestador
+                    if prest.comentario != np_observacion_prestador:
+                        prest.comentario = np_observacion_prestador
                         logging.info("updated PRESTADOR")
 
             except Exception as e:
