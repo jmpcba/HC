@@ -46,6 +46,8 @@ class Controller:
             return ControllerPrestador()
         elif resource == 'SUBMODULO':
             return ControllerSubModulo()
+        elif resource == 'ADMIN':
+            return ControllerAdmin()
 
 
 class Response:
@@ -439,7 +441,7 @@ class ControllerPractica(BaseController):
                 print(e)
 
 
-class AdminController:
+class ControllerAdmin:
 
     def __init__(self):
         self.response = Response()
