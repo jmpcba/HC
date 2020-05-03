@@ -24,5 +24,5 @@ class Service:
         elif http_method == 'DELETE':
             controller.delete()
 
-        logging.info(f'RESPONSE: {controller.response}')
+        logging.info(f'RESPONSE: {controller.response.http_response}')
         return controller.response.http_response

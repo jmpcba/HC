@@ -420,7 +420,10 @@ class ControllerPractica(BaseController):
                     logging.info("object added")
             except Exception as e:
                 logging.error(e)
-                errors.append({'date': new_practica.fecha, 'err': e})
+                err = e
+                if "1062" in e.args[0]:
+                    err = "Ya existe una practica para esta fecha/prestador/paciente"
+                errors.append({'date': new_practica.fecha, 'err': err})
 
         self.response.code = 200
         self.response.body = errors
