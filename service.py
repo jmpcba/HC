@@ -7,6 +7,8 @@ class Service:
     def execute(resource, http_method, query_string, body):
         controller = Controller.factory(resource)
         http_method = http_method.upper()
+        if not query_string:
+            query_string = {}
 
         logging.info(f'RESOURCE: {resource}')
         logging.info(f'HTTP METHOD: {http_method}')
