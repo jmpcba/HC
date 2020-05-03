@@ -446,7 +446,7 @@ class ControllerAdmin:
     def __init__(self):
         self.response = Response()
 
-    def create(self, body):
+    def update(self, body):
         logging.info(f'post method body: {body}')
         try:
             if body['operation'] == 'recreate':
