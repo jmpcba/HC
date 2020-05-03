@@ -18,9 +18,9 @@ class Service:
         if http_method == 'GET':
             controller.read(**query_string)
         elif http_method == 'POST':
-            controller.update(body, **query_string)
-        elif http_method == 'PUT':
             controller.create(body, **query_string)
+        elif http_method == 'PUT':
+            controller.update(body, **query_string)
         elif http_method == 'DELETE':
             controller.delete()
 
