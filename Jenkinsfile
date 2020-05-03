@@ -11,7 +11,7 @@ docker.image(image).inside {
         set -x
         python3 -m venv env
         . env/bin/activate
-        python3 -m pip install -r requirements.txt
+        python -m pip install -r requirements.txt
         """
     }
 
@@ -19,7 +19,7 @@ docker.image(image).inside {
         sh """
             set -x
             . env/bin/activate
-            python3 -m pylint -E *.py
+            python -m pylint -E *.py
             """
     }
 
