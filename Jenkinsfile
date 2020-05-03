@@ -14,7 +14,7 @@ docker.image(image).inside {
         python -m pip install -r requirements.txt
         """
     }
-
+/*
     stage('validate code'){
         sh """
             set -x
@@ -22,7 +22,7 @@ docker.image(image).inside {
             python -m pylint -E *.py
             """
     }
-
+*/
     stage('Build package') {
         echo "#########################"
         echo "# BUILDING DEPENDENCIES #"
