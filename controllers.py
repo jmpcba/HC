@@ -337,14 +337,14 @@ class ControllerPractica(BaseController):
 
         if start_date:
             y = int(start_date[start_date.rfind('/') + 1: start_date.rfind('/') + 5])
-            m = int(start_date[start_date.find('/') + 1: start_date.rfind('/')])
-            d = int(start_date[:start_date.find('/')])
+            d = int(start_date[start_date.find('/') + 1: start_date.rfind('/')])
+            m = int(start_date[:start_date.find('/')])
             start_date = datetime(y, m, d)
 
         if end_date:
             y = int(end_date[end_date.rfind('/') + 1: end_date.rfind('/') + 5])
-            m = int(end_date[end_date.find('/') + 1: end_date.rfind('/')])
-            d = int(end_date[:end_date.find('/')])
+            d = int(end_date[end_date.find('/') + 1: end_date.rfind('/')])
+            m = int(end_date[:end_date.find('/')])
             end_date = datetime(y, m, d)
 
         if id_prest and id_pac:
