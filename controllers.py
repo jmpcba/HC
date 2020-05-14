@@ -160,7 +160,7 @@ class ControllerZona(BaseController):
                 current.propietario = new_zona.propietario
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_zona.usuario_ultima_modificacion
-                self.response.body = f'Objeto {current.id} modificado'
+                self.response.body = f'Objeto {new_zona.id} modificado'
 
         except IntegrityError as e:
             logging.error(e)
@@ -189,7 +189,7 @@ class ControllerModulo(BaseController):
                 current.nutricion = new_modulo.nutricion
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_modulo.usuario_ultima_modificacion
-            self.response.body = f'Objeto {current.id} en {self.entityClass.table_name} modificado'
+            self.response.body = f'Objeto {new_modulo.id} en {self.entityClass.table_name} modificado'
 
         except IntegrityError as e:
             logging.error(e)
@@ -213,7 +213,7 @@ class ControllerSubModulo(BaseController):
                 current.descripcion = new_sub_modulo.descripcion
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_sub_modulo.usuario_ultima_modificacion
-            self.response.body = f'Objeto {current.id} en {self.entityClass.table_name} modificado'
+            self.response.body = f'Objeto {new_sub_modulo.id} en {self.entityClass.table_name} modificado'
 
         except IntegrityError as e:
             logging.error(e)
@@ -249,7 +249,7 @@ class ControllerPrestador(BaseController):
                 current.baja = new_prestador.baja
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_prestador.usuario_ultima_modificacion
-            self.response.body = f'Objeto {current.id} en {self.entityClass.table_name} modificado'
+            self.response.body = f'Objeto {new_prestador.id} en {self.entityClass.table_name} modificado'
 
         except IntegrityError as e:
             logging.error(e)
@@ -279,7 +279,7 @@ class ControllerPaciente(BaseController):
                 current.modulo = new_paciente.modulo
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_paciente.usuario_ultima_modificacion
-            self.response.body = f'Objeto {current.id} en {self.entityClass.table_name} modificado'
+            self.response.body = f'Objeto {new_paciente.id} en {self.entityClass.table_name} modificado'
 
         except IntegrityError as e:
             logging.error(e)
@@ -315,7 +315,7 @@ class ControllerFeriado(BaseController):
                 current.descripcion = new_feriado.descripcion
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_feriado.usuario_ultima_modificacion
-            self.response.body = f'Objeto {current.id} en {self.entityClass.table_name} modificado'
+            self.response.body = f'Objeto {new_feriado.id} en {self.entityClass.table_name} modificado'
 
         except IntegrityError as e:
             logging.error(e)
@@ -405,7 +405,7 @@ class ControllerPractica(BaseController):
                 current.descripcion = new_practica.descripcion
                 current.ultima_modificacion = datetime.now()
                 current.usuario_ultima_modificacion = new_practica.usuario_ultima_modificacion
-            self.response.body = f'Objeto {current.id} en {self.entityClass.table_name} modificado'
+            self.response.body = f'Objeto {new_practica.id} en {self.entityClass.table_name} modificado'
 
         except IntegrityError as e:
             logging.error(e)
@@ -493,8 +493,8 @@ class ControllerPractica(BaseController):
             ret.append(d)
         return ret
 
-class ControllerAdmin:
 
+class ControllerAdmin:
     def __init__(self):
         self.response = Response()
 
