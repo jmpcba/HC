@@ -1,6 +1,6 @@
 import logging
 import json
-import Entities
+import entities
 from datetime import datetime
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from sqlalchemy import create_engine, between, and_
@@ -8,8 +8,9 @@ from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
 from sqlalchemy.exc import IntegrityError, StatementError
 from pymysql import MySQLError
-from Entities import Base
+from entities import Base
 from config import RDSConfig
+from entities import Paciente, Practica, Prestador, Modulo, SubModulo
 
 engine = create_engine(RDSConfig.ENGINE)
 Base.metadata.bind = engine
@@ -144,7 +145,7 @@ class BaseController:
 class ControllerZona(BaseController):
     def __init__(self):
         super().__init__()
-        self.entityClass = Entities.Zona
+        self.entityClass = entities.Zona
 
     def update(self, body, **kwargs):
         try:
@@ -170,7 +171,7 @@ class ControllerZona(BaseController):
 class ControllerModulo(BaseController):
     def __init__(self):
         super().__init__()
-        self.entityClass = Entities.Modulo
+        self.entityClass = entities.Modulo
 
     def update(self, body, **kwargs):
         try:
@@ -199,7 +200,7 @@ class ControllerModulo(BaseController):
 class ControllerSubModulo(BaseController):
     def __init__(self):
         super().__init__()
-        self.entityClass = Entities.SubModulo
+        self.entityClass = entities.SubModulo
 
     def update(self, body, **kwargs):
         try:
@@ -223,7 +224,7 @@ class ControllerSubModulo(BaseController):
 class ControllerPrestador(BaseController):
     def __init__(self):
         super().__init__()
-        self.entityClass = Entities.Prestador
+        self.entityClass = entities.Prestador
 
     def update(self, body, **kwargs):
         try:
@@ -259,7 +260,7 @@ class ControllerPrestador(BaseController):
 class ControllerPaciente(BaseController):
     def __init__(self):
         super().__init__()
-        self.entityClass = Entities.Paciente
+        self.entityClass = entities.Paciente
 
     def update(self, body, **kwargs):
         try:
@@ -289,7 +290,7 @@ class ControllerPaciente(BaseController):
 class ControllerFeriado(BaseController):
     def __init__(self):
         super().__init__()
-        self.entityClass = Entities.Feriado
+        self.entityClass = entities.Feriado
 
     def read(self, **kwargs):
         year = kwargs.get('year')
@@ -325,7 +326,7 @@ class ControllerFeriado(BaseController):
 class ControllerPractica(BaseController):
     def __init__(self):
         super().__init__()
-        self.entityClass = Entities.Practica
+        self.entityClass = entities.Practica
 
     def read(self, **kwargs):
         id_obj = ''
@@ -334,18 +335,22 @@ class ControllerPractica(BaseController):
         start_date = kwargs.get('start_date')
         end_date = kwargs.get('end_date')
         filter_expr = None
-
-        if start_date:
-            y = int(start_date[start_date.rfind('/') + 1: start_date.rfind('/') + 5])
-            d = int(start_date[start_date.find('/') + 1: start_date.rfind('/')])
-            m = int(start_date[:start_date.find('/')])
-            start_date = datetime(y, m, d)
-
-        if end_date:
-            y = int(end_date[end_date.rfind('/') + 1: end_date.rfind('/') + 5])
-            d = int(end_date[end_date.find('/') + 1: end_date.rfind('/')])
-            m = int(end_date[:end_date.find('/')])
-            end_date = datetime(y, m, d)
+        columns = [Paciente.afiliado,
+                   Prestador.CUIT,
+                   Prestador.apellido,
+                   Prestador.nombre,
+                   Practica.fecha,
+                   Modulo.codigo,
+                   SubModulo.codigo,
+                   SubModulo.descripcion,
+                   Practica.hs_normales,
+                   Practica.hs_feriados,
+                   Practica.hs_diferencial,
+                   Prestador.monto_semana,
+                   Prestador.monto_feriado,
+                   Prestador.monto_diferencial
+                   ]
+        result = []
 
         if id_prest and id_pac:
             pass
@@ -358,31 +363,22 @@ class ControllerPractica(BaseController):
 
         if id_prest and id_pac and start_date and end_date:
             with session_scope() as s:
-                result = [vars(r) for r in s.query(self.entityClass).filter(
+                result = s.query(*columns).filter(
                     self.entityClass.paciente == id_pac,
                     self.entityClass.prestador == id_prest,
                     between(self.entityClass.fecha, start_date, end_date)).all()
-                ]
-                [r.pop('_sa_instance_state', None) for r in result]
-                self.response.body = result
+                self.response.body = self._parse_read_result(result)
 
         elif (start_date and end_date) and (id_prest or id_pac):
             with session_scope() as s:
-                result = [vars(r) for r in s.query(self.entityClass).filter(
-                    filter_expr == id_obj,
-                    between(self.entityClass.fecha, start_date, end_date)).all()
-                          ]
-            [r.pop('_sa_instance_state', None) for r in result]
-            self.response.body = result
+                result = s.query(*columns).filter(filter_expr == id_obj,
+                                                  between(self.entityClass.fecha, start_date, end_date)).all()
+                self.response.body = self._parse_read_result(result)
 
-        elif (start_date and end_date) and not(id_prest and id_pac):
+        elif (start_date and end_date) and not (id_prest and id_pac):
             with session_scope() as s:
-                result = [vars(r) for r in s.query(self.entityClass).filter(
-                    between(self.entityClass.fecha, start_date, end_date)).all()
-                          ]
-            [r.pop('_sa_instance_state', None) for r in result]
-            self.response.body = result
-
+                result = s.query(*columns).filter(between(self.entityClass.fecha, start_date, end_date)).all()
+                self.response.body = self._parse_read_result(result)
         else:
             super().read()
 
@@ -444,8 +440,8 @@ class ControllerPractica(BaseController):
             logging.info('review if paciente or prestador needs to be update')
             try:
                 with session_scope() as s:
-                    pac = s.query(Entities.Paciente).filter(Entities.Paciente.id == np_paciente).first()
-                    prest = s.query(Entities.Prestador).filter(Entities.Prestador.id == np_prestador).first()
+                    pac = s.query(entities.Paciente).filter(entities.Paciente.id == np_paciente).first()
+                    prest = s.query(entities.Prestador).filter(entities.Prestador.id == np_prestador).first()
 
                     if pac.modulo != np_modulo or \
                        pac.sub_modulo != np_sub_modulo or \
@@ -464,6 +460,26 @@ class ControllerPractica(BaseController):
                 logging.error(e)
                 print(e)
 
+    def _parse_read_result(self, result):
+        ret = []
+        for r in result:
+            d = {
+               'afiliado': r.afiliado,
+                'CUIT': r.CUIT,
+                'apellido': r.apellido,
+                'nombre': r.nombre,
+                'fecha': r.fecha,
+                'Modulo': r[5],
+                'SubModulo': r.descripcion,
+                'hs_normales': r.hs_normales,
+                'hs_feriados': r.hs_feriados,
+                'hs_diferencial': r.hs_diferencial,
+                'monto_semana': r.monto_semana,
+                'monto_feriado': r.monto_feriado,
+                'monto_diferencial': r.monto_diferencial
+            }
+            ret.append(d)
+        return ret
 
 class ControllerAdmin:
 
