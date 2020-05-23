@@ -329,28 +329,18 @@ class ControllerPractica(BaseController):
         self.entityClass = entities.Practica
 
     def read(self, **kwargs):
-        id_obj = ''
-        result = []
         id_prest = kwargs.get('id_prestador')
         id_pac = kwargs.get('id_paciente')
         start_date = kwargs.get('start_date')
         end_date = kwargs.get('end_date')
-        filter_expr = None
-        columns = [Paciente.afiliado,
-                   Prestador.CUIT,
-                   Prestador.apellido,
-                   Prestador.nombre,
-                   Practica.fecha,
-                   Modulo.codigo,
-                   SubModulo.codigo,
-                   SubModulo.descripcion,
-                   Practica.hs_normales,
-                   Practica.hs_feriados,
-                   Practica.hs_diferencial,
-                   Prestador.monto_semana,
-                   Prestador.monto_feriado,
-                   Prestador.monto_diferencial
-                   ]
+        query_class = None
+        id_obj = None
+
+        logging.info(f'Fetching practicas with parameters:\n\
+            PRESTADOR: {id_prest}\n \
+            PACIENTE: {id_pac}\n\
+            START DATE: {start_date}\n\
+            END_DATE: {end_date}')
 
         if start_date:
             y = int(start_date[start_date.rfind('/') + 1: start_date.rfind('/') + 5])
@@ -365,32 +355,24 @@ class ControllerPractica(BaseController):
             end_date = datetime(y, m, d)
 
         if id_prest and id_pac:
-            pass
+            self.response.body = 'utilice solo id_prestador o id_paciente como filtros. No pueden usarse ambos a la vez'
+            self.response.code = 500
         elif id_prest:
             id_obj = id_prest
-            filter_expr = self.entityClass.prestador
+            query_class = PracticasPrestador()
         elif id_pac:
             id_obj = id_pac
-            filter_expr = self.entityClass.paciente
+            query_class = PracticasPaciente()
 
-        if id_prest and id_pac and start_date and end_date:
-            with session_scope() as s:
-                result = s.query(*columns).filter(
-                    self.entityClass.paciente == id_pac,
-                    self.entityClass.prestador == id_prest,
-                    between(self.entityClass.fecha, start_date, end_date)).all()
-                self.response.body = self._parse_read_result(result)
+        if id_obj and query_class:
+            try:
+                self.response.body = query_class.get_practicas(start_date, end_date, id_obj)
+                self.response.code = 200
 
-        elif (start_date and end_date) and (id_prest or id_pac):
-            with session_scope() as s:
-                result = s.query(*columns).filter(filter_expr == id_obj,
-                                                  between(self.entityClass.fecha, start_date, end_date)).all()
-                self.response.body = self._parse_read_result(result)
-
-        elif (start_date and end_date) and not (id_prest and id_pac):
-            with session_scope() as s:
-                result = s.query(*columns).filter(between(self.entityClass.fecha, start_date, end_date)).all()
-                self.response.body = self._parse_read_result(result)
+            except MySQLError as e:
+                self.response.body = e
+                self.response.code = 500
+        
         else:
             super().read()
 
@@ -492,6 +474,123 @@ class ControllerPractica(BaseController):
             }
             ret.append(d)
         return ret
+
+
+class PracticasBase:
+
+    DETAIL_COLUMNS = [
+                    Prestador.CUIT,
+                    Paciente.afiliado,
+                    Practica.fecha,
+                    Modulo.codigo,
+                    SubModulo.codigo,
+                    SubModulo.descripcion,
+                    Practica.hs_normales,
+                    Practica.hs_feriados,
+                    Practica.hs_diferencial,
+                    (Prestador.monto_semana * Practica.hs_normales).label('monto_semana'),
+                    (Prestador.monto_feriado * Practica.hs_feriados).label('monto_feriado'),
+                    (Prestador.monto_diferencial * Practica.hs_diferencial).label('monto_diferencial')
+                    ]
+
+    SUMMARY_COLUMNS = [
+        Prestador.CUIT,
+        func.count(Practica.id),
+        func.sum(Practica.hs_feriados).label('hs_feriados'),
+        func.sum(Practica.hs_normales).label('hs_normales'),
+        func.sum(Practica.hs_diferencial).label('hs_diferencial')
+        ]
+
+
+class PracticasPaciente(PracticasBase):
+
+    def get_practicas(self, start_date, end_date, id_paciente):
+        self.DETAIL_COLUMNS += [
+            Prestador.nombre,
+            Prestador.apellido,
+        ]
+
+        self.SUMMARY_COLUMNS += [
+            Prestador.nombre,
+            Prestador.apellido,
+        ]
+        with session_scope() as s:
+            detail_result = s.query(*self.DETAIL_COLUMNS) \
+                .join(Paciente, Practica.paciente == Paciente.id) \
+                .join(Prestador, Practica.prestador == Prestador.id) \
+                .join(Modulo, Practica.modulo == Modulo.id) \
+                .join(SubModulo, Practica.sub_modulo == SubModulo.id)\
+                .filter(
+                    Paciente.id == id_paciente,
+                    between(
+                        Practica.fecha,
+                        start_date,
+                        end_date
+                    )
+            ).all()
+
+            summary_result = s.query(*self.SUMMARY_COLUMNS) \
+                .join(Prestador, Practica.prestador == Prestador.id) \
+                .filter(
+                    Paciente.id == id_paciente,
+                    between(
+                        Practica.fecha,
+                        start_date,
+                        end_date
+                    )
+                ).group_by(
+                    Prestador.CUIT,
+                    Prestador.apellido,
+                    Prestador.nombre,
+                    Prestador.especialidad,
+                    ).all()
+
+        return {'detail': [r._asdict() for r in detail_result], 'summary': [r._asdict() for r in summary_result]}
+
+
+class PracticasPrestador(PracticasBase):
+    def get_practicas(self, start_date, end_date, id_paciente):
+        self.DETAIL_COLUMNS += [
+            Paciente.nombre,
+            Paciente.apellido,
+        ]
+
+        self.SUMMARY_COLUMNS += [
+            Paciente.nombre,
+            Paciente.apellido,
+        ]
+        with session_scope() as s:
+            detail_result = s.query(*self.DETAIL_COLUMNS) \
+                .join(Paciente, Practica.paciente == Paciente.id) \
+                .join(Prestador, Practica.prestador == Prestador.id) \
+                .join(Modulo, Practica.modulo == Modulo.id) \
+                .join(SubModulo, Practica.sub_modulo == SubModulo.id) \
+                .filter(
+                Paciente.id == id_paciente,
+                between(
+                    Practica.fecha,
+                    start_date,
+                    end_date
+                )
+            ).all()
+
+            summary_result = s.query(*self.SUMMARY_COLUMNS) \
+                .join(Prestador, Practica.prestador == Prestador.id) \
+                .filter(
+                Paciente.id == id_paciente,
+                between(
+                    Practica.fecha,
+                    start_date,
+                    end_date
+                )
+            ).group_by(
+                Prestador.CUIT,
+                Prestador.apellido,
+                Prestador.nombre,
+                Prestador.especialidad,
+            ).all()
+
+        return {'detail': [r._asdict() for r in detail_result], 'summary': [r._asdict() for r in summary_result]}
 
 
 class ControllerAdmin:
