@@ -479,33 +479,35 @@ class ControllerPractica(BaseController):
 
 class PracticasBase:
 
-    DETAIL_COLUMNS = [
-                    Practica.id,
-                    Prestador.CUIT,
-                    Paciente.afiliado.label('AFILIADO'),
-                    Practica.fecha.label('FECHA PRACTICA'),
-                    Modulo.codigo.label('MODULO'),
-                    SubModulo.codigo.label('CODIGO SUBMODULO'),
-                    SubModulo.descripcion.label('DESCRIPCION SUBMODULO'),
-                    Practica.hs_normales.label('HS LUN A VIER'),
-                    Practica.hs_feriados.label('HS SAB DOM Y FER'),
-                    Practica.hs_diferencial.label('DIFERENCIAL'),
-                    (Prestador.monto_semana * Practica.hs_normales).label('$ LUN A VIER'),
-                    (Prestador.monto_feriado * Practica.hs_feriados).label('$ SAB DOM Y FER'),
-                    (Prestador.monto_diferencial * Practica.hs_diferencial).label('$ DIFERENCIAL')
-                    ]
+    def __init__(self):
+        self.DETAIL_COLUMNS = [
+                        Practica.id,
+                        Prestador.CUIT,
+                        Paciente.afiliado.label('AFILIADO'),
+                        Practica.fecha.label('FECHA PRACTICA'),
+                        Modulo.codigo.label('MODULO'),
+                        SubModulo.codigo.label('CODIGO SUBMODULO'),
+                        SubModulo.descripcion.label('DESCRIPCION SUBMODULO'),
+                        Practica.hs_normales.label('HS LUN A VIER'),
+                        Practica.hs_feriados.label('HS SAB DOM Y FER'),
+                        Practica.hs_diferencial.label('DIFERENCIAL'),
+                        (Prestador.monto_semana * Practica.hs_normales).label('$ LUN A VIER'),
+                        (Prestador.monto_feriado * Practica.hs_feriados).label('$ SAB DOM Y FER'),
+                        (Prestador.monto_diferencial * Practica.hs_diferencial).label('$ DIFERENCIAL')
+                        ]
 
-    SUMMARY_COLUMNS = [
-        func.count(Practica.id).label('CANT PRACTICAS'),
-        (func.sum(Practica.hs_feriados) +
-            func.sum(Practica.hs_normales) +
-            func.sum(Practica.hs_diferencial)
-         ).label('CANT HORAS')]
+        self.SUMMARY_COLUMNS = [
+            func.count(Practica.id).label('CANT PRACTICAS'),
+            (func.sum(Practica.hs_feriados) +
+                func.sum(Practica.hs_normales) +
+                func.sum(Practica.hs_diferencial)
+             ).label('CANT HORAS')]
 
 
 class PracticasPaciente(PracticasBase):
 
     def get_practicas(self, start_date, end_date, id_paciente):
+        super().__init__()
         self.DETAIL_COLUMNS += [
             Prestador.apellido.label('APELLIDO PRESTADOR'),
             Prestador.nombre.label('NOMBRE PRESTADOR'),
@@ -553,6 +555,7 @@ class PracticasPaciente(PracticasBase):
 
 class PracticasPrestador(PracticasBase):
     def get_practicas(self, start_date, end_date, id_paciente):
+        super().__init__()
         self.DETAIL_COLUMNS += [
             Paciente.nombre.label('NOMBRE PACIENTE'),
             Paciente.apellido.label('APELLIDO PACIENTE'),
