@@ -507,15 +507,15 @@ class PracticasPaciente(PracticasBase):
 
     def get_practicas(self, start_date, end_date, id_paciente):
         self.DETAIL_COLUMNS += [
-            Prestador.apellido.label('APELLIDO PACIENTE'),
-            Prestador.nombre.label('NOMBRE PACIENTE'),
+            Prestador.apellido.label('APELLIDO PRESTADOR'),
+            Prestador.nombre.label('NOMBRE PRESTADOR'),
         ]
 
         self.SUMMARY_COLUMNS += [
             Prestador.CUIT,
             Prestador.especialidad.label('ESPECIALIDAD'),
-            Prestador.nombre.label('NOMBRE PACIENTE'),
-            Prestador.apellido.label('APELLIDO PACIENTE'),
+            Prestador.nombre.label('NOMBRE PRESTADOR'),
+            Prestador.apellido.label('APELLIDO PRESTADOR'),
         ]
         with session_scope() as s:
             detail_result = s.query(*self.DETAIL_COLUMNS) \
