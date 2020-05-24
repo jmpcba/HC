@@ -513,6 +513,7 @@ class PracticasPaciente(PracticasBase):
 
         self.SUMMARY_COLUMNS += [
             Prestador.CUIT,
+            Prestador.especialidad.label('ESPECIALIDAD'),
             Prestador.nombre.label('NOMBRE PACIENTE'),
             Prestador.apellido.label('APELLIDO PACIENTE'),
         ]
