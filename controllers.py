@@ -5,6 +5,7 @@ from datetime import datetime
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from sqlalchemy import create_engine, between, and_
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import func, label
 from contextlib import contextmanager
 from sqlalchemy.exc import IntegrityError, StatementError
 from pymysql import MySQLError
