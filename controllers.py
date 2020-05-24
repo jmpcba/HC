@@ -401,6 +401,7 @@ class ControllerPractica(BaseController):
             raise ValueError("body must be a list of practicas")
 
         errors = []
+        id_prac = 0
         np_paciente = None
         np_prestador = None
         np_modulo = None
@@ -408,31 +409,35 @@ class ControllerPractica(BaseController):
         np_observacion_paciente = None
         np_observacion_prestador = None
 
-        for prac in body:
-            logging.info(f"INSERTING: {json.dumps(prac)}")
-            new_practica = self.entityClass(**prac)
-            np_paciente = new_practica.paciente
-            np_prestador = new_practica.prestador
-            np_modulo = new_practica.modulo
-            np_sub_modulo = new_practica.sub_modulo
-            np_observacion_paciente = new_practica.observaciones_paciente
-            np_observacion_prestador = new_practica.observaciones_prestador
-            try:
-                with session_scope() as s:
+        with session_scope() as s:
+            id_prac = s.query(func.max(Practica.id)).scalar()
+
+            for prac in body:
+                id_prac += 1
+                logging.info(f"INSERTING: {json.dumps(prac)}")
+                new_practica = self.entityClass(**prac)
+                new_practica.id = id_prac
+                np_paciente = new_practica.paciente
+                np_prestador = new_practica.prestador
+                np_modulo = new_practica.modulo
+                np_sub_modulo = new_practica.sub_modulo
+                np_observacion_paciente = new_practica.observaciones_paciente
+                np_observacion_prestador = new_practica.observaciones_prestador
+                try:
                     s.add(new_practica)
                     logging.info("object added")
-            except Exception as e:
-                logging.error(e)
-                err = e
-                if "1062" in e.args[0]:
-                    err = "Ya existe una practica para esta fecha/prestador/paciente"
-                errors.append({'date': new_practica.fecha, 'err': err})
+                except Exception as e:
+                    logging.error(e)
+                    err = e
+                    if "1062" in e.args[0]:
+                        err = "Ya existe una practica para esta fecha/prestador/paciente"
+                    errors.append({'date': new_practica.fecha, 'err': err})
 
         self.response.code = 200
         self.response.body = errors
 
         if len(body) != len(errors) or type(body) != list:
-            logging.info('review if paciente or prestador needs to be update')
+            logging.info('review if paciente or prestador needs to be updated')
             try:
                 with session_scope() as s:
                     pac = s.query(entities.Paciente).filter(entities.Paciente.id == np_paciente).first()
