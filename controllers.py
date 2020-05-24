@@ -483,7 +483,7 @@ class PracticasBase:
                     Practica.id,
                     Prestador.CUIT,
                     Paciente.afiliado.label('AFILIADO'),
-                    Practica.fecha.label('FECHA'),
+                    Practica.fecha.label('FECHA PRACTICA'),
                     Modulo.codigo.label('MODULO'),
                     SubModulo.codigo.label('CODIGO SUBMODULO'),
                     SubModulo.descripcion.label('DESCRIPCION SUBMODULO'),
