@@ -488,7 +488,7 @@ class PracticasBase:
                     SubModulo.codigo.label('CODIGO SUBMODULO'),
                     SubModulo.descripcion.label('DESCRIPCION SUBMODULO'),
                     Practica.hs_normales.label('HS LUN A VIER'),
-                    Practica.hs_feriados.label('SAB DOM Y FER'),
+                    Practica.hs_feriados.label('HS SAB DOM Y FER'),
                     Practica.hs_diferencial.label('DIFERENCIAL'),
                     (Prestador.monto_semana * Practica.hs_normales).label('$ LUN A VIER'),
                     (Prestador.monto_feriado * Practica.hs_feriados).label('$ SAB DOM Y FER'),
