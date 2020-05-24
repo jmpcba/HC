@@ -31,6 +31,7 @@ class Prestador(Base):
 
 class Paciente(Base):
     __tablename__ = 'PACIENTES'
+    id = Column(Integer, primary_key=True)
     afiliado = Column(String(50), primary_key=True)
     DNI = Column(String(50), nullable=False)
     nombre = Column(String(50), nullable=False)
@@ -83,7 +84,7 @@ class SubModulo(Base):
 class Practica(Base):
     __tablename__ = 'PRACTICAS'
     id = Column(Integer, autoincrement=True)
-    paciente = Column(String(50), ForeignKey('PACIENTES.afiliado'), primary_key=True)
+    paciente = Column(Integer, ForeignKey('PACIENTES.id'), primary_key=True)
     modulo = Column(Integer, ForeignKey('MODULOS.id'))
     sub_modulo = Column(Integer, ForeignKey('SUB_MODULOS.id'))
     prestador = Column(Integer, ForeignKey('PRESTADORES.id'), primary_key=True)
