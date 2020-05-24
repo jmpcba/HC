@@ -480,40 +480,41 @@ class ControllerPractica(BaseController):
 class PracticasBase:
 
     DETAIL_COLUMNS = [
+                    Practica.id,
                     Prestador.CUIT,
-                    Paciente.afiliado,
-                    Practica.fecha,
-                    Modulo.codigo,
-                    SubModulo.codigo,
-                    SubModulo.descripcion,
-                    Practica.hs_normales,
-                    Practica.hs_feriados,
-                    Practica.hs_diferencial,
-                    (Prestador.monto_semana * Practica.hs_normales).label('monto_semana'),
-                    (Prestador.monto_feriado * Practica.hs_feriados).label('monto_feriado'),
-                    (Prestador.monto_diferencial * Practica.hs_diferencial).label('monto_diferencial')
+                    Paciente.afiliado.label('AFILIADO'),
+                    Practica.fecha.label('FECHA'),
+                    Modulo.codigo.label('MODULO'),
+                    SubModulo.codigo.label('CODIGO SUBMODULO'),
+                    SubModulo.descripcion.label('DESCRIPCION SUBMODULO'),
+                    Practica.hs_normales.label('HS LUN A VIER'),
+                    Practica.hs_feriados.label('SAB DOM Y FER'),
+                    Practica.hs_diferencial.label('DIFERENCIAL'),
+                    (Prestador.monto_semana * Practica.hs_normales).label('$ LUN A VIER'),
+                    (Prestador.monto_feriado * Practica.hs_feriados).label('$ SAB DOM Y FER'),
+                    (Prestador.monto_diferencial * Practica.hs_diferencial).label('$ DIFERENCIAL')
                     ]
 
     SUMMARY_COLUMNS = [
-        Prestador.CUIT,
-        func.count(Practica.id),
-        func.sum(Practica.hs_feriados).label('hs_feriados'),
-        func.sum(Practica.hs_normales).label('hs_normales'),
-        func.sum(Practica.hs_diferencial).label('hs_diferencial')
-        ]
+        func.count(Practica.id).label('CANT PRACTICAS'),
+        (func.sum(Practica.hs_feriados) +
+            func.sum(Practica.hs_normales) +
+            func.sum(Practica.hs_diferencial)
+         ).label('CANT HORAS')]
 
 
 class PracticasPaciente(PracticasBase):
 
     def get_practicas(self, start_date, end_date, id_paciente):
         self.DETAIL_COLUMNS += [
-            Prestador.nombre,
-            Prestador.apellido,
+            Prestador.apellido.label('APELLIDO PACIENTE'),
+            Prestador.nombre.label('NOMBRE PACIENTE'),
         ]
 
         self.SUMMARY_COLUMNS += [
-            Prestador.nombre,
-            Prestador.apellido,
+            Prestador.CUIT,
+            Prestador.nombre.label('NOMBRE PACIENTE'),
+            Prestador.apellido.label('APELLIDO PACIENTE'),
         ]
         with session_scope() as s:
             detail_result = s.query(*self.DETAIL_COLUMNS) \
@@ -552,13 +553,14 @@ class PracticasPaciente(PracticasBase):
 class PracticasPrestador(PracticasBase):
     def get_practicas(self, start_date, end_date, id_paciente):
         self.DETAIL_COLUMNS += [
-            Paciente.nombre,
-            Paciente.apellido,
+            Paciente.nombre.label('NOMBRE PACIENTE'),
+            Paciente.apellido.label('APELLIDO PACIENTE'),
         ]
 
         self.SUMMARY_COLUMNS += [
-            Paciente.nombre,
-            Paciente.apellido,
+            Paciente.afiliado.label('AFILIADO'),
+            Paciente.nombre.label('NOMBRE PACIENTE'),
+            Paciente.apellido.label('APELLIDO PACIENTE'),
         ]
         with session_scope() as s:
             detail_result = s.query(*self.DETAIL_COLUMNS) \
