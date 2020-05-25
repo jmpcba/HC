@@ -120,7 +120,7 @@ class Zona(Base):
 
 class Liquidacion(Base):
     __tablename__ = 'LIQUIDACION'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, nullable=False)
     mes = Column(Date, primary_key=True)
     id_prest = Column(String(36), primary_key=True)
     hs_normales = Column(Float(2), nullable=False)
