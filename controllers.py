@@ -1,6 +1,7 @@
 import logging
 import json
 import entities
+import uuid
 from datetime import datetime
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from sqlalchemy import create_engine, between, and_
@@ -227,6 +228,22 @@ class ControllerPrestador(BaseController):
         super().__init__()
         self.entityClass = entities.Prestador
 
+    def create(self, body, **kwargs):
+        logging.info(f"INSERTING: {json.dumps(body)}")
+        new_object = self.entityClass(**body)
+
+        new_object.id = str(uuid.uuid1().int)
+
+        try:
+            with session_scope() as s:
+                s.add(new_object)
+                logging.info(f"object added into {new_object.table_name}")
+                self.response.body = f'Objeto insertado en tabla {new_object.table_name}'
+        except IntegrityError as e:
+            logging.error(e)
+            self.response.code = 500
+            self.response.body = self._parse_error(e)
+
     def update(self, body, **kwargs):
         try:
             logging.info(f'Modifiying table {self.entityClass.table_name}')
@@ -401,7 +418,6 @@ class ControllerPractica(BaseController):
             raise ValueError("body must be a list of practicas")
 
         errors = []
-        id_prac = 0
         np_paciente = None
         np_prestador = None
         np_modulo = None
@@ -409,14 +425,11 @@ class ControllerPractica(BaseController):
         np_observacion_paciente = None
         np_observacion_prestador = None
 
-        with session_scope() as s:
-            id_prac = s.query(func.max(Practica.id)).scalar()
-
         for prac in body:
-            id_prac += 1
+
             logging.info(f"INSERTING: {json.dumps(prac)}")
             new_practica = self.entityClass(**prac)
-            new_practica.id = id_prac
+            new_practica.id = str(uuid.uuid1().int)
             np_paciente = new_practica.paciente
             np_prestador = new_practica.prestador
             np_modulo = new_practica.modulo

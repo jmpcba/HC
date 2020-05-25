@@ -6,7 +6,7 @@ Base = declarative_base()
 
 class Prestador(Base):
     __tablename__ = 'PRESTADORES'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(String(36), nullable=False)
     CUIT = Column(String(50), primary_key=True)
     nombre = Column(String(50), nullable=False)
     apellido = Column(String(50), nullable=False)
@@ -32,7 +32,7 @@ class Prestador(Base):
 class Paciente(Base):
     __tablename__ = 'PACIENTES'
     id = Column(Integer, primary_key=True)
-    afiliado = Column(String(50), primary_key=True)
+    afiliado = Column(String(50), unique=True)
     DNI = Column(String(50), nullable=False)
     nombre = Column(String(50), nullable=False)
     apellido = Column(String(50), nullable=False)
@@ -83,7 +83,7 @@ class SubModulo(Base):
 
 class Practica(Base):
     __tablename__ = 'PRACTICAS'
-    id = Column(Integer, autoincrement=True)
+    id = Column(String(36), nullable=False)
     paciente = Column(Integer, ForeignKey('PACIENTES.id'), primary_key=True)
     modulo = Column(Integer, ForeignKey('MODULOS.id'))
     sub_modulo = Column(Integer, ForeignKey('SUB_MODULOS.id'))
