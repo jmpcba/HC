@@ -87,7 +87,7 @@ class Practica(Base):
     paciente = Column(Integer, ForeignKey('PACIENTES.id'), primary_key=True)
     modulo = Column(Integer, ForeignKey('MODULOS.id'))
     sub_modulo = Column(Integer, ForeignKey('SUB_MODULOS.id'))
-    prestador = Column(String, ForeignKey('PRESTADORES.id'), primary_key=True)
+    prestador = Column(String(36), primary_key=True)
     hs_normales = Column(Float(2), nullable=False)
     hs_feriados = Column(Float(2), nullable=False)
     hs_diferencial = Column(Float(2), nullable=False)
