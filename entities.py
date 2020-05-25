@@ -121,11 +121,8 @@ class Zona(Base):
 class Liquidacion(Base):
     __tablename__ = 'LIQUIDACION'
     id = Column(Integer, primary_key=True)
-    cuit = Column(String(50), primary_key=True)
-    localidad = Column(String(50), primary_key=True)
-    especialidad = Column(String(50), primary_key=True)
     mes = Column(Date, primary_key=True)
-    id_prest = Column(Integer, ForeignKey('PRESTADORES.id'))
+    id_prest = Column(String(36), primary_key=True)
     hs_normales = Column(Float(2), nullable=False)
     hs_feriados = Column(Float(2), nullable=False)
     hs_diferencial = Column(Float(2), nullable=False)
