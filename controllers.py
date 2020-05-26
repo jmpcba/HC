@@ -474,27 +474,6 @@ class ControllerPractica(BaseController):
                 logging.error(e)
                 print(e)
 
-    def _parse_read_result(self, result):
-        ret = []
-        for r in result:
-            d = {
-               'afiliado': r.afiliado,
-                'CUIT': r.CUIT,
-                'apellido': r.apellido,
-                'nombre': r.nombre,
-                'fecha': r.fecha,
-                'Modulo': r[5],
-                'SubModulo': r.descripcion,
-                'hs_normales': r.hs_normales,
-                'hs_feriados': r.hs_feriados,
-                'hs_diferencial': r.hs_diferencial,
-                'monto_semana': r.monto_semana,
-                'monto_feriado': r.monto_feriado,
-                'monto_diferencial': r.monto_diferencial
-            }
-            ret.append(d)
-        return ret
-
 
 class PracticasBase:
 
