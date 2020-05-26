@@ -12,7 +12,7 @@ from sqlalchemy.exc import IntegrityError, StatementError
 from pymysql import MySQLError
 from entities import Base
 from config import RDSConfig
-from entities import Paciente, Practica, Prestador, Modulo, SubModulo
+from entities import Paciente, Practica, Prestador, Modulo, SubModulo, Liquidacion
 
 engine = create_engine(RDSConfig.ENGINE)
 Base.metadata.bind = engine
@@ -140,7 +140,7 @@ class BaseController:
             self.response.body = e
             self.response.code = 500
 
-    def delete(self):
+    def delete(self, body, **kwargs):
         pass
 
 
@@ -472,7 +472,38 @@ class ControllerPractica(BaseController):
 
             except Exception as e:
                 logging.error(e)
-                print(e)
+                self.response.body = e
+                self.response.code = 500
+
+    def delete(self, body, **kwargs):
+        month = kwargs.get('month')
+        year = kwargs.get('year')
+        errs = []
+        if type(body) != list:
+            raise ValueError('este metodo requiere que se envie una lista de ids')
+
+        try:
+            for prac in body:
+                with session_scope() as s:
+                    pr = s.query(Practica).filter(Practica.id == prac).first()
+                    lq = s.query(Liquidacion).filter(and_(
+                        Liquidacion.mes == f'{year}-{month}-1',
+                        Liquidacion.id_prest == pr.prestador)
+                    ).all()
+                    if lq:
+                        logging.info(f'liquidacion cerrada para prestador: {pr.id} y mes: {month}/{year}')
+                        errs.append(prac)
+                    else:
+                        logging.info(f'borrando practica {pr.id}')
+                        s.delete(pr)
+
+            self.response.body = errs
+            self.response.code = 200
+
+        except MySQLError as e:
+            logging.error(e)
+            self.response.code = 500
+            self.response.body = e
 
 
 class PracticasBase:
