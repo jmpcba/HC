@@ -499,7 +499,7 @@ class ControllerPractica(BaseController):
                         if pr:
                             s.delete(pr)
                         else:
-                            logging.info(f'No se encontro {pr.id}')
+                            logging.info(f'No se encontro {prac}')
 
             self.response.body = errs
             self.response.code = 200
