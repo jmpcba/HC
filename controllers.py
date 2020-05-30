@@ -484,6 +484,7 @@ class ControllerPractica(BaseController):
 
         try:
             for prac in body:
+                logging.info(f'Practica: {prac}')
                 with session_scope() as s:
                     pr = s.query(Practica).filter(Practica.id == prac).first()
                     lq = s.query(Liquidacion).filter(and_(
@@ -495,7 +496,10 @@ class ControllerPractica(BaseController):
                         errs.append(prac)
                     else:
                         logging.info(f'borrando practica {pr.id}')
-                        s.delete(pr)
+                        if pr:
+                            s.delete(pr)
+                        else:
+                            logging.info(f'No se encontro {pr.id}')
 
             self.response.body = errs
             self.response.code = 200
