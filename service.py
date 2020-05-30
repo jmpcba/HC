@@ -22,7 +22,7 @@ class Service:
         elif http_method == 'PUT':
             controller.update(body, **query_string)
         elif http_method == 'DELETE':
-            controller.delete()
+            controller.delete(body, **query_string)
 
         logging.info(f'RESPONSE: {controller.response.http_response}')
         return controller.response.http_response
