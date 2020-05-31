@@ -587,7 +587,7 @@ class PracticasPaciente(PracticasBase):
 
 
 class PracticasPrestador(PracticasBase):
-    def get_practicas(self, start_date, end_date, id_paciente):
+    def get_practicas(self, start_date, end_date, id_prestador):
         super().__init__()
         self.DETAIL_COLUMNS += [
             Paciente.nombre.label('NOMBRE PACIENTE'),
@@ -606,7 +606,7 @@ class PracticasPrestador(PracticasBase):
                 .join(Modulo, Practica.modulo == Modulo.id) \
                 .join(SubModulo, Practica.sub_modulo == SubModulo.id) \
                 .filter(
-                Paciente.id == id_paciente,
+                Prestador.id == id_prestador,
                 between(
                     Practica.fecha,
                     start_date,
@@ -617,7 +617,7 @@ class PracticasPrestador(PracticasBase):
             summary_result = s.query(*self.SUMMARY_COLUMNS) \
                 .join(Prestador, Practica.prestador == Prestador.id) \
                 .filter(
-                Paciente.id == id_paciente,
+                Prestador.id == id_prestador,
                 between(
                     Practica.fecha,
                     start_date,
